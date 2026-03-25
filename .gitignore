@@ -1,0 +1,6 @@
+.env.local
+.env
+.anthropic_api_key.txt
+*.key.txt
+.DS_Store
+node_modules/
