@@ -924,52 +924,71 @@
     }
 
     .palm-drop {
-      border: 1px dashed var(--rose-border);
-      border-radius: 14px;
-      padding: 28px 20px;
+      border: 1.5px dashed var(--rose-border);
+      border-radius: 16px;
+      padding: 32px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       cursor: pointer;
-      transition: all 0.2s;
-      background: var(--rose-dim);
-      text-align: center
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(145deg, rgba(244, 114, 182, 0.03) 0%, rgba(244, 114, 182, 0.08) 100%);
+      text-align: center;
+      box-shadow: inset 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     .palm-drop:hover {
-      background: rgba(244, 114, 182, 0.20);
-      border-color: var(--rose)
+      background: linear-gradient(145deg, rgba(244, 114, 182, 0.08) 0%, rgba(244, 114, 182, 0.15) 100%);
+      border-color: var(--rose);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(244, 114, 182, 0.15);
     }
 
     .palm-drop-icon {
-      font-size: 36px;
-      line-height: 1
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid rgba(244, 114, 182, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      color: var(--rose);
+      animation: pulse 2.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(244, 114, 182, 0.3); }
+      70% { box-shadow: 0 0 0 10px rgba(244, 114, 182, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(244, 114, 182, 0); }
     }
 
     .palm-drop-title {
-      font-size: 14px;
-      color: var(--text);
-      font-weight: 500
+      font-size: 15px;
+      color: var(--rose);
+      font-weight: 600;
+      letter-spacing: -0.01em;
     }
 
     .palm-drop-sub {
-      font-size: 11px;
+      font-size: 11.5px;
       color: var(--text-muted);
       line-height: 1.55
     }
 
     .palm-guide {
-      background: var(--surface);
-      border: 0.5px solid var(--border);
-      border-radius: 14px;
-      padding: 15px 17px
+      background: linear-gradient(180deg, var(--surface), rgba(28, 35, 51, 0.4));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 18px;
     }
 
     .palm-guide-title {
       font-size: 11px;
       color: var(--text-muted);
-      margin-bottom: 11px;
+      margin-bottom: 12px;
       font-weight: 500
     }
 
@@ -981,28 +1000,32 @@
 
     .palm-line {
       display: flex;
-      align-items: flex-start;
-      gap: 9px
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
     }
 
     .palm-line-dot {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
-      margin-top: 3px;
-      flex-shrink: 0
+      flex-shrink: 0;
+      box-shadow: 0 0 6px currentColor;
     }
 
     .palm-line-text {
       font-size: 11px;
       color: var(--text-muted);
-      line-height: 1.5
+      line-height: 1.4
     }
 
     .palm-line-name {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--text);
-      font-weight: 500
+      font-weight: 600;
+      margin-bottom: 2px
     }
 
     .palm-preview-wrap {
@@ -1031,13 +1054,20 @@
     .palm-analyze-btn {
       padding: 11px 28px;
       border-radius: 10px;
-      background: linear-gradient(135deg, rgba(244, 114, 182, 0.6), var(--rose));
+      background: linear-gradient(135deg, rgba(244, 114, 182, 0.8), var(--rose));
       border: none;
       color: #fff;
       font-size: 13px;
       font-family: inherit;
       cursor: pointer;
-      font-weight: 500
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(244, 114, 182, 0.25);
+      transition: all 0.2s;
+    }
+
+    .palm-analyze-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
     }
 
     .palm-change-link {
@@ -1251,34 +1281,36 @@
       <div class="panel" id="panel-palm">
         <div class="form-panel" id="palm-panel">
           <div class="palm-drop" onclick="document.getElementById('palm-file').click()">
-            <div class="palm-drop-icon">✋</div>
+            <div class="palm-drop-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/><path d="m9 9 3 3-3 3"/><path d="m15 9-3 3 3 3"/></svg>
+            </div>
             <div class="palm-drop-title">손 사진을 올려주세요</div>
-            <div class="palm-drop-sub">손바닥이 잘 보이도록 밝은 곳에서<br>찍은 사진을 업로드해 주시면 돼요</div>
+            <div class="palm-drop-sub">손바닥 중앙이 잘 보이도록 밝은 곳에서<br>촬영된 사진을 선택해 주세요</div>
           </div>
           <input type="file" id="palm-file" accept="image/*" onchange="onPalmFile(event)">
           <div class="palm-guide">
             <div class="palm-guide-title">다아라가 분석하는 손금 선</div>
             <div class="palm-guide-grid">
               <div class="palm-line">
-                <div class="palm-line-dot" style="background:#F472B6"></div>
+                <div class="palm-line-dot" style="background:#F472B6; color:#F472B6;"></div>
                 <div class="palm-line-text">
                   <div class="palm-line-name">감정선</div>사랑·감수성
                 </div>
               </div>
               <div class="palm-line">
-                <div class="palm-line-dot" style="background:#818CF8"></div>
+                <div class="palm-line-dot" style="background:#818CF8; color:#818CF8;"></div>
                 <div class="palm-line-text">
                   <div class="palm-line-name">지능선</div>사고방식·재능
                 </div>
               </div>
               <div class="palm-line">
-                <div class="palm-line-dot" style="background:#34D399"></div>
+                <div class="palm-line-dot" style="background:#34D399; color:#34D399;"></div>
                 <div class="palm-line-text">
                   <div class="palm-line-name">생명선</div>활력·건강
                 </div>
               </div>
               <div class="palm-line">
-                <div class="palm-line-dot" style="background:#FBBF24"></div>
+                <div class="palm-line-dot" style="background:#FBBF24; color:#FBBF24;"></div>
                 <div class="palm-line-text">
                   <div class="palm-line-name">운명선</div>커리어·방향
                 </div>
@@ -1593,18 +1625,20 @@
     function resetPalmPanel() {
       document.getElementById('palm-panel').innerHTML = `
     <div class="palm-drop" onclick="document.getElementById('palm-file').click()">
-      <div class="palm-drop-icon">✋</div>
+      <div class="palm-drop-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/><path d="m9 9 3 3-3 3"/><path d="m15 9-3 3 3 3"/></svg>
+      </div>
       <div class="palm-drop-title">손 사진을 올려주세요</div>
-      <div class="palm-drop-sub">손바닥이 잘 보이도록 밝은 곳에서<br>찍은 사진을 업로드해 주시면 돼요</div>
+      <div class="palm-drop-sub">손바닥 중앙이 잘 보이도록 밝은 곳에서<br>촬영된 사진을 선택해 주세요</div>
     </div>
     <input type="file" id="palm-file" accept="image/*" onchange="onPalmFile(event)">
     <div class="palm-guide">
       <div class="palm-guide-title">다아라가 분석하는 손금 선</div>
       <div class="palm-guide-grid">
-        <div class="palm-line"><div class="palm-line-dot" style="background:#F472B6"></div><div class="palm-line-text"><div class="palm-line-name">감정선</div>사랑·감수성</div></div>
-        <div class="palm-line"><div class="palm-line-dot" style="background:#818CF8"></div><div class="palm-line-text"><div class="palm-line-name">지능선</div>사고방식·재능</div></div>
-        <div class="palm-line"><div class="palm-line-dot" style="background:#34D399"></div><div class="palm-line-text"><div class="palm-line-name">생명선</div>활력·건강</div></div>
-        <div class="palm-line"><div class="palm-line-dot" style="background:#FBBF24"></div><div class="palm-line-text"><div class="palm-line-name">운명선</div>커리어·방향</div></div>
+        <div class="palm-line"><div class="palm-line-dot" style="background:#F472B6; color:#F472B6;"></div><div class="palm-line-text"><div class="palm-line-name">감정선</div>사랑·감수성</div></div>
+        <div class="palm-line"><div class="palm-line-dot" style="background:#818CF8; color:#818CF8;"></div><div class="palm-line-text"><div class="palm-line-name">지능선</div>사고방식·재능</div></div>
+        <div class="palm-line"><div class="palm-line-dot" style="background:#34D399; color:#34D399;"></div><div class="palm-line-text"><div class="palm-line-name">생명선</div>활력·건강</div></div>
+        <div class="palm-line"><div class="palm-line-dot" style="background:#FBBF24; color:#FBBF24;"></div><div class="palm-line-text"><div class="palm-line-name">운명선</div>커리어·방향</div></div>
       </div>
     </div>`;
     }
