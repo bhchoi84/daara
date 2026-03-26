@@ -985,6 +985,57 @@
       padding: 16px 18px;
     }
 
+    /* ── 사용 한도 모달 ── */
+    .limit-modal-overlay {
+      position: fixed; inset: 0; z-index: 1100;
+      background: rgba(10,14,26,0.88); backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .limit-modal {
+      background: var(--surface); border: 1px solid var(--border2); border-radius: 20px;
+      padding: 32px 28px 24px; width: 100%; max-width: 340px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+      display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;
+    }
+    .limit-modal-icon { font-size: 36px; }
+    .limit-modal-title { font-size: 17px; font-weight: 600; color: var(--text); }
+    .limit-modal-sub { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+    .limit-price-card {
+      width: 100%; background: var(--surface2); border: 1px solid rgba(99,102,241,0.25);
+      border-radius: 14px; padding: 16px 18px; text-align: left;
+    }
+    .limit-price-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .limit-price-badge {
+      background: var(--indigo-pale); color: var(--indigo-light);
+      font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px;
+    }
+    .limit-price-amount { font-size: 20px; font-weight: 700; color: var(--text); }
+    .limit-price-unit { font-size: 13px; color: var(--text-muted); font-weight: 400; }
+    .limit-price-features { display: flex; flex-direction: column; gap: 5px; }
+    .lpf-item { font-size: 12px; color: var(--text-muted); }
+    .limit-premium-btn {
+      width: 100%; padding: 13px;
+      border-radius: 12px; border: none;
+      background: linear-gradient(135deg, var(--indigo), #a78bfa);
+      color: #fff; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: opacity 0.15s;
+    }
+    .limit-premium-btn:hover { opacity: 0.9; }
+    .limit-skip-btn {
+      background: none; border: none; color: var(--text-muted);
+      font-size: 13px; cursor: pointer; padding: 4px;
+    }
+    .limit-skip-btn:hover { color: var(--text); }
+    /* ── 사용 횟수 인디케이터 ── */
+    .usage-indicator {
+      display: flex; gap: 4px; align-items: center; margin-left: auto;
+    }
+    .usage-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--indigo); opacity: 0.25;
+      transition: opacity 0.2s;
+    }
+    .usage-dot.used { opacity: 1; }
     /* ── 사용자 정보 모달 ── */
     .user-modal-overlay {
       position: fixed; inset: 0; z-index: 1000;
@@ -1582,6 +1633,28 @@
     </main>
   </div>
 
+  <!-- 사용 한도 초과 모달 -->
+  <div class="limit-modal-overlay" id="limit-modal-overlay" style="display:none">
+    <div class="limit-modal">
+      <div class="limit-modal-icon">🔮</div>
+      <div class="limit-modal-title serif">오늘의 무료 상담이 끝났어요</div>
+      <div class="limit-modal-sub">내일 자정에 다시 무료로 이용하실 수 있어요.<br>프리미엄이면 하루 10회 상담이 가능해요.</div>
+      <div class="limit-price-card">
+        <div class="limit-price-top">
+          <span class="limit-price-badge">프리미엄</span>
+          <span class="limit-price-amount">₩1,900<span class="limit-price-unit"> / 월</span></span>
+        </div>
+        <div class="limit-price-features">
+          <div class="lpf-item">✓ 하루 10회 AI 상담</div>
+          <div class="lpf-item">✓ 광고 없음</div>
+          <div class="lpf-item">✓ 응답 우선 처리</div>
+        </div>
+      </div>
+      <button class="limit-premium-btn" onclick="activatePremiumDemo()">프리미엄 시작하기</button>
+      <button class="limit-skip-btn" onclick="document.getElementById('limit-modal-overlay').style.display='none'">내일 다시 올게요</button>
+    </div>
+  </div>
+
   <!-- 사용자 정보 입력 모달 -->
   <div class="user-modal-overlay" id="user-modal-overlay">
     <div class="user-modal">
@@ -1610,6 +1683,65 @@
 
   <script>
     /* ── API: Vercel 서버리스 프록시 사용 (키 노출 없음) ── */
+
+    /* ── 사용량 제한 & 캐싱 ── */
+    const FREE_LIMIT = 3;
+    const PREMIUM_LIMIT = 10;
+
+    function getToday() { return new Date().toISOString().slice(0,10); }
+
+    function getUsageToday() {
+      try {
+        const s = JSON.parse(localStorage.getItem('daara_usage') || 'null');
+        if (!s || s.date !== getToday()) return 0;
+        return s.count || 0;
+      } catch { return 0; }
+    }
+    function incrementUsage() {
+      const count = getUsageToday() + 1;
+      localStorage.setItem('daara_usage', JSON.stringify({ date: getToday(), count }));
+      updateUsageIndicator();
+    }
+    function isPremium() {
+      try {
+        const s = JSON.parse(localStorage.getItem('daara_premium') || 'null');
+        return s && s.expiry >= getToday();
+      } catch { return false; }
+    }
+    function getDailyLimit() { return isPremium() ? PREMIUM_LIMIT : FREE_LIMIT; }
+    function canUseAPI() { return getUsageToday() < getDailyLimit(); }
+
+    function updateUsageIndicator() {
+      const badge = document.getElementById('user-info-badge');
+      if (!badge) return;
+      const used = getUsageToday();
+      const limit = getDailyLimit();
+      const dots = Array.from({length: limit > 5 ? 5 : limit}, (_, i) =>
+        `<div class="usage-dot${i < used ? ' used' : ''}"></div>`
+      ).join('');
+      const indEl = badge.querySelector('.usage-indicator');
+      if (indEl) indEl.innerHTML = dots;
+    }
+
+    /* 응답 캐싱 */
+    function getCached(key) {
+      try {
+        const s = JSON.parse(localStorage.getItem('daara_rc_' + key) || 'null');
+        if (!s || s.date !== getToday()) return null;
+        return s.val;
+      } catch { return null; }
+    }
+    function setCached(key, val) {
+      try { localStorage.setItem('daara_rc_' + key, JSON.stringify({ date: getToday(), val })); } catch {}
+    }
+
+    function activatePremiumDemo() {
+      const expiry = new Date(); expiry.setDate(expiry.getDate() + 30);
+      localStorage.setItem('daara_premium', JSON.stringify({ expiry: expiry.toISOString().slice(0,10) }));
+      document.getElementById('limit-modal-overlay').style.display = 'none';
+      updateUsageIndicator();
+      addMsg('bot', '프리미엄으로 업그레이드됐어요 ✨ 오늘 10회까지 상담 가능해요. 아까 하시려던 것 다시 시도해 주세요 😊');
+    }
 
     /* ── 사용자 정보 (당일 캐시) ── */
     const CARD_POS = ['오늘', '미래', '주의할일'];
@@ -1681,7 +1813,13 @@
       const u = getUserInfo(); const badge = document.getElementById('user-info-badge');
       if (!u) { badge.style.display = 'none'; return; }
       badge.style.display = 'flex';
-      badge.innerHTML = `<span class="user-badge-name">${u.name}</span><span class="user-badge-dot">·</span><span>${u.zodiac}</span><span class="user-badge-dot">·</span><span>${u.gender}</span><span style="margin-left:auto;font-size:11px;color:var(--indigo-light)">수정 ✎</span>`;
+      const limit = getDailyLimit();
+      const used = getUsageToday();
+      const dots = Array.from({length: Math.min(limit, 5)}, (_, i) =>
+        `<div class="usage-dot${i < used ? ' used' : ''}"></div>`
+      ).join('');
+      const premBadge = isPremium() ? `<span style="font-size:10px;color:var(--gold);margin-right:2px">★PRO</span>` : '';
+      badge.innerHTML = `${premBadge}<span class="user-badge-name">${u.name}</span><span class="user-badge-dot">·</span><span>${u.zodiac}</span><div class="usage-indicator">${dots}</div><span style="margin-left:6px;font-size:11px;color:var(--text-muted)">${used}/${limit}</span><span style="margin-left:auto;font-size:11px;color:var(--indigo-light)">수정 ✎</span>`;
     }
     document.addEventListener('DOMContentLoaded', () => {
       const u = getUserInfo();
@@ -1779,7 +1917,7 @@
       { sym: '♦', name: '펜타클 왕', en: 'King of Pentacles', keywords: '부, 안정, 성공' },
     ];
     const TITLES = { tarot: '다아라 AI 타로 상담사', palm: '손금·관상 분석', star: '별자리 운세', match: '궁합 보기', money: '금전 운세', today: '오늘의 운세' };
-    let drawnCards = null, msgCount = 0, history = [], moneyCard = null, palmImageData = null, palmPreviewSrc = null;
+    let drawnCards = null, history = [], moneyCard = null, palmImageData = null, palmPreviewSrc = null;
     let flippedCards = [false, false, false]; // 한 장씩 뒤집기 상태
     const sel = { a: null, m1: null, m2: null, mo: null, today: null };
 
@@ -1855,20 +1993,23 @@
     async function runStar() {
       if (!sel.a) { alert('별자리를 선택해 주세요!'); return; }
       goMenu('tarot', document.querySelector('.n-tarot'));
-      await askClaude(`나는 ${sel.a}이에요. 오늘(${new Date().toLocaleDateString('ko-KR')}) 나의 별자리 운세를 애정운, 금전운, 건강운으로 나눠서 따뜻하고 구체적으로 알려주세요. 마지막에 오늘의 한마디로 마무리해 주세요.`, true, '⭐ 별자리 운세 요청');
+      const cacheKey = `star_${sel.a}`;
+      await askClaude(`나는 ${sel.a}이에요. 오늘(${new Date().toLocaleDateString('ko-KR')}) 나의 별자리 운세를 애정운, 금전운, 건강운으로 나눠서 따뜻하고 구체적으로 알려주세요. 마지막에 오늘의 한마디로 마무리해 주세요.`, true, '⭐ 별자리 운세 요청', cacheKey);
     }
     async function runMatch() {
       if (!sel.m1 || !sel.m2) { alert('두 사람의 별자리를 모두 선택해 주세요!'); return; }
       const rel = document.getElementById('match-rel').value;
       goMenu('tarot', document.querySelector('.n-tarot'));
-      await askClaude(`나는 ${sel.m1}이고, 상대방은 ${sel.m2}예요. 우리는 ${rel} 사이에요. 두 별자리의 궁합을 분석해 주세요. 잘 맞는 점, 조심해야 할 점, 관계를 더 좋게 만들 수 있는 따뜻한 조언도 함께 알려주세요 💕`, true, `♡ 궁합 요청 (${sel.m1} ↔ ${sel.m2})`);
+      const cacheKey = `match_${sel.m1}_${sel.m2}_${rel}`;
+      await askClaude(`나는 ${sel.m1}이고, 상대방은 ${sel.m2}예요. 우리는 ${rel} 사이에요. 두 별자리의 궁합을 분석해 주세요. 잘 맞는 점, 조심해야 할 점, 관계를 더 좋게 만들 수 있는 따뜻한 조언도 함께 알려주세요 💕`, true, `♡ 궁합 요청 (${sel.m1} ↔ ${sel.m2})`, cacheKey);
     }
     async function runMoney() {
       if (!sel.mo) { alert('별자리를 선택해 주세요!'); return; }
       const concern = document.getElementById('money-concern').value;
       const card = moneyCard ? `금전 타로 카드로 "${moneyCard.name}"(${moneyCard.keywords})이 나왔어요. ` : '';
       goMenu('tarot', document.querySelector('.n-tarot'));
-      await askClaude(`나는 ${sel.mo}이에요. ${card}${concern ? `요즘 "${concern}"에 대한 고민이 있어요. ` : ''}오늘의 금전 운세를 재물운 흐름, 주의할 점, 기회가 될 수 있는 것으로 나눠서 구체적이고 따뜻하게 알려주세요 💰`, true, `◈ 금전 운세 요청 (${sel.mo})`);
+      const cacheKey = `money_${sel.mo}_${moneyCard?.name || ''}`;
+      await askClaude(`나는 ${sel.mo}이에요. ${card}${concern ? `요즘 "${concern}"에 대한 고민이 있어요. ` : ''}오늘의 금전 운세를 재물운 흐름, 주의할 점, 기회가 될 수 있는 것으로 나눠서 구체적이고 따뜻하게 알려주세요 💰`, true, `◈ 금전 운세 요청 (${sel.mo})`, cacheKey);
     }
     function onPalmFile(e) {
       const file = e.target.files[0]; if (!file) return;
@@ -1972,9 +2113,10 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
       if (!sel.today) { alert('별자리를 선택해 주세요!'); return; }
       const concern = document.getElementById('today-concern').value;
       goMenu('tarot', document.querySelector('.n-tarot'));
+      const cacheKey = `today_${sel.today}${concern ? '_c' : ''}`;
       await askClaude(
         `나는 ${sel.today}이에요. 오늘(${new Date().toLocaleDateString('ko-KR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })})의 전체 운세를 봐주세요.${concern ? ` 특히 "${concern}"에 대해 신경이 쓰여요.` : ''} 오늘의 총운, 애정운, 금전운, 건강운, 오늘의 행운 색깔/숫자를 포함해서 따뜻하고 구체적으로 알려주세요. 마지막에 오늘 하루를 위한 다아라의 한마디로 마무리해 주세요 🌅`,
-        true, `🌅 오늘의 운세 (${sel.today})`
+        true, `🌅 오늘의 운세 (${sel.today})`, cacheKey
       );
     }
     function drawCards() {
@@ -2013,20 +2155,28 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
       const input = document.getElementById('chat-input');
       const text = input.value.trim(); if (!text) return;
       addMsg('user', text); input.value = '';
-      history.push({ role: 'user', content: text }); msgCount++;
-      if (msgCount % 3 === 0) { showAd(); return; }
+      history.push({ role: 'user', content: text });
       await askClaude(null, false, null);
     }
-    function showAd() {
-      addMsg('bot', `<div class="ad-int-label">광고</div><div class="ad-int-title">프리미엄으로 더 깊은 상담을</div><div class="ad-int-sub">광고 없이 다아라와 무제한으로<br>월 ₩3,900부터 시작해요</div><div class="ad-int-btns"><button class="ad-skip-b" onclick="this.closest('.ad-interstitial').remove();continueChat()">나중에</button><button class="ad-watch-b" onclick="this.closest('.ad-interstitial').remove();continueChat()">시작하기</button></div>`, 'ad');
-    }
-    function continueChat() { askClaude(null, false, null); }
     async function callAPI(body) {
       const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       if (!res.ok) { const e = await res.json(); throw new Error(e?.error?.message || 'API Error: ' + res.status); }
       return res.json();
     }
-    async function askClaude(overrideMsg, isAuto, userLabel) {
+    async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null) {
+      if (!canUseAPI()) {
+        document.getElementById('limit-modal-overlay').style.display = 'flex';
+        return;
+      }
+      // 캐시 히트
+      if (cacheKey) {
+        const cached = getCached(cacheKey);
+        if (cached) {
+          if (userLabel) addMsg('user', userLabel);
+          addMsg('bot', cached);
+          return;
+        }
+      }
       const btn = document.getElementById('send-btn'), input = document.getElementById('chat-input');
       btn.disabled = true; input.disabled = true;
       if (userLabel) addMsg('user', userLabel);
@@ -2043,6 +2193,9 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
         const reply = data?.content?.[0]?.text || '잠깐 다시 시도해 주실 수 있어요? 😊';
         typingEl.classList.remove('typing'); typingEl.innerHTML = reply.replace(/\n/g, '<br>');
         if (!isAuto) { history.push({ role: 'assistant', content: reply }); if (history.length > 12) history = history.slice(-12); }
+        incrementUsage();
+        if (cacheKey) setCached(cacheKey, reply.replace(/\n/g, '<br>'));
+        updateUserBadge();
       } catch (e) {
         typingEl.classList.remove('typing');
         typingEl.innerHTML = '잠깐 연결이 끊겼어요. 조금 있다 다시 시도해 주세요 😊';
