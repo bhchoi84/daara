@@ -985,6 +985,31 @@
       padding: 16px 18px;
     }
 
+    .palm-mode-select {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .palm-mode-btn {
+      flex: 1;
+      padding: 9px 6px;
+      border-radius: 10px;
+      border: 1px solid var(--border2);
+      background: var(--surface2);
+      color: var(--text-muted);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .palm-mode-btn:hover {
+      background: var(--surface3);
+      color: var(--text);
+    }
+    .palm-mode-btn.active {
+      background: var(--indigo-pale);
+      border-color: var(--indigo-light);
+      color: var(--indigo-light);
+    }
     .palm-guide-title {
       font-size: 11px;
       color: var(--text-muted);
@@ -1240,7 +1265,7 @@
         <div class="section-hd">메뉴</div>
         <div class="nav-item n-tarot active" onclick="goMenu('tarot',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L14.5 9.5 21 12 14.5 14.5 12 21 9.5 14.5 3 12 9.5 9.5 12 3Z"/></svg></span>AI 타로 상담</div>
         <div class="nav-item n-today" onclick="goMenu('today',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></span>오늘의 운세</div>
-        <div class="nav-item n-palm" onclick="goMenu('palm',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 00-4 0v4a2 2 0 00-4 0V4a2 2 0 00-4 0v9.5A6.5 6.5 0 0012.5 20h3.09a3 3 0 002.43-1.24l3.18-4.4A1.9 1.9 0 0020 13.12 2 2 0 0018 11V6z"/></svg></span>손금 분석</div>
+        <div class="nav-item n-palm" onclick="goMenu('palm',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 00-4 0v4a2 2 0 00-4 0V4a2 2 0 00-4 0v9.5A6.5 6.5 0 0012.5 20h3.09a3 3 0 002.43-1.24l3.18-4.4A1.9 1.9 0 0020 13.12 2 2 0 0018 11V6z"/></svg></span>손금·관상</div>
         <div class="nav-item n-star" onclick="goMenu('star',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>별자리 운세</div>
         <div class="nav-item n-match" onclick="goMenu('match',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78v0z"/></svg></span>궁합 보기</div>
         <div class="nav-item n-money" onclick="goMenu('money',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></span>금전 운세</div>
@@ -1280,41 +1305,28 @@
 
       <div class="panel" id="panel-palm">
         <div class="form-panel" id="palm-panel">
+          <div class="palm-mode-select">
+            <button class="palm-mode-btn" onclick="selectPalmMode('right',this)">✋ 오른손</button>
+            <button class="palm-mode-btn" onclick="selectPalmMode('left',this)">🤚 왼손</button>
+            <button class="palm-mode-btn" onclick="selectPalmMode('face',this)">😊 관상</button>
+          </div>
           <div class="palm-drop" onclick="document.getElementById('palm-file').click()">
             <div class="palm-drop-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/><path d="m9 9 3 3-3 3"/><path d="m15 9-3 3 3 3"/></svg>
             </div>
-            <div class="palm-drop-title">손 사진을 올려주세요</div>
-            <div class="palm-drop-sub">손바닥 중앙이 잘 보이도록 밝은 곳에서<br>촬영된 사진을 선택해 주세요</div>
+            <div class="palm-drop-title" id="palm-drop-title">먼저 항목을 선택해 주세요</div>
+            <div class="palm-drop-sub" id="palm-drop-sub">위에서 오른손 · 왼손 · 관상 중 하나를 선택하세요</div>
           </div>
           <input type="file" id="palm-file" accept="image/*" onchange="onPalmFile(event)">
           <div class="palm-guide">
-            <div class="palm-guide-title">다아라가 분석하는 손금 선</div>
+            <div class="palm-guide-title">다아라가 분석하는 항목</div>
             <div class="palm-guide-grid">
-              <div class="palm-line">
-                <div class="palm-line-dot" style="background:#F472B6; color:#F472B6;"></div>
-                <div class="palm-line-text">
-                  <div class="palm-line-name">감정선</div>사랑·감수성
-                </div>
-              </div>
-              <div class="palm-line">
-                <div class="palm-line-dot" style="background:#818CF8; color:#818CF8;"></div>
-                <div class="palm-line-text">
-                  <div class="palm-line-name">지능선</div>사고방식·재능
-                </div>
-              </div>
-              <div class="palm-line">
-                <div class="palm-line-dot" style="background:#34D399; color:#34D399;"></div>
-                <div class="palm-line-text">
-                  <div class="palm-line-name">생명선</div>활력·건강
-                </div>
-              </div>
-              <div class="palm-line">
-                <div class="palm-line-dot" style="background:#FBBF24; color:#FBBF24;"></div>
-                <div class="palm-line-text">
-                  <div class="palm-line-name">운명선</div>커리어·방향
-                </div>
-              </div>
+              <div class="palm-line"><div class="palm-line-dot" style="background:#F472B6;"></div><div class="palm-line-text"><div class="palm-line-name">감정선</div>사랑·감수성</div></div>
+              <div class="palm-line"><div class="palm-line-dot" style="background:#818CF8;"></div><div class="palm-line-text"><div class="palm-line-name">지능선</div>사고방식·재능</div></div>
+              <div class="palm-line"><div class="palm-line-dot" style="background:#34D399;"></div><div class="palm-line-text"><div class="palm-line-name">생명선</div>활력·건강</div></div>
+              <div class="palm-line"><div class="palm-line-dot" style="background:#FBBF24;"></div><div class="palm-line-text"><div class="palm-line-name">운명선</div>커리어·방향</div></div>
+              <div class="palm-line"><div class="palm-line-dot" style="background:#60A5FA;"></div><div class="palm-line-text"><div class="palm-line-name">이마·눈썹</div>운세·성격</div></div>
+              <div class="palm-line"><div class="palm-line-dot" style="background:#F59E0B;"></div><div class="palm-line-text"><div class="palm-line-name">눈·코·입</div>인연·재물</div></div>
             </div>
           </div>
         </div>
@@ -1473,22 +1485,94 @@
   </div>
 
   <script>
-    /* ── API 키 설정 ── */
-    const API_KEY = ''; // ← 여기에 Anthropic API 키 입력 (없어도 UI는 작동)
+    /* ── API: Vercel 서버리스 프록시 사용 (키 노출 없음) ── */
 
     const CARDS = [
-      { sym: '☀', name: '태양', en: 'The Sun', keywords: '활력, 성공, 기쁨' },
-      { sym: '☽', name: '달', en: 'The Moon', keywords: '직관, 감정, 신비' },
-      { sym: '★', name: '별', en: 'The Star', keywords: '희망, 영감, 치유' },
-      { sym: '⚡', name: '탑', en: 'The Tower', keywords: '변화, 각성, 해방' },
-      { sym: '♦', name: '황제', en: 'The Emperor', keywords: '권위, 안정, 통제' },
+      // ── 메이저 아르카나 (22장) ──
+      { sym: '🃏', name: '바보', en: 'The Fool', keywords: '새로운 시작, 순수, 모험' },
       { sym: '∞', name: '마법사', en: 'The Magician', keywords: '의지, 창조, 기술' },
-      { sym: '⚖', name: '정의', en: 'Justice', keywords: '균형, 진실, 원인결과' },
+      { sym: '☽', name: '여사제', en: 'The High Priestess', keywords: '직관, 신비, 지혜' },
+      { sym: '♀', name: '여황제', en: 'The Empress', keywords: '풍요, 모성, 창의' },
+      { sym: '♦', name: '황제', en: 'The Emperor', keywords: '권위, 안정, 통제' },
+      { sym: '⊕', name: '교황', en: 'The Hierophant', keywords: '전통, 가르침, 믿음' },
+      { sym: '♡', name: '연인', en: 'The Lovers', keywords: '사랑, 선택, 조화' },
+      { sym: '▲', name: '전차', en: 'The Chariot', keywords: '의지, 승리, 추진력' },
+      { sym: '◎', name: '힘', en: 'Strength', keywords: '용기, 인내, 내면의 힘' },
       { sym: '⏳', name: '은둔자', en: 'The Hermit', keywords: '내면탐구, 지혜, 고독' },
+      { sym: '◉', name: '운명의 수레바퀴', en: 'Wheel of Fortune', keywords: '전환점, 기회, 흐름' },
+      { sym: '⚖', name: '정의', en: 'Justice', keywords: '균형, 진실, 원인결과' },
+      { sym: '⊥', name: '매달린 남자', en: 'The Hanged Man', keywords: '희생, 기다림, 새 관점' },
+      { sym: '✕', name: '죽음', en: 'Death', keywords: '변화, 끝과 시작, 전환' },
       { sym: '☯', name: '절제', en: 'Temperance', keywords: '조화, 인내, 균형' },
-      { sym: '◉', name: '운명', en: 'Wheel of Fortune', keywords: '전환점, 기회, 흐름' },
+      { sym: '◆', name: '악마', en: 'The Devil', keywords: '집착, 욕망, 속박' },
+      { sym: '⚡', name: '탑', en: 'The Tower', keywords: '변화, 각성, 해방' },
+      { sym: '★', name: '별', en: 'The Star', keywords: '희망, 영감, 치유' },
+      { sym: '☾', name: '달', en: 'The Moon', keywords: '직관, 감정, 신비' },
+      { sym: '☀', name: '태양', en: 'The Sun', keywords: '활력, 성공, 기쁨' },
+      { sym: '▽', name: '심판', en: 'Judgement', keywords: '부활, 각성, 결단' },
+      { sym: '⊙', name: '세계', en: 'The World', keywords: '완성, 달성, 통합' },
+      // ── 마이너 아르카나 — 완드 (14장) ──
+      { sym: '♣', name: '완드 에이스', en: 'Ace of Wands', keywords: '창의적 시작, 열정, 잠재력' },
+      { sym: '♣', name: '완드 2', en: 'Two of Wands', keywords: '계획, 결단, 미래 전망' },
+      { sym: '♣', name: '완드 3', en: 'Three of Wands', keywords: '확장, 진취, 협력' },
+      { sym: '♣', name: '완드 4', en: 'Four of Wands', keywords: '축하, 가정의 화목, 안정' },
+      { sym: '♣', name: '완드 5', en: 'Five of Wands', keywords: '경쟁, 갈등, 도전' },
+      { sym: '♣', name: '완드 6', en: 'Six of Wands', keywords: '승리, 인정, 자신감' },
+      { sym: '♣', name: '완드 7', en: 'Seven of Wands', keywords: '수호, 용기, 도전' },
+      { sym: '♣', name: '완드 8', en: 'Eight of Wands', keywords: '속도, 메시지, 빠른 변화' },
+      { sym: '♣', name: '완드 9', en: 'Nine of Wands', keywords: '인내, 경계, 끈기' },
+      { sym: '♣', name: '완드 10', en: 'Ten of Wands', keywords: '부담, 책임, 과부하' },
+      { sym: '♣', name: '완드 시종', en: 'Page of Wands', keywords: '탐험, 열정, 메시지' },
+      { sym: '♣', name: '완드 기사', en: 'Knight of Wands', keywords: '모험, 충동, 에너지' },
+      { sym: '♣', name: '완드 여왕', en: 'Queen of Wands', keywords: '카리스마, 열정, 자신감' },
+      { sym: '♣', name: '완드 왕', en: 'King of Wands', keywords: '비전, 리더십, 창의' },
+      // ── 마이너 아르카나 — 컵 (14장) ──
+      { sym: '♥', name: '컵 에이스', en: 'Ace of Cups', keywords: '새로운 감정, 사랑, 직관' },
+      { sym: '♥', name: '컵 2', en: 'Two of Cups', keywords: '유대, 파트너십, 상호 이해' },
+      { sym: '♥', name: '컵 3', en: 'Three of Cups', keywords: '우정, 축하, 공동체' },
+      { sym: '♥', name: '컵 4', en: 'Four of Cups', keywords: '권태, 재고, 명상' },
+      { sym: '♥', name: '컵 5', en: 'Five of Cups', keywords: '상실, 후회, 슬픔' },
+      { sym: '♥', name: '컵 6', en: 'Six of Cups', keywords: '추억, 순수함, 과거' },
+      { sym: '♥', name: '컵 7', en: 'Seven of Cups', keywords: '환상, 선택, 꿈' },
+      { sym: '♥', name: '컵 8', en: 'Eight of Cups', keywords: '이별, 새 출발, 내면 여정' },
+      { sym: '♥', name: '컵 9', en: 'Nine of Cups', keywords: '소원 성취, 만족, 행복' },
+      { sym: '♥', name: '컵 10', en: 'Ten of Cups', keywords: '가족의 행복, 조화, 완성' },
+      { sym: '♥', name: '컵 시종', en: 'Page of Cups', keywords: '창의, 감수성, 새 소식' },
+      { sym: '♥', name: '컵 기사', en: 'Knight of Cups', keywords: '낭만, 제안, 감성' },
+      { sym: '♥', name: '컵 여왕', en: 'Queen of Cups', keywords: '공감, 직관, 돌봄' },
+      { sym: '♥', name: '컵 왕', en: 'King of Cups', keywords: '감정 지배, 지혜, 관용' },
+      // ── 마이너 아르카나 — 소드 (14장) ──
+      { sym: '♠', name: '소드 에이스', en: 'Ace of Swords', keywords: '명료함, 진실, 새로운 생각' },
+      { sym: '♠', name: '소드 2', en: 'Two of Swords', keywords: '교착, 결정 회피, 균형' },
+      { sym: '♠', name: '소드 3', en: 'Three of Swords', keywords: '슬픔, 상처, 이별' },
+      { sym: '♠', name: '소드 4', en: 'Four of Swords', keywords: '휴식, 회복, 명상' },
+      { sym: '♠', name: '소드 5', en: 'Five of Swords', keywords: '갈등, 패배, 자존심' },
+      { sym: '♠', name: '소드 6', en: 'Six of Swords', keywords: '이동, 전환, 회복' },
+      { sym: '♠', name: '소드 7', en: 'Seven of Swords', keywords: '전략, 기만, 도주' },
+      { sym: '♠', name: '소드 8', en: 'Eight of Swords', keywords: '속박, 자기제한, 두려움' },
+      { sym: '♠', name: '소드 9', en: 'Nine of Swords', keywords: '불안, 악몽, 걱정' },
+      { sym: '♠', name: '소드 10', en: 'Ten of Swords', keywords: '종말, 위기, 새 시작' },
+      { sym: '♠', name: '소드 시종', en: 'Page of Swords', keywords: '호기심, 감시, 소통' },
+      { sym: '♠', name: '소드 기사', en: 'Knight of Swords', keywords: '돌진, 야망, 결단' },
+      { sym: '♠', name: '소드 여왕', en: 'Queen of Swords', keywords: '독립, 명석함, 직설' },
+      { sym: '♠', name: '소드 왕', en: 'King of Swords', keywords: '지성, 권위, 분석' },
+      // ── 마이너 아르카나 — 펜타클 (14장) ──
+      { sym: '♦', name: '펜타클 에이스', en: 'Ace of Pentacles', keywords: '물질적 시작, 기회, 풍요' },
+      { sym: '♦', name: '펜타클 2', en: 'Two of Pentacles', keywords: '균형, 적응, 유연성' },
+      { sym: '♦', name: '펜타클 3', en: 'Three of Pentacles', keywords: '협력, 기술, 노력' },
+      { sym: '♦', name: '펜타클 4', en: 'Four of Pentacles', keywords: '소유, 절약, 안정' },
+      { sym: '♦', name: '펜타클 5', en: 'Five of Pentacles', keywords: '결핍, 어려움, 고난' },
+      { sym: '♦', name: '펜타클 6', en: 'Six of Pentacles', keywords: '나눔, 자선, 균형' },
+      { sym: '♦', name: '펜타클 7', en: 'Seven of Pentacles', keywords: '인내, 평가, 결실' },
+      { sym: '♦', name: '펜타클 8', en: 'Eight of Pentacles', keywords: '성실, 숙련, 노력' },
+      { sym: '♦', name: '펜타클 9', en: 'Nine of Pentacles', keywords: '독립, 풍요, 여유' },
+      { sym: '♦', name: '펜타클 10', en: 'Ten of Pentacles', keywords: '유산, 가족 번영, 완성' },
+      { sym: '♦', name: '펜타클 시종', en: 'Page of Pentacles', keywords: '학습, 목표, 성실' },
+      { sym: '♦', name: '펜타클 기사', en: 'Knight of Pentacles', keywords: '근면, 신뢰, 꾸준함' },
+      { sym: '♦', name: '펜타클 여왕', en: 'Queen of Pentacles', keywords: '실용, 풍요, 돌봄' },
+      { sym: '♦', name: '펜타클 왕', en: 'King of Pentacles', keywords: '부, 안정, 성공' },
     ];
-    const TITLES = { tarot: '다아라 AI 타로 상담사', palm: '손금 분석', star: '별자리 운세', match: '궁합 보기', money: '금전 운세', today: '오늘의 운세' };
+    const TITLES = { tarot: '다아라 AI 타로 상담사', palm: '손금·관상 분석', star: '별자리 운세', match: '궁합 보기', money: '금전 운세', today: '오늘의 운세' };
     let drawnCards = null, msgCount = 0, history = [], moneyCard = null, palmImageData = null, palmPreviewSrc = null;
     let flippedCards = [false, false, false]; // 한 장씩 뒤집기 상태
     const sel = { a: null, m1: null, m2: null, mo: null, today: null };
@@ -1598,22 +1682,51 @@
       };
       reader.readAsDataURL(file);
     }
+    let palmMode = null; // 'right' | 'left' | 'face'
+    function selectPalmMode(mode, el) {
+      palmMode = mode;
+      document.querySelectorAll('.palm-mode-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      const dropTitle = document.getElementById('palm-drop-title');
+      const dropSub = document.getElementById('palm-drop-sub');
+      if (mode === 'right') { dropTitle.textContent = '오른손 사진을 올려주세요'; dropSub.textContent = '오른손 손바닥이 잘 보이도록 찍어 올려주세요 ✋'; }
+      else if (mode === 'left') { dropTitle.textContent = '왼손 사진을 올려주세요'; dropSub.textContent = '왼손 손바닥이 잘 보이도록 찍어 올려주세요 🤚'; }
+      else { dropTitle.textContent = '얼굴 사진을 올려주세요'; dropSub.textContent = '정면 얼굴이 잘 보이도록 찍어 올려주세요 😊'; }
+    }
     async function analyzePalm() {
       if (!palmImageData) return;
+      if (!palmMode) { alert('오른손 / 왼손 / 관상 중 하나를 먼저 선택해 주세요!'); return; }
       goMenu('tarot', document.querySelector('.n-tarot'));
       const btn = document.getElementById('send-btn'), input = document.getElementById('chat-input');
       btn.disabled = true; input.disabled = true;
-      addMsg('user', `<div class="user-palm-preview"><img src="${palmPreviewSrc}" alt="손금"><span>다아라, 손금 분석 부탁해요 ✋</span></div>`);
-      const typingEl = addMsg('bot', '손금을 찬찬히 살펴보고 있어요···'); typingEl.classList.add('typing');
-      const system = `당신은 따뜻하고 섬세한 AI 손금·타로 상담사 '다아라'입니다.
-사용자가 보내준 손 사진을 보고 감정선·지능선·생명선·운명선을 분석합니다.
-각 선마다 1~2문장씩, 전체 6~8문장 내외로 작성하고 마지막엔 따뜻한 격려로 마무리해 주세요.
+      const modeLabel = palmMode === 'right' ? '오른손 손금' : palmMode === 'left' ? '왼손 손금' : '관상';
+      addMsg('user', `<div class="user-palm-preview"><img src="${palmPreviewSrc}" alt="${modeLabel}"><span>다아라, ${modeLabel} 분석 부탁해요!</span></div>`);
+      const typingEl = addMsg('bot', '사진을 찬찬히 살펴보고 있어요···'); typingEl.classList.add('typing');
+      let system, userText, resultTitle, resultSub;
+      if (palmMode === 'right' || palmMode === 'left') {
+        const hand = palmMode === 'right' ? '오른손' : '왼손';
+        system = `당신은 따뜻하고 섬세한 AI 손금 상담사 '다아라'입니다.
+사용자가 보내준 ${hand} 사진을 보고 감정선·지능선·생명선·운명선을 분석합니다.
+${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 펼쳐지는 운세를 봅니다.' : '왼손은 타고난 잠재력과 근본적인 기질, 가능성을 봅니다.'}
+각 선마다 1~2문장씩 작성하고 마지막엔 따뜻한 격려로 마무리해 주세요.
 말투: 친한 언니처럼 따뜻하고 공감 어린 존댓말. 단정 짓지 않고 가능성으로 이야기해 주세요.`;
+        userText = `이 ${hand}의 손금을 감정선, 지능선, 생명선, 운명선 순으로 따뜻하게 분석해 주세요.`;
+        resultTitle = palmMode === 'right' ? '✋ 오른손 손금 분석' : '🤚 왼손 손금 분석';
+        resultSub = palmMode === 'right' ? '현재·미래 — 감정선 · 지능선 · 생명선 · 운명선' : '잠재력·기질 — 감정선 · 지능선 · 생명선 · 운명선';
+      } else {
+        system = `당신은 따뜻하고 섬세한 AI 관상 상담사 '다아라'입니다.
+사용자가 보내준 얼굴 사진을 보고 이마·눈썹·눈·코·입 순으로 관상을 분석합니다.
+각 부위마다 1~2문장씩 작성하고 마지막엔 따뜻한 격려로 마무리해 주세요.
+말투: 친한 언니처럼 따뜻하고 공감 어린 존댓말. 단정 짓지 않고 가능성으로 이야기해 주세요.`;
+        userText = '이 얼굴의 관상을 이마, 눈썹, 눈, 코, 입 순으로 따뜻하게 분석해 주세요.';
+        resultTitle = '👁 관상 분석 결과';
+        resultSub = '이마 · 눈썹 · 눈 · 코 · 입';
+      }
       try {
-        const res = await callAPI({ model: 'claude-sonnet-4-6', max_tokens: 600, system, messages: [{ role: 'user', content: [{ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: palmImageData } }, { type: 'text', text: '이 손의 손금을 감정선, 지능선, 생명선, 운명선 순으로 따뜻하게 분석해 주세요.' }] }] });
-        const reply = res?.content?.[0]?.text || '손금이 잘 보이지 않아요. 더 밝은 곳에서 다시 찍어 올려주시겠어요? 😊';
+        const res = await callAPI({ model: 'claude-sonnet-4-6', max_tokens: 700, system, messages: [{ role: 'user', content: [{ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: palmImageData } }, { type: 'text', text: userText }] }] });
+        const reply = res?.content?.[0]?.text || '사진이 잘 보이지 않아요. 더 밝은 곳에서 다시 찍어 올려주시겠어요? 😊';
         typingEl.classList.remove('typing'); typingEl.className = 'palm-result-msg';
-        typingEl.innerHTML = `<div class="palm-result-header"><img src="${palmPreviewSrc}" class="palm-result-thumb" alt="손금"><div><div class="palm-result-title">✋ 손금 분석 결과</div><div class="palm-result-sub">감정선 · 지능선 · 생명선 · 운명선</div></div></div><div class="palm-result-text">${reply.replace(/\n/g, '<br>')}</div>`;
+        typingEl.innerHTML = `<div class="palm-result-header"><img src="${palmPreviewSrc}" class="palm-result-thumb" alt="${modeLabel}"><div><div class="palm-result-title">${resultTitle}</div><div class="palm-result-sub">${resultSub}</div></div></div><div class="palm-result-text">${reply.replace(/\n/g, '<br>')}</div>`;
       } catch (err) {
         typingEl.classList.remove('typing'); typingEl.innerHTML = '분석 중 오류가 생겼어요. 잠깐 후 다시 시도해 주세요 😊';
       }
@@ -1623,22 +1736,30 @@
       resetPalmPanel();
     }
     function resetPalmPanel() {
+      palmMode = null;
       document.getElementById('palm-panel').innerHTML = `
+    <div class="palm-mode-select">
+      <button class="palm-mode-btn" onclick="selectPalmMode('right',this)">✋ 오른손</button>
+      <button class="palm-mode-btn" onclick="selectPalmMode('left',this)">🤚 왼손</button>
+      <button class="palm-mode-btn" onclick="selectPalmMode('face',this)">😊 관상</button>
+    </div>
     <div class="palm-drop" onclick="document.getElementById('palm-file').click()">
       <div class="palm-drop-icon">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/><path d="m9 9 3 3-3 3"/><path d="m15 9-3 3 3 3"/></svg>
       </div>
-      <div class="palm-drop-title">손 사진을 올려주세요</div>
-      <div class="palm-drop-sub">손바닥 중앙이 잘 보이도록 밝은 곳에서<br>촬영된 사진을 선택해 주세요</div>
+      <div class="palm-drop-title" id="palm-drop-title">먼저 항목을 선택해 주세요</div>
+      <div class="palm-drop-sub" id="palm-drop-sub">위에서 오른손 · 왼손 · 관상 중 하나를 선택하세요</div>
     </div>
     <input type="file" id="palm-file" accept="image/*" onchange="onPalmFile(event)">
     <div class="palm-guide">
-      <div class="palm-guide-title">다아라가 분석하는 손금 선</div>
+      <div class="palm-guide-title">다아라가 분석하는 항목</div>
       <div class="palm-guide-grid">
-        <div class="palm-line"><div class="palm-line-dot" style="background:#F472B6; color:#F472B6;"></div><div class="palm-line-text"><div class="palm-line-name">감정선</div>사랑·감수성</div></div>
-        <div class="palm-line"><div class="palm-line-dot" style="background:#818CF8; color:#818CF8;"></div><div class="palm-line-text"><div class="palm-line-name">지능선</div>사고방식·재능</div></div>
-        <div class="palm-line"><div class="palm-line-dot" style="background:#34D399; color:#34D399;"></div><div class="palm-line-text"><div class="palm-line-name">생명선</div>활력·건강</div></div>
-        <div class="palm-line"><div class="palm-line-dot" style="background:#FBBF24; color:#FBBF24;"></div><div class="palm-line-text"><div class="palm-line-name">운명선</div>커리어·방향</div></div>
+        <div class="palm-line"><div class="palm-line-dot" style="background:#F472B6;"></div><div class="palm-line-text"><div class="palm-line-name">감정선</div>사랑·감수성</div></div>
+        <div class="palm-line"><div class="palm-line-dot" style="background:#818CF8;"></div><div class="palm-line-text"><div class="palm-line-name">지능선</div>사고방식·재능</div></div>
+        <div class="palm-line"><div class="palm-line-dot" style="background:#34D399;"></div><div class="palm-line-text"><div class="palm-line-name">생명선</div>활력·건강</div></div>
+        <div class="palm-line"><div class="palm-line-dot" style="background:#FBBF24;"></div><div class="palm-line-text"><div class="palm-line-name">운명선</div>커리어·방향</div></div>
+        <div class="palm-line"><div class="palm-line-dot" style="background:#60A5FA;"></div><div class="palm-line-text"><div class="palm-line-name">이마·눈썹</div>운세·성격</div></div>
+        <div class="palm-line"><div class="palm-line-dot" style="background:#F59E0B;"></div><div class="palm-line-text"><div class="palm-line-name">눈·코·입</div>인연·재물</div></div>
       </div>
     </div>`;
     }
@@ -1693,14 +1814,7 @@
     }
     function continueChat() { askClaude(null, false, null); }
     async function callAPI(body) {
-      if (!API_KEY) throw new Error('NO_KEY');
-      const headers = {
-        'Content-Type': 'application/json',
-        'x-api-key': API_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      };
-      const res = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers, body: JSON.stringify(body) });
+      const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       if (!res.ok) { const e = await res.json(); throw new Error(e?.error?.message || 'API Error: ' + res.status); }
       return res.json();
     }
@@ -1721,8 +1835,7 @@
         if (!isAuto) { history.push({ role: 'assistant', content: reply }); if (history.length > 12) history = history.slice(-12); }
       } catch (e) {
         typingEl.classList.remove('typing');
-        if (!API_KEY) { typingEl.innerHTML = 'API 키가 없어서 AI 응답을 받을 수 없어요.<br>파일 상단의 <b>API_KEY</b> 변수에 키를 입력해 주세요 😊'; }
-        else { typingEl.innerHTML = '잠깐 연결이 끊겼어요. 조금 있다 다시 시도해 주세요 😊'; }
+        typingEl.innerHTML = '잠깐 연결이 끊겼어요. 조금 있다 다시 시도해 주세요 😊';
       }
       btn.disabled = false; input.disabled = false; input.focus();
       document.getElementById('messages').scrollTop = 99999;
