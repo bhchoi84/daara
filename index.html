@@ -985,6 +985,103 @@
       padding: 16px 18px;
     }
 
+    /* ── 사용자 정보 모달 ── */
+    .user-modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(10,14,26,0.88);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .user-modal {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      padding: 32px 28px 28px;
+      width: 100%; max-width: 360px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+      display: flex; flex-direction: column; gap: 18px;
+    }
+    .user-modal-logo {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--indigo), #a78bfa);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 700; color: #fff;
+      margin: 0 auto 2px;
+    }
+    .user-modal-title {
+      font-size: 18px; font-weight: 600; color: var(--text);
+      text-align: center; letter-spacing: -0.3px;
+    }
+    .user-modal-sub {
+      font-size: 13px; color: var(--text-muted); text-align: center; margin-top: -12px;
+    }
+    .user-modal-field { display: flex; flex-direction: column; gap: 6px; }
+    .user-modal-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.3px; }
+    .user-modal-input {
+      background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 10px; padding: 10px 14px;
+      color: var(--text); font-size: 14px; outline: none;
+      transition: border-color 0.15s;
+      color-scheme: dark;
+    }
+    .user-modal-input:focus { border-color: var(--indigo-light); }
+    .user-modal-gender { display: flex; gap: 8px; }
+    .gender-btn {
+      flex: 1; padding: 9px 4px;
+      border-radius: 10px; border: 1px solid var(--border2);
+      background: var(--surface2); color: var(--text-muted);
+      font-size: 13px; cursor: pointer; transition: all 0.15s;
+    }
+    .gender-btn.active { background: var(--indigo-pale); border-color: var(--indigo-light); color: var(--indigo-light); }
+    .user-modal-submit {
+      margin-top: 4px; padding: 13px;
+      border-radius: 12px; border: none;
+      background: linear-gradient(135deg, var(--indigo), #a78bfa);
+      color: #fff; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: opacity 0.15s;
+    }
+    .user-modal-submit:hover { opacity: 0.9; }
+    /* ── 사용자 배지 ── */
+    .user-info-badge {
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--text-muted);
+      cursor: pointer; flex-shrink: 0;
+      background: var(--surface);
+    }
+    .user-info-badge:hover { background: var(--surface2); }
+    .user-badge-name { color: var(--indigo-light); font-weight: 600; }
+    .user-badge-dot { color: var(--border2); }
+    /* ── 카드 해석 메시지 (개선) ── */
+    .card-reading-block {
+      background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(167,139,250,0.06));
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 14px; padding: 16px;
+      margin-bottom: 10px;
+    }
+    .card-reading-block:last-child { margin-bottom: 0; }
+    .crb-pos {
+      font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--indigo-light); font-weight: 600; margin-bottom: 6px;
+    }
+    .crb-card {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+    }
+    .crb-sym {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: var(--indigo-pale); border: 1px solid rgba(99,102,241,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .crb-name { font-size: 15px; font-weight: 600; color: var(--text); }
+    .crb-en { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .crb-keywords {
+      font-size: 11px; color: var(--indigo-light);
+      background: var(--indigo-pale); border-radius: 6px;
+      padding: 3px 8px; display: inline-block; margin-bottom: 0;
+    }
     .palm-mode-select {
       display: flex;
       gap: 8px;
@@ -1247,15 +1344,15 @@
         <div class="card-row">
           <div class="mini-card unflipped" id="sc0" onclick="flipOne(0)">
             <div class="card-sym">✦</div>
-            <div class="card-pos">과거</div>
+            <div class="card-pos">오늘</div>
           </div>
           <div class="mini-card unflipped" id="sc1" onclick="flipOne(1)">
             <div class="card-sym">✦</div>
-            <div class="card-pos">현재</div>
+            <div class="card-pos">미래</div>
           </div>
           <div class="mini-card unflipped" id="sc2" onclick="flipOne(2)">
             <div class="card-sym">✦</div>
-            <div class="card-pos">미래</div>
+            <div class="card-pos">주의</div>
           </div>
         </div>
         <div class="card-hint" id="card-hint">카드를 클릭해 한 장씩 열거나</div>
@@ -1284,6 +1381,7 @@
       </div>
 
       <div class="panel active" id="panel-tarot">
+        <div class="user-info-badge" id="user-info-badge" style="display:none" onclick="showUserInfoModal()"></div>
         <div class="messages" id="messages">
           <div class="msg bot">
             <div class="msg-avatar bot">D</div>
@@ -1484,8 +1582,116 @@
     </main>
   </div>
 
+  <!-- 사용자 정보 입력 모달 -->
+  <div class="user-modal-overlay" id="user-modal-overlay">
+    <div class="user-modal">
+      <div class="user-modal-logo">D</div>
+      <div class="user-modal-title serif">다아라에게 나를 소개해요</div>
+      <div class="user-modal-sub">오늘 하루 당신만의 운세를 봐드릴게요 ✨</div>
+      <div class="user-modal-field">
+        <label class="user-modal-label">이름 (닉네임도 좋아요)</label>
+        <input class="user-modal-input" id="um-name" type="text" placeholder="예: 지은이, 별이, 민준" maxlength="10">
+      </div>
+      <div class="user-modal-field">
+        <label class="user-modal-label">생년월일</label>
+        <input class="user-modal-input" id="um-birth" type="date" max="2010-12-31" min="1930-01-01">
+      </div>
+      <div class="user-modal-field">
+        <label class="user-modal-label">성별</label>
+        <div class="user-modal-gender">
+          <button class="gender-btn" onclick="selectGender('여',this)">여성</button>
+          <button class="gender-btn" onclick="selectGender('남',this)">남성</button>
+          <button class="gender-btn" onclick="selectGender('선택안함',this)">선택안함</button>
+        </div>
+      </div>
+      <button class="user-modal-submit" onclick="submitUserInfo()">다아라와 시작하기 ✨</button>
+    </div>
+  </div>
+
   <script>
     /* ── API: Vercel 서버리스 프록시 사용 (키 노출 없음) ── */
+
+    /* ── 사용자 정보 (당일 캐시) ── */
+    const CARD_POS = ['오늘', '미래', '주의할일'];
+    let selectedGender = null;
+
+    function getZodiac(birthdate) {
+      const d = new Date(birthdate); const m = d.getMonth() + 1; const day = d.getDate();
+      if ((m===3&&day>=21)||(m===4&&day<=19)) return '양자리';
+      if ((m===4&&day>=20)||(m===5&&day<=20)) return '황소자리';
+      if ((m===5&&day>=21)||(m===6&&day<=20)) return '쌍둥이자리';
+      if ((m===6&&day>=21)||(m===7&&day<=22)) return '게자리';
+      if ((m===7&&day>=23)||(m===8&&day<=22)) return '사자자리';
+      if ((m===8&&day>=23)||(m===9&&day<=22)) return '처녀자리';
+      if ((m===9&&day>=23)||(m===10&&day<=22)) return '천칭자리';
+      if ((m===10&&day>=23)||(m===11&&day<=21)) return '전갈자리';
+      if ((m===11&&day>=22)||(m===12&&day<=21)) return '사수자리';
+      if ((m===12&&day>=22)||(m===1&&day<=19)) return '염소자리';
+      if ((m===1&&day>=20)||(m===2&&day<=18)) return '물병자리';
+      return '물고기자리';
+    }
+    function getUserInfo() {
+      try {
+        const stored = JSON.parse(localStorage.getItem('daara_user') || 'null');
+        if (!stored) return null;
+        const today = new Date().toISOString().slice(0,10);
+        if (stored.date !== today) { localStorage.removeItem('daara_user'); return null; }
+        return stored;
+      } catch { return null; }
+    }
+    function saveUserInfo(name, birthdate, gender) {
+      const today = new Date().toISOString().slice(0,10);
+      const zodiac = getZodiac(birthdate);
+      const age = today.slice(0,4) - birthdate.slice(0,4);
+      localStorage.setItem('daara_user', JSON.stringify({ name, birthdate, gender, zodiac, age, date: today }));
+    }
+    function getUserContext() {
+      const u = getUserInfo(); if (!u) return '';
+      return `\n[사용자] 이름: ${u.name} / 생년월일: ${u.birthdate}(${u.age}세) / 성별: ${u.gender} / 별자리: ${u.zodiac} / 오늘: ${new Date().toLocaleDateString('ko-KR')}`;
+    }
+    function selectGender(val, el) {
+      selectedGender = val;
+      document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+    }
+    function showUserInfoModal() {
+      document.getElementById('user-modal-overlay').style.display = 'flex';
+      const u = getUserInfo();
+      if (u) {
+        document.getElementById('um-name').value = u.name || '';
+        document.getElementById('um-birth').value = u.birthdate || '';
+        if (u.gender) { selectedGender = u.gender; document.querySelectorAll('.gender-btn').forEach(b => { if (b.textContent.trim() === u.gender || (u.gender==='선택안함'&&b.textContent.trim()==='선택안함')) b.classList.add('active'); }); }
+      }
+    }
+    function submitUserInfo() {
+      const name = document.getElementById('um-name').value.trim();
+      const birth = document.getElementById('um-birth').value;
+      if (!name) { document.getElementById('um-name').focus(); return; }
+      if (!birth) { document.getElementById('um-birth').focus(); return; }
+      const gender = selectedGender || '선택안함';
+      saveUserInfo(name, birth, gender);
+      document.getElementById('user-modal-overlay').style.display = 'none';
+      updateUserBadge();
+      const u = getUserInfo();
+      const msgs = document.getElementById('messages');
+      msgs.innerHTML = '';
+      addMsg('bot', `안녕하세요, <b>${u.name}</b>님 😊 저는 다아라예요.<br>${u.zodiac}이신 ${u.name}님의 오늘 운세를 함께 살펴볼게요 ✨<br><br>카드를 뽑거나 메뉴에서 <b class="hl-gold">별자리·궁합·금전·손금</b> 분석도 받아보실 수 있어요.`);
+    }
+    function updateUserBadge() {
+      const u = getUserInfo(); const badge = document.getElementById('user-info-badge');
+      if (!u) { badge.style.display = 'none'; return; }
+      badge.style.display = 'flex';
+      badge.innerHTML = `<span class="user-badge-name">${u.name}</span><span class="user-badge-dot">·</span><span>${u.zodiac}</span><span class="user-badge-dot">·</span><span>${u.gender}</span><span style="margin-left:auto;font-size:11px;color:var(--indigo-light)">수정 ✎</span>`;
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const u = getUserInfo();
+      if (!u) { showUserInfoModal(); }
+      else {
+        updateUserBadge();
+        addMsg('bot', `안녕하세요, <b>${u.name}</b>님 😊 저는 다아라예요.<br>${u.zodiac}이신 ${u.name}님의 오늘 운세를 함께 살펴볼게요 ✨<br><br>카드를 뽑거나 메뉴에서 <b class="hl-gold">별자리·궁합·금전·손금</b> 분석도 받아보실 수 있어요.`);
+        document.getElementById('messages').querySelector('.msg')?.remove();
+      }
+    });
 
     const CARDS = [
       // ── 메이저 아르카나 (22장) ──
@@ -1619,26 +1825,25 @@
       el.classList.remove('unflipped');
       el.classList.add('revealed');
       el.querySelector('.card-sym').textContent = drawnCards[i].sym;
-      const pos = ['과거', '현재', '미래'];
       const c = drawnCards[i];
-
-      // 힌트 텍스트 업데이트
       const allFlipped = flippedCards.every(f => f);
       const hintEl = document.getElementById('card-hint');
       if (allFlipped) {
         hintEl.textContent = '카드가 모두 열렸어요 ✨';
-        // 3장 다 열리면 전체 해석
         setTimeout(() => {
-          const html = drawnCards.map((c, idx) => `<div class="card-reveal-msg" style="margin-bottom:${idx < 2 ? '8px' : '0'}"><div class="reveal-pos">${pos[idx]}</div><div class="reveal-name">${c.sym} ${c.name}<span class="reveal-en">${c.en}</span></div><div class="reveal-text">키워드 — ${c.keywords}</div></div>`).join('');
+          const html = drawnCards.map((c, idx) => `<div class="card-reading-block"><div class="crb-pos">${CARD_POS[idx]}</div><div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name}</div><div class="crb-en">${c.en}</div></div></div><span class="crb-keywords">${c.keywords}</span></div>`).join('');
           addMsg('bot', html, 'card-reveal');
-          askClaude(`타로 3카드: 과거 ${drawnCards[0].name}(${drawnCards[0].keywords}), 현재 ${drawnCards[1].name}(${drawnCards[1].keywords}), 미래 ${drawnCards[2].name}(${drawnCards[2].keywords}). 전체 흐름을 따뜻하고 공감 어린 말투로 3문장 내외로 이야기해 주세요.`, true, null);
+          const u = getUserInfo();
+          const ctx = u ? `${u.name}님(${u.zodiac}, ${u.age}세 ${u.gender})의 ` : '';
+          askClaude(`${ctx}타로 3카드: 오늘의 카드 ${drawnCards[0].name}(${drawnCards[0].keywords}), 미래의 카드 ${drawnCards[1].name}(${drawnCards[1].keywords}), 주의할 일의 카드 ${drawnCards[2].name}(${drawnCards[2].keywords}). 오늘 하루의 흐름, 앞으로의 방향, 주의해야 할 점을 카드와 별자리를 연결해 따뜻하고 구체적으로 해석해 주세요. 4~6문장으로 일관성 있게 마무리해 주세요.`, true, null);
         }, 300);
       } else {
         const remaining = 3 - flippedCards.filter(f => f).length;
         hintEl.textContent = `${remaining}장 남았어요`;
-        // 개별 카드 해석
-        addMsg('bot', `<div class="card-reveal-msg"><div class="reveal-pos">${pos[i]}</div><div class="reveal-name">${c.sym} ${c.name}<span class="reveal-en">${c.en}</span></div><div class="reveal-text">키워드 — ${c.keywords}</div></div>`, 'card-reveal');
-        askClaude(`"${c.name}" 카드(${c.en}, 키워드: ${c.keywords})가 "${pos[i]}" 자리에 나왔어요. 이 카드가 지금 이 자리에서 전하는 메시지를 따뜻하고 공감 어린 말투로 2문장으로 이야기해 주세요.`, true, null);
+        addMsg('bot', `<div class="card-reading-block"><div class="crb-pos">${CARD_POS[i]}</div><div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name}</div><div class="crb-en">${c.en}</div></div></div><span class="crb-keywords">${c.keywords}</span></div>`, 'card-reveal');
+        const u = getUserInfo();
+        const ctx = u ? `${u.name}님(${u.zodiac}, ${u.age}세 ${u.gender})에게 ` : '';
+        askClaude(`${ctx}"${c.name}" 카드(${c.en}, 키워드: ${c.keywords})가 "${CARD_POS[i]}" 자리에 나왔어요. 이 카드가 지금 이 자리에서 전하는 메시지를 별자리 특성과 연결해 따뜻하고 공감 어린 말투로 2~3문장으로 이야기해 주세요.`, true, null);
       }
     }
     function drawMoneyCard() {
@@ -1779,7 +1984,6 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
       flippedCards = [false, false, false];
       const s = [...CARDS].sort(() => Math.random() - 0.5);
       drawnCards = [s[0], s[1], s[2]];
-      const pos = ['과거', '현재', '미래'];
       setTimeout(() => {
         drawnCards.forEach((c, i) => {
           const el = document.getElementById('sc' + i);
@@ -1790,16 +1994,20 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
         });
         document.getElementById('card-hint').textContent = '카드가 모두 열렸어요 ✨';
         btn.textContent = '다시 뽑기'; btn.disabled = false;
-        const html = drawnCards.map((c, i) => `<div class="card-reveal-msg" style="margin-bottom:${i < 2 ? '8px' : '0'}"><div class="reveal-pos">${pos[i]}</div><div class="reveal-name">${c.sym} ${c.name}<span class="reveal-en">${c.en}</span></div><div class="reveal-text">키워드 — ${c.keywords}</div></div>`).join('');
+        const html = drawnCards.map((c, i) => `<div class="card-reading-block"><div class="crb-pos">${CARD_POS[i]}</div><div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name}</div><div class="crb-en">${c.en}</div></div></div><span class="crb-keywords">${c.keywords}</span></div>`).join('');
         addMsg('bot', html, 'card-reveal');
-        askClaude(`타로 3카드: 과거 ${drawnCards[0].name}(${drawnCards[0].keywords}), 현재 ${drawnCards[1].name}(${drawnCards[1].keywords}), 미래 ${drawnCards[2].name}(${drawnCards[2].keywords}). 전체 흐름을 따뜻하고 공감 어린 말투로 3문장 내외로 이야기해 주세요.`, true, null);
+        const u = getUserInfo();
+        const ctx = u ? `${u.name}님(${u.zodiac}, ${u.age}세 ${u.gender})의 ` : '';
+        askClaude(`${ctx}타로 3카드: 오늘의 카드 ${drawnCards[0].name}(${drawnCards[0].keywords}), 미래의 카드 ${drawnCards[1].name}(${drawnCards[1].keywords}), 주의할 일의 카드 ${drawnCards[2].name}(${drawnCards[2].keywords}). 오늘 하루의 흐름, 앞으로의 방향, 주의해야 할 점을 카드와 별자리를 연결해 따뜻하고 구체적으로 해석해 주세요. 4~6문장으로 일관성 있게 마무리해 주세요.`, true, null);
       }, 700);
     }
     function selectSpread(i) {
-      if (!drawnCards || !flippedCards[i]) return; // 아직 안 뒤집힌 카드는 클릭 무시
+      if (!drawnCards || !flippedCards[i]) return;
       document.querySelectorAll('.mini-card').forEach((el, j) => el.classList.toggle('selected', j === i));
-      const c = drawnCards[i]; const pos = ['과거', '현재', '미래'];
-      askClaude(`"${c.name}" 카드(${c.en}, ${c.keywords})가 "${pos[i]}" 자리. 2~3문장으로 공감 어린 말투로 해석해 주세요.`, true, null);
+      const c = drawnCards[i];
+      const u = getUserInfo();
+      const ctx = u ? `${u.name}님(${u.zodiac}, ${u.age}세 ${u.gender})에게 ` : '';
+      askClaude(`${ctx}"${c.name}" 카드(${c.en}, ${c.keywords})가 "${CARD_POS[i]}" 자리. 별자리 특성과 연결해 2~3문장으로 공감 어린 말투로 해석해 주세요.`, true, null);
     }
     async function sendMessage() {
       const input = document.getElementById('chat-input');
@@ -1823,10 +2031,12 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
       btn.disabled = true; input.disabled = true;
       if (userLabel) addMsg('user', userLabel);
       const typingEl = addMsg('bot', '생각하고 있어요···'); typingEl.classList.add('typing');
-      const system = `당신은 따뜻하고 섬세한 AI 타로·운세 상담사 '다아라'입니다.
+      const system = `당신은 따뜻하고 섬세한 AI 타로·운세 상담사 '다아라'입니다.${getUserContext()}
 사용자 감정에 먼저 공감해 주세요. 친한 언니처럼 따뜻하고 공감 어린 존댓말을 씁니다.
+사용자의 이름, 별자리, 나이, 성별을 자연스럽게 반영해 개인화된 답변을 해주세요.
 "~것 같아요", "~할 수 있어요" 처럼 단정 짓지 않고 부드럽게 표현합니다.
-이모지를 1~2개 자연스럽게 씁니다. 3~6문장 내외로 간결하고 따뜻하게 마무리합니다.`;
+이모지를 1~2개 자연스럽게 씁니다. 3~6문장 내외로 간결하고 따뜻하게 마무리합니다.
+답변은 항상 같은 사용자에 대한 일관된 흐름을 유지해 주세요.`;
       const messages = overrideMsg ? [{ role: 'user', content: overrideMsg }] : [...history];
       try {
         const data = await callAPI({ model: 'claude-haiku-4-5-20251001', max_tokens: 500, system, messages });
