@@ -1395,15 +1395,15 @@
       <div class="cards-section">
         <div class="section-hd">오늘의 3카드</div>
         <div class="card-row">
-          <div class="mini-card unflipped" id="sc0" onclick="flipOne(0)">
+          <div class="mini-card unflipped" id="sc0" onclick="flippedCards[0]?scrollToCardMsg(0):flipOne(0)">
             <div class="card-sym">✦</div>
             <div class="card-pos">오늘</div>
           </div>
-          <div class="mini-card unflipped" id="sc1" onclick="flipOne(1)">
+          <div class="mini-card unflipped" id="sc1" onclick="flippedCards[1]?scrollToCardMsg(1):flipOne(1)">
             <div class="card-sym">✦</div>
             <div class="card-pos">미래</div>
           </div>
-          <div class="mini-card unflipped" id="sc2" onclick="flipOne(2)">
+          <div class="mini-card unflipped" id="sc2" onclick="flippedCards[2]?scrollToCardMsg(2):flipOne(2)">
             <div class="card-sym">✦</div>
             <div class="card-pos">주의</div>
           </div>
@@ -1835,6 +1835,7 @@
       document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
     }
+    let pendingAction = null; // 유저 정보 입력 후 실행할 콜백
     function showUserInfoModal() {
       document.getElementById('user-modal-overlay').style.display = 'flex';
       const u = getUserInfo();
@@ -1843,6 +1844,13 @@
         document.getElementById('um-birth').value = u.birthdate || '';
         if (u.gender) { selectedGender = u.gender; document.querySelectorAll('.gender-btn').forEach(b => { if (b.textContent.trim() === u.gender || (u.gender==='선택안함'&&b.textContent.trim()==='선택안함')) b.classList.add('active'); }); }
       }
+    }
+    function ensureUserInfo(callback) {
+      const u = getUserInfo();
+      if (u) return true;
+      pendingAction = callback || null;
+      showUserInfoModal();
+      return false;
     }
     function autoFillZodiac(zodiac) {
       if (!zodiac) return;
@@ -1872,9 +1880,8 @@
       updateUserBadge();
       const u = getUserInfo();
       autoFillZodiac(u.zodiac);
-      const msgs = document.getElementById('messages');
-      msgs.innerHTML = '';
       addMsg('bot', `안녕하세요, <b>${u.name}</b>님 😊 저는 다아라예요.<br>${u.zodiac}이신 ${u.name}님의 오늘 운세를 함께 살펴볼게요 ✨<br><br>카드를 뽑거나 메뉴에서 <b class="hl-gold">별자리·궁합·금전·손금</b> 분석도 받아보실 수 있어요.`);
+      if (pendingAction) { const fn = pendingAction; pendingAction = null; fn(); }
     }
     function updateUserBadge() {
       const u = getUserInfo(); const badge = document.getElementById('user-info-badge');
@@ -1905,11 +1912,12 @@
       }
 
       const u = getUserInfo();
-      if (!u) { showUserInfoModal(); }
-      else {
+      if (u) {
         updateUserBadge();
         autoFillZodiac(u.zodiac);
         addMsg('bot', `안녕하세요, <b>${u.name}</b>님 😊 저는 다아라예요.<br>${u.zodiac}이신 ${u.name}님의 오늘 운세를 함께 살펴볼게요 ✨<br><br>카드를 뽑거나 메뉴에서 <b class="hl-gold">별자리·궁합·금전·손금</b> 분석도 받아보실 수 있어요.`);
+      } else {
+        addMsg('bot', `안녕하세요 😊 저는 <b>다아라</b>예요.<br>AI 타로·별자리·궁합·금전·손금 분석을 도와드려요 ✨<br><br>카드를 뽑거나 메뉴를 선택하면 바로 시작할 수 있어요!`);
       }
     });
 
@@ -2010,9 +2018,10 @@
       document.getElementById('panel-' + menu).classList.add('active');
       document.querySelectorAll('.main-title-text').forEach(t => t.textContent = TITLES[menu]);
     }
-    function addMsg(role, content, type = 'text') {
+    function addMsg(role, content, type = 'text', cardIndex = null) {
       const box = document.getElementById('messages');
       const wrap = document.createElement('div'); wrap.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
+      if (cardIndex !== null) wrap.setAttribute('data-card-index', cardIndex);
       const av = document.createElement('div'); av.className = 'msg-avatar ' + (role === 'user' ? 'user' : 'bot'); av.textContent = role === 'user' ? '나' : 'D';
       const bubble = document.createElement('div');
       if (type === 'card-reveal') { bubble.className = 'card-reveal-msg'; bubble.innerHTML = content; }
@@ -2023,6 +2032,17 @@
       box.appendChild(wrap); box.scrollTop = box.scrollHeight;
       return bubble;
     }
+    function scrollToCardMsg(i) {
+      if (!drawnCards || !flippedCards[i]) return;
+      const msg = document.querySelector(`[data-card-index="${i}"]`);
+      if (msg) {
+        goMenu('tarot', document.querySelector('.n-tarot'));
+        msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        msg.style.transition = 'background 0.3s';
+        msg.style.background = 'rgba(99,102,241,0.1)';
+        setTimeout(() => msg.style.background = '', 1200);
+      }
+    }
     function selectZ(group, el, name) {
       const ids = { a: 'zg-a', m1: 'zg-m1', m2: 'zg-m2', mo: 'zg-mo', today: 'zg-today' };
       document.querySelectorAll('#' + ids[group] + ' .zodiac-btn').forEach(b => b.classList.remove('sel-a', 'sel-m1', 'sel-m2', 'sel-mo', 'sel-today'));
@@ -2031,6 +2051,7 @@
 
     /* 카드 한 장씩 뒤집기 */
     function flipOne(i) {
+      if (!ensureUserInfo(() => flipOne(i))) return;
       // 아직 전체 뽑기 안 한 경우 → 그 자리 카드만 랜덤 배정
       if (!drawnCards) {
         const shuffled = [...CARDS].sort(() => Math.random() - 0.5);
@@ -2051,8 +2072,9 @@
       if (allFlipped) {
         hintEl.textContent = '카드가 모두 열렸어요 ✨';
         setTimeout(() => {
-          const html = drawnCards.map((c, idx) => `<div class="card-reading-block"><div class="crb-pos">${CARD_POS[idx]}</div><div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name}</div><div class="crb-en">${c.en}</div></div></div><span class="crb-keywords">${c.keywords}</span></div>`).join('');
-          addMsg('bot', html, 'card-reveal');
+          drawnCards.forEach((c, idx) => {
+            addMsg('bot', `<div class="card-reading-block"><div class="crb-pos">${CARD_POS[idx]}</div><div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name}</div><div class="crb-en">${c.en}</div></div></div><span class="crb-keywords">${c.keywords}</span></div>`, 'card-reveal', idx);
+          });
           const u = getUserInfo();
           const ctx = u ? `${u.name}님(${u.zodiac}, ${u.age}세 ${u.gender})의 ` : '';
           askClaude(`${ctx}타로 3카드: 오늘의 카드 ${drawnCards[0].name}(${drawnCards[0].keywords}), 미래의 카드 ${drawnCards[1].name}(${drawnCards[1].keywords}), 주의할 일의 카드 ${drawnCards[2].name}(${drawnCards[2].keywords}). 오늘 하루의 흐름, 앞으로의 방향, 주의해야 할 점을 카드와 별자리를 연결해 따뜻하고 구체적으로 해석해 주세요. 4~6문장으로 일관성 있게 마무리해 주세요.`, true, null);
@@ -2060,7 +2082,7 @@
       } else {
         const remaining = 3 - flippedCards.filter(f => f).length;
         hintEl.textContent = `${remaining}장 남았어요`;
-        addMsg('bot', `<div class="card-reading-block"><div class="crb-pos">${CARD_POS[i]}</div><div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name}</div><div class="crb-en">${c.en}</div></div></div><span class="crb-keywords">${c.keywords}</span></div>`, 'card-reveal');
+        addMsg('bot', `<div class="card-reading-block"><div class="crb-pos">${CARD_POS[i]}</div><div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name}</div><div class="crb-en">${c.en}</div></div></div><span class="crb-keywords">${c.keywords}</span></div>`, 'card-reveal', i);
         const u = getUserInfo();
         const ctx = u ? `${u.name}님(${u.zodiac}, ${u.age}세 ${u.gender})에게 ` : '';
         askClaude(`${ctx}"${c.name}" 카드(${c.en}, 키워드: ${c.keywords})가 "${CARD_POS[i]}" 자리에 나왔어요. 이 카드가 지금 이 자리에서 전하는 메시지를 별자리 특성과 연결해 따뜻하고 공감 어린 말투로 2~3문장으로 이야기해 주세요.`, true, null);
@@ -2073,12 +2095,14 @@
       document.getElementById('money-card-box').classList.add('drawn');
     }
     async function runStar() {
+      if (!ensureUserInfo(() => runStar())) return;
       if (!sel.a) { alert('별자리를 선택해 주세요!'); return; }
       goMenu('tarot', document.querySelector('.n-tarot'));
       const cacheKey = `star_${sel.a}`;
       await askClaude(`나는 ${sel.a}이에요. 오늘(${new Date().toLocaleDateString('ko-KR')}) 나의 별자리 운세를 애정운, 금전운, 건강운으로 나눠서 따뜻하고 구체적으로 알려주세요. 마지막에 오늘의 한마디로 마무리해 주세요.`, true, '⭐ 별자리 운세 요청', cacheKey);
     }
     async function runMatch() {
+      if (!ensureUserInfo(() => runMatch())) return;
       if (!sel.m1 || !sel.m2) { alert('두 사람의 별자리를 모두 선택해 주세요!'); return; }
       const rel = document.getElementById('match-rel').value;
       goMenu('tarot', document.querySelector('.n-tarot'));
@@ -2086,6 +2110,7 @@
       await askClaude(`나는 ${sel.m1}이고, 상대방은 ${sel.m2}예요. 우리는 ${rel} 사이에요. 두 별자리의 궁합을 분석해 주세요. 잘 맞는 점, 조심해야 할 점, 관계를 더 좋게 만들 수 있는 따뜻한 조언도 함께 알려주세요 💕`, true, `♡ 궁합 요청 (${sel.m1} ↔ ${sel.m2})`, cacheKey);
     }
     async function runMoney() {
+      if (!ensureUserInfo(() => runMoney())) return;
       if (!sel.mo) { alert('별자리를 선택해 주세요!'); return; }
       const concern = document.getElementById('money-concern').value;
       const card = moneyCard ? `금전 타로 카드로 "${moneyCard.name}"(${moneyCard.keywords})이 나왔어요. ` : '';
@@ -2122,6 +2147,7 @@
       else { dropTitle.textContent = '얼굴 사진을 올려주세요'; dropSub.textContent = '정면 얼굴이 잘 보이도록 찍어 올려주세요 😊'; }
     }
     async function analyzePalm() {
+      if (!ensureUserInfo(() => analyzePalm())) return;
       if (!palmImageData) return;
       if (!palmMode) { alert('오른손 / 왼손 / 관상 중 하나를 먼저 선택해 주세요!'); return; }
       if (!canUseAPI()) { document.getElementById('limit-modal-overlay').style.display = 'flex'; return; }
@@ -2194,6 +2220,7 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
     </div>`;
     }
     async function runToday() {
+      if (!ensureUserInfo(() => runToday())) return;
       if (!sel.today) { alert('별자리를 선택해 주세요!'); return; }
       const concern = document.getElementById('today-concern').value;
       goMenu('tarot', document.querySelector('.n-tarot'));
@@ -2204,6 +2231,7 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
       );
     }
     function drawCards() {
+      if (!ensureUserInfo(() => drawCards())) return;
       const btn = document.getElementById('draw-btn');
       btn.disabled = true; btn.textContent = '뽑는 중...';
       // 상태 초기화
@@ -2236,6 +2264,7 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
       askClaude(`${ctx}"${c.name}" 카드(${c.en}, ${c.keywords})가 "${CARD_POS[i]}" 자리. 별자리 특성과 연결해 2~3문장으로 공감 어린 말투로 해석해 주세요.`, true, null);
     }
     async function sendMessage() {
+      if (!ensureUserInfo(() => sendMessage())) return;
       const input = document.getElementById('chat-input');
       const text = input.value.trim(); if (!text) return;
       addMsg('user', text); input.value = '';
