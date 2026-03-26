@@ -1102,22 +1102,6 @@
         border-right: none !important;
         border-bottom: 0.5px solid var(--border);
         flex-shrink: 0 !important;
-        overflow: hidden;
-        transition: max-height 0.3s ease;
-      }
-      /* 사이드바 접기: 로고만 보이기 */
-      .sidebar.collapsed {
-        max-height: 50px !important;
-      }
-      .sidebar.collapsed .cards-section,
-      .sidebar.collapsed .nav-section,
-      .sidebar.collapsed .ad-slot,
-      .sidebar.collapsed .logo-sub {
-        display: none !important;
-      }
-      /* 사이드바 열기 */
-      .sidebar:not(.collapsed) {
-        max-height: 70vh !important;
         overflow-y: auto;
       }
       .logo {
@@ -1137,26 +1121,6 @@
       }
       .desktop-only {
         display: none !important;
-      }
-      .mobile-toggle {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        width: 34px;
-        height: 34px;
-        border-radius: 8px;
-        background: var(--surface2);
-        border: 0.5px solid var(--border2);
-        color: var(--text-muted);
-        cursor: pointer;
-        font-size: 18px;
-        flex-shrink: 0;
-        margin-left: 8px;
-        -webkit-tap-highlight-color: transparent;
-      }
-      .mobile-toggle:active {
-        background: var(--indigo-pale);
-        color: var(--indigo-light);
       }
       .cards-section {
         padding: 8px 14px !important;
@@ -1354,7 +1318,6 @@
           </div>
         </div>
         <div class="badges mobile-only" style="display:none;"><span class="badge rose">Vision</span><span class="badge indigo">Haiku 4.5</span></div>
-        <button class="mobile-toggle" style="display:none;" onclick="toggleSidebar()" id="sidebar-toggle">☰</button>
       </div>
       <div class="cards-section">
         <div class="section-hd">오늘의 3카드</div>
@@ -1614,22 +1577,6 @@
   <script>
     /* ── API: Vercel Serverless 프록시 사용 (키 노출 없음) ── */
 
-    /* ── 모바일 사이드바 토글 ── */
-    function toggleSidebar() {
-      const sidebar = document.querySelector('.sidebar');
-      const btn = document.getElementById('sidebar-toggle');
-      sidebar.classList.toggle('collapsed');
-      btn.textContent = sidebar.classList.contains('collapsed') ? '☰' : '✕';
-    }
-    // 페이지 로드 시 모바일이면 자동으로 사이드바 접기
-    if (window.innerWidth <= 768) {
-      document.addEventListener('DOMContentLoaded', () => {
-        const sidebar = document.querySelector('.sidebar');
-        sidebar.classList.add('collapsed');
-      });
-    }
-    // 메뉴 클릭 시 모바일에서 자동으로 사이드바 접기
-
     const CARDS = [
       // ── 메이저 아르카나 (22장) ──
       { sym: '🃏', name: '바보', en: 'The Fool', keywords: '새로운 시작, 순수, 모험' },
@@ -1726,13 +1673,6 @@
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
       document.getElementById('panel-' + menu).classList.add('active');
       document.querySelectorAll('.main-title-text').forEach(t => t.textContent = TITLES[menu]);
-      // 모바일에서 메뉴 선택 시 사이드바 자동 접기
-      if (window.innerWidth <= 768) {
-        const sidebar = document.querySelector('.sidebar');
-        const btn = document.getElementById('sidebar-toggle');
-        sidebar.classList.add('collapsed');
-        if (btn) btn.textContent = '☰';
-      }
     }
     function escapeHTML(str) {
       const div = document.createElement('div');
