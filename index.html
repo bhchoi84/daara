@@ -1435,13 +1435,7 @@
 
       <div class="panel active" id="panel-tarot">
         <div class="user-info-badge" id="user-info-badge" style="display:none" onclick="showUserInfoModal()"></div>
-        <div class="messages" id="messages">
-          <div class="msg bot">
-            <div class="msg-avatar bot">D</div>
-            <div class="msg-bubble">안녕하세요 😊 저는 다아라예요.<br>오늘 어떤 하루를 보내고 계신가요? 마음속에 담아두신 고민이 있다면 편하게 말씀해 주세요.<br><br>왼쪽
-              카드를 뽑거나, 메뉴에서 <b class="hl-gold">별자리·궁합·금전·손금</b> 분석도 받아보실 수 있어요 ✨</div>
-          </div>
-        </div>
+        <div class="messages" id="messages"></div>
         <div class="input-area">
           <input class="chat-input" id="chat-input" placeholder="다아라에게 고민을 말씀해 주세요..."
             onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}">
@@ -1850,6 +1844,23 @@
         if (u.gender) { selectedGender = u.gender; document.querySelectorAll('.gender-btn').forEach(b => { if (b.textContent.trim() === u.gender || (u.gender==='선택안함'&&b.textContent.trim()==='선택안함')) b.classList.add('active'); }); }
       }
     }
+    function autoFillZodiac(zodiac) {
+      if (!zodiac) return;
+      // star, today, money, match(m1) 메뉴의 별자리를 자동 선택
+      const groups = { a: 'zg-a', today: 'zg-today', mo: 'zg-mo', m1: 'zg-m1' };
+      for (const [group, gridId] of Object.entries(groups)) {
+        const grid = document.getElementById(gridId);
+        if (!grid) continue;
+        const btns = grid.querySelectorAll('.zodiac-btn');
+        btns.forEach(b => {
+          b.classList.remove('sel-a', 'sel-m1', 'sel-m2', 'sel-mo', 'sel-today');
+          if (b.textContent.includes(zodiac.replace('자리',''))) {
+            b.classList.add(group === 'today' ? 'sel-a' : 'sel-' + group);
+            sel[group] = zodiac;
+          }
+        });
+      }
+    }
     function submitUserInfo() {
       const name = document.getElementById('um-name').value.trim();
       const birth = document.getElementById('um-birth').value;
@@ -1860,6 +1871,7 @@
       document.getElementById('user-modal-overlay').style.display = 'none';
       updateUserBadge();
       const u = getUserInfo();
+      autoFillZodiac(u.zodiac);
       const msgs = document.getElementById('messages');
       msgs.innerHTML = '';
       addMsg('bot', `안녕하세요, <b>${u.name}</b>님 😊 저는 다아라예요.<br>${u.zodiac}이신 ${u.name}님의 오늘 운세를 함께 살펴볼게요 ✨<br><br>카드를 뽑거나 메뉴에서 <b class="hl-gold">별자리·궁합·금전·손금</b> 분석도 받아보실 수 있어요.`);
@@ -1883,7 +1895,7 @@
         window.history.replaceState({}, '', window.location.pathname);
         const u = getUserInfo();
         if (!u) { showUserInfoModal(); }
-        else { updateUserBadge(); document.getElementById('messages').querySelector('.msg')?.remove(); addMsg('bot', `안녕하세요, <b>${u.name}</b>님 😊 결제 확인 중이에요···`); }
+        else { updateUserBadge(); addMsg('bot', `안녕하세요, <b>${u.name}</b>님 😊 결제 확인 중이에요···`); }
         await handlePaymentSuccess(params.get('paymentKey'), params.get('orderId'), params.get('amount'));
         return;
       }
@@ -1896,8 +1908,8 @@
       if (!u) { showUserInfoModal(); }
       else {
         updateUserBadge();
+        autoFillZodiac(u.zodiac);
         addMsg('bot', `안녕하세요, <b>${u.name}</b>님 😊 저는 다아라예요.<br>${u.zodiac}이신 ${u.name}님의 오늘 운세를 함께 살펴볼게요 ✨<br><br>카드를 뽑거나 메뉴에서 <b class="hl-gold">별자리·궁합·금전·손금</b> 분석도 받아보실 수 있어요.`);
-        document.getElementById('messages').querySelector('.msg')?.remove();
       }
     });
 
@@ -2112,6 +2124,7 @@
     async function analyzePalm() {
       if (!palmImageData) return;
       if (!palmMode) { alert('오른손 / 왼손 / 관상 중 하나를 먼저 선택해 주세요!'); return; }
+      if (!canUseAPI()) { document.getElementById('limit-modal-overlay').style.display = 'flex'; return; }
       goMenu('tarot', document.querySelector('.n-tarot'));
       const btn = document.getElementById('send-btn'), input = document.getElementById('chat-input');
       btn.disabled = true; input.disabled = true;
@@ -2143,6 +2156,7 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
         const reply = res?.content?.[0]?.text || '사진이 잘 보이지 않아요. 더 밝은 곳에서 다시 찍어 올려주시겠어요? 😊';
         typingEl.classList.remove('typing'); typingEl.className = 'palm-result-msg';
         typingEl.innerHTML = `<div class="palm-result-header"><img src="${palmPreviewSrc}" class="palm-result-thumb" alt="${modeLabel}"><div><div class="palm-result-title">${resultTitle}</div><div class="palm-result-sub">${resultSub}</div></div></div><div class="palm-result-text">${reply.replace(/\n/g, '<br>')}</div>`;
+        incrementUsage(); updateUserBadge();
       } catch (err) {
         typingEl.classList.remove('typing'); typingEl.innerHTML = '분석 중 오류가 생겼어요. 잠깐 후 다시 시도해 주세요 😊';
       }
