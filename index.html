@@ -1081,124 +1081,636 @@
       display: none
     }
 
+    /* Tablet Responsive Styles */
+    @media (max-width: 1024px) {
+      .app {
+        max-width: 95vw;
+        height: 90vh;
+      }
+      .sidebar {
+        width: 180px;
+      }
+      .nav-section {
+        padding: 6px 8px;
+        gap: 3px;
+      }
+      .nav-item {
+        padding: 6px 8px;
+        font-size: 11px;
+      }
+    }
+
     /* Mobile Responsive Styles */
     @media (max-width: 768px) {
+      * {
+        touch-action: manipulation;
+      }
+
       body {
         padding: 0;
+        min-height: 100vh;
+        height: auto;
       }
+
+      html, body {
+        height: 100%;
+      }
+
       .app {
         max-width: 100%;
+        width: 100%;
+        height: 100%;
+        min-height: 100vh;
         height: 100dvh;
         border-radius: 0;
         border: none;
         box-shadow: none;
         flex-direction: column;
+        display: flex;
       }
+
       .sidebar {
         width: 100%;
+        flex-shrink: 0;
         border-right: none;
         border-bottom: 0.5px solid var(--border);
+        max-height: auto;
       }
+
       .logo {
-        padding: 8px 12px;
+        padding: 10px 16px;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
         justify-content: space-between;
       }
+
+      .logo-mark {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+      }
+
       .logo-name {
         font-size: 14px;
         font-family: Georgia, serif;
       }
+
+      .logo-sub {
+        font-size: 8px;
+      }
+
       .mobile-only {
         display: flex !important;
         margin-left: auto;
       }
+
       .desktop-only {
         display: none !important;
       }
+
       .cards-section {
-        padding: 6px 12px;
+        padding: 12px 14px 10px;
+        border-bottom: 0.5px solid var(--border);
       }
+
       .section-hd {
-        margin-bottom: 4px;
+        margin-bottom: 8px;
+        font-size: 8px;
       }
+
       .card-row {
-        margin-bottom: 4px;
-        gap: 4px;
-      }
-      .mini-card {
-        width: auto;
-        flex: 1;
-        height: 38px;
-        flex-direction: row;
+        margin-bottom: 8px;
         gap: 6px;
+        justify-content: space-between;
       }
-      .card-sym {
-        font-size: 14px;
-      }
-      .card-pos {
-        font-size: 10px;
-      }
-      .draw-btn {
+
+      .mini-card {
+        width: 0;
+        flex: 1;
+        height: 50px;
+        flex-direction: column;
+        gap: 4px;
         padding: 6px;
-        font-size: 10px;
-        margin-top: 2px !important;
       }
+
+      .card-sym {
+        font-size: 16px;
+        line-height: 1;
+      }
+
+      .card-pos {
+        font-size: 9px;
+      }
+
+      .card-hint {
+        font-size: 9px;
+        margin-top: 3px;
+      }
+
+      .draw-btn {
+        width: 100%;
+        padding: 8px 12px;
+        font-size: 10px;
+        margin-top: 6px;
+        border-radius: 6px;
+      }
+
       .nav-section {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         flex: none;
-        padding: 4px 8px;
-        gap: 4px;
+        padding: 8px 10px;
+        gap: 6px;
+        border-bottom: 0.5px solid var(--border);
       }
+
       .nav-section .section-hd {
         display: none;
       }
+
       .nav-item {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 3px;
-        padding: 6px 2px;
+        gap: 4px;
+        padding: 8px 4px;
         font-size: 10px;
         text-align: center;
+        border-radius: 6px;
       }
+
+      .nav-icon {
+        width: 16px;
+        height: 16px;
+      }
+
+      .ad-slot {
+        display: none !important;
+      }
+
+      .main {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .main-header {
+        display: none !important;
+      }
+
+      .messages {
+        padding: 12px 12px;
+        gap: 10px;
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .msg-bubble {
+        max-width: 85%;
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-size: 12px;
+        line-height: 1.6;
+      }
+
+      .msg.user .msg-bubble {
+        font-size: 11px;
+      }
+
+      .msg-avatar {
+        width: 24px;
+        height: 24px;
+        font-size: 11px;
+      }
+
+      .input-area {
+        padding: 10px 12px 12px;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+
+      .chat-input, .form-input, select.form-input {
+        font-size: 16px;
+        -webkit-appearance: none;
+        appearance: none;
+        border-radius: 8px;
+      }
+
+      .chat-input {
+        padding: 10px 12px;
+      }
+
+      .send-btn {
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+      }
+
+      .form-panel {
+        padding: 14px 12px;
+        gap: 14px;
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .form-card {
+        border-radius: 12px;
+        padding: 16px;
+      }
+
+      .form-title {
+        font-size: 15px;
+        margin-bottom: 6px;
+      }
+
+      .form-desc {
+        font-size: 11px;
+        line-height: 1.5;
+        margin-bottom: 14px;
+      }
+
+      .form-label {
+        font-size: 9px;
+        margin-bottom: 6px;
+      }
+
+      .form-row {
+        margin-bottom: 12px;
+      }
+
+      .form-input {
+        padding: 10px 12px;
+        font-size: 16px;
+        border-radius: 8px;
+      }
+
+      .zodiac-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      .zodiac-btn {
+        padding: 8px 4px;
+        font-size: 11px;
+        border-radius: 6px;
+      }
+
+      .submit-btn {
+        padding: 12px;
+        font-size: 13px;
+        border-radius: 8px;
+      }
+
+      .palm-guide-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .palm-drop {
+        padding: 24px 16px;
+      }
+
+      .palm-drop-icon {
+        width: 48px;
+        height: 48px;
+      }
+
+      .palm-drop-title {
+        font-size: 14px;
+      }
+
+      .palm-drop-sub {
+        font-size: 11px;
+      }
+
+      .badge {
+        font-size: 8px;
+        padding: 2px 6px;
+      }
+
+      .msg-bubble.typing {
+        font-size: 11px;
+      }
+
+      .card-reveal-msg {
+        padding: 10px 12px;
+      }
+
+      .reveal-pos {
+        font-size: 8px;
+      }
+
+      .reveal-name {
+        font-size: 14px;
+      }
+
+      .reveal-text {
+        font-size: 11px;
+      }
+
+      .ad-interstitial {
+        padding: 14px;
+        border-radius: 10px;
+      }
+
+      .ad-int-title {
+        font-size: 15px;
+      }
+
+      .ad-int-sub {
+        font-size: 10px;
+      }
+
+      .palm-result-msg {
+        padding: 12px 14px;
+      }
+
+      .palm-result-header {
+        gap: 9px;
+      }
+
+      .palm-result-thumb {
+        width: 40px;
+        height: 40px;
+      }
+
+      .palm-result-title {
+        font-size: 13px;
+      }
+
+      .palm-result-text {
+        font-size: 12px;
+      }
+
+      .today-result-msg {
+        padding: 12px 14px;
+      }
+
+      .today-result-title {
+        font-size: 13px;
+      }
+
+      .today-section-text {
+        font-size: 11px;
+      }
+
+      .user-palm-preview img {
+        width: 44px;
+        height: 44px;
+      }
+
+      .user-palm-preview span {
+        font-size: 11px;
+      }
+
+      .money-card-box {
+        padding: 12px;
+      }
+
+      .money-card-sym {
+        font-size: 20px;
+      }
+
+      .palm-preview-img {
+        max-height: 150px;
+      }
+
+      .palm-analyze-btn {
+        padding: 10px 24px;
+        font-size: 12px;
+      }
+    }
+
+    /* Small Phone Responsive Styles */
+    @media (max-width: 480px) {
+      .app {
+        height: 100%;
+        min-height: 100vh;
+        height: 100dvh;
+      }
+
+      .sidebar {
+        max-height: fit-content;
+      }
+
+      .logo {
+        padding: 8px 12px;
+        gap: 8px;
+      }
+
+      .logo-mark {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+      }
+
+      .logo-name {
+        font-size: 13px;
+      }
+
+      .logo-sub {
+        font-size: 7px;
+      }
+
+      .cards-section {
+        padding: 10px 12px 8px;
+      }
+
+      .card-row {
+        gap: 4px;
+      }
+
+      .mini-card {
+        height: 44px;
+        padding: 4px;
+      }
+
+      .card-sym {
+        font-size: 14px;
+      }
+
+      .card-pos {
+        font-size: 8px;
+      }
+
+      .draw-btn {
+        padding: 6px 10px;
+        font-size: 9px;
+      }
+
+      .nav-section {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 6px 8px;
+        gap: 4px;
+      }
+
+      .nav-item {
+        padding: 6px 3px;
+        font-size: 9px;
+        gap: 2px;
+      }
+
       .nav-icon {
         width: 14px;
         height: 14px;
       }
-      .main-header {
-        display: none;
-      }
-      .ad-slot {
-        display: none;
-      }
-      .main {
-        min-height: 0;
-      }
-      .zodiac-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-      .chat-input, .form-input, select.form-input {
-        font-size: 16px; /* Prevent iOS zoom */
-      }
-      .input-area {
-        padding: 10px 14px 12px;
-      }
+
       .messages {
-        padding: 14px 14px;
+        padding: 10px 10px;
+        gap: 8px;
       }
+
+      .msg-bubble {
+        max-width: 90%;
+        padding: 7px 10px;
+        font-size: 11px;
+      }
+
+      .msg-avatar {
+        width: 22px;
+        height: 22px;
+        font-size: 10px;
+      }
+
+      .input-area {
+        padding: 8px 10px 10px;
+        gap: 5px;
+      }
+
+      .chat-input {
+        padding: 8px 10px;
+        font-size: 14px;
+      }
+
+      .send-btn {
+        width: 32px;
+        height: 32px;
+      }
+
       .form-panel {
-        padding: 14px 14px;
+        padding: 12px 10px;
+        gap: 12px;
       }
-      .main-header {
-        padding: 10px 14px;
+
+      .form-card {
+        padding: 14px;
       }
-      .palm-guide-grid {
-        grid-template-columns: 1fr;
+
+      .form-title {
+        font-size: 14px;
       }
+
+      .form-desc {
+        font-size: 10px;
+      }
+
+      .form-label {
+        font-size: 8px;
+      }
+
+      .form-input {
+        padding: 8px 10px;
+        font-size: 14px;
+      }
+
+      .zodiac-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+      }
+
+      .zodiac-btn {
+        padding: 6px 2px;
+        font-size: 10px;
+      }
+
+      .submit-btn {
+        padding: 10px;
+        font-size: 12px;
+      }
+
       .palm-drop {
-        padding: 20px 14px;
+        padding: 20px 12px;
+      }
+
+      .palm-drop-icon {
+        width: 40px;
+        height: 40px;
+      }
+
+      .palm-drop-title {
+        font-size: 12px;
+      }
+
+      .palm-drop-sub {
+        font-size: 10px;
+      }
+
+      .card-reveal-msg {
+        padding: 8px 10px;
+      }
+
+      .reveal-name {
+        font-size: 13px;
+      }
+
+      .reveal-text {
+        font-size: 10px;
+      }
+
+      .today-result-msg {
+        padding: 10px 12px;
+      }
+
+      .today-result-title {
+        font-size: 12px;
+      }
+
+      .today-section-text {
+        font-size: 10px;
+      }
+
+      .palm-result-msg {
+        padding: 10px 12px;
+      }
+
+      .palm-result-title {
+        font-size: 12px;
+      }
+
+      .palm-result-text {
+        font-size: 11px;
+      }
+    }
+
+    /* Extra Small Phones */
+    @media (max-width: 360px) {
+      .logo-name {
+        font-size: 12px;
+      }
+
+      .card-row {
+        gap: 2px;
+      }
+
+      .nav-section {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .zodiac-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .messages {
+        padding: 8px 8px;
+      }
+
+      .msg-bubble {
+        max-width: 92%;
+      }
+
+      .form-panel {
+        padding: 10px 8px;
       }
     }
   </style>
@@ -1639,7 +2151,7 @@
         <div class="palm-line"><div class="palm-line-dot" style="background:#818CF8; color:#818CF8;"></div><div class="palm-line-text"><div class="palm-line-name">지능선</div>사고방식·재능</div></div>
         <div class="palm-line"><div class="palm-line-dot" style="background:#34D399; color:#34D399;"></div><div class="palm-line-text"><div class="palm-line-name">생명선</div>활력·건강</div></div>
         <div class="palm-line"><div class="palm-line-dot" style="background:#FBBF24; color:#FBBF24;"></div><div class="palm-line-text"><div class="palm-line-name">운명선</div>커리어·방향</div></div>
-      </div>
+       </div>
     </div>`;
     }
     async function runToday() {
