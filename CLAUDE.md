@@ -15,6 +15,15 @@ vercel --prod   # 프로덕션 배포
 
 빌드 단계, 테스트, 린트 도구 없음. 변경 후 브라우저에서 직접 확인.
 
+## 환경변수 (Vercel Dashboard → Settings → Environment Variables)
+
+| 변수명 | 설명 |
+|--------|------|
+| `ANTHROPIC_API_KEY` | Anthropic API 키 |
+| `TOSS_SECRET_KEY` | 토스페이먼츠 시크릿 키 (테스트: `test_sk_...` / 운영: `live_sk_...`) |
+
+프론트엔드의 `TOSS_CLIENT_KEY` 상수는 `index.html` 스크립트 상단에 있음 (테스트: `test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq`).
+
 ## 아키텍처
 
 파일이 3개뿐이다:
