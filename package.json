@@ -1,9 +1,0 @@
-{
-  "name": "daara",
-  "version": "1.0.0",
-  "description": "다아라 — AI 타로 & 운세 상담",
-  "private": true,
-  "engines": {
-    "node": ">=18"
-  }
-}

@@ -3,7 +3,9 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>다아라 — AI 타로 & 운세 상담</title>
   <style>
     *,
@@ -11,7 +13,10 @@
     *::after {
       box-sizing: border-box;
       margin: 0;
-      padding: 0
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     :root {
@@ -39,20 +44,32 @@
       --text-dim: #3D4F6E;
     }
 
-    html,
-    body {
-      height: 100%
+    html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
     }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', sans-serif;
       background: var(--bg);
       color: var(--text);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 100%;
+      height: 100%;
       min-height: 100vh;
-      padding: 16px;
+      min-height: 100dvh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    @supports (padding: max(0px)) {
+      body {
+        padding-left: max(0px, env(safe-area-inset-left));
+        padding-right: max(0px, env(safe-area-inset-right));
+      }
     }
 
     .serif {
@@ -62,12 +79,14 @@
     .app {
       display: flex;
       width: 100%;
+      height: 100%;
       max-width: 900px;
-      height: 680px;
       border-radius: 20px;
       overflow: hidden;
       border: 0.5px solid var(--border2);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5)
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      margin: 0 auto;
+      flex-direction: row;
     }
 
     .sidebar {
@@ -1081,226 +1100,658 @@
       display: none
     }
 
+    /* Tablet Responsive Styles */
+    @media (max-width: 1024px) {
+      .app {
+        max-width: 95vw;
+        height: 90vh;
+      }
+      .sidebar {
+        width: 180px;
+      }
+      .nav-section {
+        padding: 6px 8px;
+        gap: 3px;
+      }
+      .nav-item {
+        padding: 6px 8px;
+        font-size: 11px;
+      }
+    }
+
     /* Mobile Responsive Styles */
     @media (max-width: 768px) {
+      * {
+        touch-action: manipulation;
+      }
+
+      html, body {
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 100vh;
+        min-height: 100dvh;
+        max-height: 100vh;
+        max-height: 100dvh;
+        overflow: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
       body {
         padding: 0 !important;
       }
+
       .app {
         max-width: 100% !important;
         width: 100% !important;
-        height: 100dvh !important;
-        height: 100vh !important;
+        height: 100% !important;
+        min-height: 100% !important;
+        max-height: 100% !important;
         border-radius: 0 !important;
         border: none !important;
         box-shadow: none !important;
-        flex-direction: column !important;
-        position: relative;
+        flex-direction: column;
+        display: flex !important;
+        margin: 0 !important;
+        padding: 0 !important;
       }
+
       .sidebar {
         width: 100% !important;
-        border-right: none !important;
+        height: auto;
+        flex-shrink: 0;
+        border-right: none;
         border-bottom: 0.5px solid var(--border);
-        flex-shrink: 0 !important;
-        overflow-y: auto;
+        overflow: visible;
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
       }
+
       .logo {
-        padding: 10px 14px !important;
+        padding: 10px 16px;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
         justify-content: space-between;
-        min-height: 50px;
       }
+
+      .logo-mark {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+      }
+
       .logo-name {
-        font-size: 15px !important;
+        font-size: 14px;
         font-family: Georgia, serif;
       }
+
+      .logo-sub {
+        font-size: 8px;
+      }
+
       .mobile-only {
         display: flex !important;
         margin-left: auto;
       }
+
       .desktop-only {
         display: none !important;
       }
+
       .cards-section {
-        padding: 8px 14px !important;
+        padding: 12px 14px 10px;
+        border-bottom: 0.5px solid var(--border);
       }
+
       .section-hd {
-        margin-bottom: 4px;
+        margin-bottom: 8px;
         font-size: 8px;
       }
+
       .card-row {
-        margin-bottom: 6px;
-        gap: 6px;
-      }
-      .mini-card {
-        width: auto !important;
-        flex: 1;
-        height: 50px !important;
-        flex-direction: row !important;
+        margin-bottom: 8px;
         gap: 8px;
-        border-radius: 10px;
+        justify-content: stretch;
+        display: flex;
+        width: 100%;
       }
+
+      .mini-card {
+        width: auto;
+        flex: 1 1 0;
+        min-width: 0;
+        height: 50px;
+        flex-direction: column;
+        gap: 4px;
+        padding: 6px;
+      }
+
       .card-sym {
-        font-size: 18px !important;
+        font-size: 16px;
+        line-height: 1;
       }
+
       .card-pos {
-        font-size: 11px !important;
+        font-size: 9px;
       }
+
+      .card-hint {
+        font-size: 9px;
+        margin-top: 3px;
+      }
+
       .draw-btn {
-        padding: 10px !important;
-        font-size: 13px !important;
-        margin-top: 4px !important;
-        border-radius: 10px;
+        width: 100%;
+        padding: 8px 12px;
+        font-size: 10px;
+        margin-top: 6px;
+        border-radius: 6px;
       }
+
       .nav-section {
-        display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        flex: none !important;
-        padding: 8px 12px 10px !important;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        flex: none;
+        padding: 8px 10px;
         gap: 6px;
+        border-bottom: 0.5px solid var(--border);
+        width: 100%;
+        box-sizing: border-box;
       }
+
       .nav-section .section-hd {
-        display: none !important;
+        display: none;
       }
+
       .nav-item {
-        flex-direction: column !important;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         gap: 4px;
-        padding: 10px 4px !important;
-        font-size: 11px !important;
+        padding: 8px 4px;
+        font-size: 10px;
         text-align: center;
-        border-radius: 10px;
+        border-radius: 6px;
       }
+
       .nav-icon {
-        width: 18px !important;
-        height: 18px !important;
+        width: 16px;
+        height: 16px;
       }
-      .main-header {
-        display: none !important;
-      }
+
       .ad-slot {
         display: none !important;
       }
+
       .main {
-        min-height: 0 !important;
-        flex: 1 !important;
-        overflow: hidden;
-      }
-      .panel {
-        min-height: 0;
-      }
-      .panel.active {
         flex: 1;
         min-height: 0;
+        display: flex;
+        flex-direction: column;
       }
-      .zodiac-grid {
-        grid-template-columns: repeat(4, 1fr) !important;
-        gap: 6px;
+
+      .main-header {
+        display: none !important;
       }
-      .zodiac-btn {
-        padding: 10px 4px !important;
-        font-size: 13px !important;
-        border-radius: 10px;
-      }
-      .chat-input, .form-input, select.form-input {
-        font-size: 16px !important; /* Prevent iOS zoom */
-        border-radius: 12px;
-        padding: 12px 14px !important;
-      }
-      .input-area {
-        padding: 10px 12px calc(env(safe-area-inset-bottom, 8px) + 10px) !important;
-      }
+
       .messages {
-        padding: 14px 12px !important;
-        gap: 12px;
+        padding: 12px 12px;
+        gap: 10px;
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
       }
+
       .msg-bubble {
-        max-width: 85% !important;
-        font-size: 14px !important;
-        line-height: 1.75 !important;
-        padding: 11px 14px !important;
-      }
-      .msg-avatar {
-        width: 28px !important;
-        height: 28px !important;
-        font-size: 13px !important;
-      }
-      .form-panel {
-        padding: 14px 12px !important;
-      }
-      .form-card {
-        padding: 16px !important;
-        border-radius: 14px;
-      }
-      .form-title {
-        font-size: 18px !important;
-      }
-      .form-desc {
-        font-size: 13px !important;
+        max-width: 85%;
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-size: 12px;
         line-height: 1.6;
       }
-      .submit-btn {
-        padding: 14px !important;
-        font-size: 15px !important;
-        border-radius: 12px;
+
+      .msg.user .msg-bubble {
+        font-size: 11px;
       }
-      .palm-guide-grid {
-        grid-template-columns: 1fr 1fr !important;
+
+      .msg-avatar {
+        width: 24px;
+        height: 24px;
+        font-size: 11px;
+      }
+
+      .input-area {
+        padding: 10px 12px;
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+        gap: 6px;
+        flex-shrink: 0;
+      }
+
+      .chat-input, .form-input, select.form-input {
+        font-size: 16px;
+        -webkit-appearance: none;
+        appearance: none;
+        border-radius: 8px;
+      }
+
+      .chat-input {
+        padding: 10px 12px;
+      }
+
+      .send-btn {
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+      }
+
+      .form-panel {
+        padding: 14px 12px;
+        gap: 14px;
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .form-card {
+        border-radius: 12px;
+        padding: 16px;
+      }
+
+      .form-title {
+        font-size: 15px;
+        margin-bottom: 6px;
+      }
+
+      .form-desc {
+        font-size: 11px;
+        line-height: 1.5;
+        margin-bottom: 14px;
+      }
+
+      .form-label {
+        font-size: 9px;
+        margin-bottom: 6px;
+      }
+
+      .form-row {
+        margin-bottom: 12px;
+      }
+
+      .form-input {
+        padding: 10px 12px;
+        font-size: 16px;
+        border-radius: 8px;
+      }
+
+      .zodiac-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
         gap: 8px;
       }
+
+      .zodiac-btn {
+        padding: 8px 4px;
+        font-size: 11px;
+        border-radius: 6px;
+      }
+
+      .submit-btn {
+        padding: 12px;
+        font-size: 13px;
+        border-radius: 8px;
+      }
+
+      .palm-guide-grid {
+        grid-template-columns: 1fr;
+      }
+
       .palm-drop {
-        padding: 24px 16px !important;
-        border-radius: 14px;
+        padding: 24px 16px;
       }
+
+      .palm-drop-icon {
+        width: 48px;
+        height: 48px;
+      }
+
       .palm-drop-title {
-        font-size: 16px !important;
+        font-size: 14px;
       }
+
       .palm-drop-sub {
-        font-size: 13px !important;
+        font-size: 11px;
       }
+
+      .badge {
+        font-size: 8px;
+        padding: 2px 6px;
+      }
+
+      .msg-bubble.typing {
+        font-size: 11px;
+      }
+
       .card-reveal-msg {
-        padding: 11px 13px;
+        padding: 10px 12px;
+      }
+
+      .reveal-pos {
+        font-size: 8px;
+      }
+
+      .reveal-name {
+        font-size: 14px;
+      }
+
+      .reveal-text {
+        font-size: 11px;
+      }
+
+      .ad-interstitial {
+        padding: 14px;
         border-radius: 10px;
       }
-      .reveal-name {
-        font-size: 15px !important;
+
+      .ad-int-title {
+        font-size: 15px;
       }
-      .send-btn {
-        width: 42px !important;
-        height: 42px !important;
-        border-radius: 12px;
+
+      .ad-int-sub {
+        font-size: 10px;
       }
-      .card-hint {
-        font-size: 10px !important;
-        margin-top: 4px;
+
+      .palm-result-msg {
+        padding: 12px 14px;
       }
+
+      .palm-result-header {
+        gap: 9px;
+      }
+
+      .palm-result-thumb {
+        width: 40px;
+        height: 40px;
+      }
+
+      .palm-result-title {
+        font-size: 13px;
+      }
+
+      .palm-result-text {
+        font-size: 12px;
+      }
+
+      .today-result-msg {
+        padding: 12px 14px;
+      }
+
+      .today-result-title {
+        font-size: 13px;
+      }
+
+      .today-section-text {
+        font-size: 11px;
+      }
+
+      .user-palm-preview img {
+        width: 44px;
+        height: 44px;
+      }
+
+      .user-palm-preview span {
+        font-size: 11px;
+      }
+
       .money-card-box {
-        padding: 18px !important;
-        border-radius: 12px;
+        padding: 12px;
       }
-      .ad-interstitial {
-        border-radius: 12px;
-        padding: 14px;
+
+      .money-card-sym {
+        font-size: 20px;
+      }
+
+      .palm-preview-img {
+        max-height: 150px;
+      }
+
+      .palm-analyze-btn {
+        padding: 10px 24px;
+        font-size: 12px;
       }
     }
 
-    /* 아이폰 SE 등 작은 화면 */
-    @media (max-width: 375px) {
-      .zodiac-grid {
-        grid-template-columns: repeat(3, 1fr) !important;
+    /* Small Phone Responsive Styles */
+    @media (max-width: 480px) {
+      .app {
+        height: 100%;
+        min-height: 100vh;
+        height: 100dvh;
       }
-      .nav-section {
-        grid-template-columns: repeat(3, 1fr) !important;
+
+      .sidebar {
+        max-height: fit-content;
+      }
+
+      .logo {
+        padding: 8px 12px;
+        gap: 8px;
+      }
+
+      .logo-mark {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+      }
+
+      .logo-name {
+        font-size: 13px;
+      }
+
+      .logo-sub {
+        font-size: 7px;
+      }
+
+      .cards-section {
+        padding: 10px 12px 8px;
+      }
+
+      .card-row {
         gap: 4px;
       }
-      .nav-item {
-        font-size: 9px !important;
-        padding: 7px 2px !important;
+
+      .mini-card {
+        height: 44px;
+        padding: 4px;
       }
-      .palm-guide-grid {
-        grid-template-columns: 1fr !important;
+
+      .card-sym {
+        font-size: 14px;
+      }
+
+      .card-pos {
+        font-size: 8px;
+      }
+
+      .draw-btn {
+        padding: 6px 10px;
+        font-size: 9px;
+      }
+
+      .nav-section {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 6px 8px;
+        gap: 4px;
+      }
+
+      .nav-item {
+        padding: 6px 3px;
+        font-size: 9px;
+        gap: 2px;
+      }
+
+      .nav-icon {
+        width: 14px;
+        height: 14px;
+      }
+
+      .messages {
+        padding: 10px 10px;
+        gap: 8px;
+      }
+
+      .msg-bubble {
+        max-width: 90%;
+        padding: 7px 10px;
+        font-size: 11px;
+      }
+
+      .msg-avatar {
+        width: 22px;
+        height: 22px;
+        font-size: 10px;
+      }
+
+      .input-area {
+        padding: 8px 10px 10px;
+        gap: 5px;
+      }
+
+      .chat-input {
+        padding: 8px 10px;
+        font-size: 14px;
+      }
+
+      .send-btn {
+        width: 32px;
+        height: 32px;
+      }
+
+      .form-panel {
+        padding: 12px 10px;
+        gap: 12px;
+      }
+
+      .form-card {
+        padding: 14px;
+      }
+
+      .form-title {
+        font-size: 14px;
+      }
+
+      .form-desc {
+        font-size: 10px;
+      }
+
+      .form-label {
+        font-size: 8px;
+      }
+
+      .form-input {
+        padding: 8px 10px;
+        font-size: 14px;
+      }
+
+      .zodiac-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+      }
+
+      .zodiac-btn {
+        padding: 6px 2px;
+        font-size: 10px;
+      }
+
+      .submit-btn {
+        padding: 10px;
+        font-size: 12px;
+      }
+
+      .palm-drop {
+        padding: 20px 12px;
+      }
+
+      .palm-drop-icon {
+        width: 40px;
+        height: 40px;
+      }
+
+      .palm-drop-title {
+        font-size: 12px;
+      }
+
+      .palm-drop-sub {
+        font-size: 10px;
+      }
+
+      .card-reveal-msg {
+        padding: 8px 10px;
+      }
+
+      .reveal-name {
+        font-size: 13px;
+      }
+
+      .reveal-text {
+        font-size: 10px;
+      }
+
+      .today-result-msg {
+        padding: 10px 12px;
+      }
+
+      .today-result-title {
+        font-size: 12px;
+      }
+
+      .today-section-text {
+        font-size: 10px;
+      }
+
+      .palm-result-msg {
+        padding: 10px 12px;
+      }
+
+      .palm-result-title {
+        font-size: 12px;
+      }
+
+      .palm-result-text {
+        font-size: 11px;
+      }
+    }
+
+    /* Extra Small Phones */
+    @media (max-width: 360px) {
+      .logo-name {
+        font-size: 12px;
+      }
+
+      .card-row {
+        gap: 2px;
+      }
+
+      .nav-section {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .zodiac-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .messages {
+        padding: 8px 8px;
+      }
+
+      .msg-bubble {
+        max-width: 92%;
+      }
+
+      .form-panel {
+        padding: 10px 8px;
       }
     }
   </style>
@@ -1575,92 +2026,20 @@
   </div>
 
   <script>
-    /* ── API: Vercel Serverless 프록시 사용 (키 노출 없음) ── */
+    /* ── API 키 설정 ── */
+    const API_KEY = ''; // ← 여기에 Anthropic API 키 입력 (없어도 UI는 작동)
 
     const CARDS = [
-      // ── 메이저 아르카나 (22장) ──
-      { sym: '🃏', name: '바보', en: 'The Fool', keywords: '새로운 시작, 순수, 모험' },
-      { sym: '∞', name: '마법사', en: 'The Magician', keywords: '의지, 창조, 기술' },
-      { sym: '🌙', name: '여사제', en: 'The High Priestess', keywords: '직관, 무의식, 신비' },
-      { sym: '👑', name: '여황제', en: 'The Empress', keywords: '풍요, 모성, 자연' },
-      { sym: '♦', name: '황제', en: 'The Emperor', keywords: '권위, 안정, 통제' },
-      { sym: '🔑', name: '교황', en: 'The Hierophant', keywords: '전통, 가르침, 신앙' },
-      { sym: '💕', name: '연인', en: 'The Lovers', keywords: '사랑, 선택, 조화' },
-      { sym: '🏇', name: '전차', en: 'The Chariot', keywords: '승리, 의지력, 전진' },
-      { sym: '🦁', name: '힘', en: 'Strength', keywords: '용기, 인내, 내면의 힘' },
-      { sym: '⏳', name: '은둔자', en: 'The Hermit', keywords: '내면탐구, 지혜, 고독' },
-      { sym: '◉', name: '운명의 수레바퀴', en: 'Wheel of Fortune', keywords: '전환점, 기회, 흐름' },
-      { sym: '⚖', name: '정의', en: 'Justice', keywords: '균형, 진실, 원인결과' },
-      { sym: '🔮', name: '매달린 사람', en: 'The Hanged Man', keywords: '희생, 새 시각, 기다림' },
-      { sym: '💀', name: '죽음', en: 'Death', keywords: '변환, 끝과 시작, 해방' },
-      { sym: '☯', name: '절제', en: 'Temperance', keywords: '조화, 인내, 균형' },
-      { sym: '😈', name: '악마', en: 'The Devil', keywords: '유혹, 집착, 속박' },
-      { sym: '⚡', name: '탑', en: 'The Tower', keywords: '변화, 각성, 해방' },
-      { sym: '★', name: '별', en: 'The Star', keywords: '희망, 영감, 치유' },
-      { sym: '☽', name: '달', en: 'The Moon', keywords: '직관, 감정, 신비' },
       { sym: '☀', name: '태양', en: 'The Sun', keywords: '활력, 성공, 기쁨' },
-      { sym: '📯', name: '심판', en: 'Judgement', keywords: '부활, 깨달음, 용서' },
-      { sym: '🌍', name: '세계', en: 'The World', keywords: '완성, 성취, 통합' },
-      // ── 완드 (Wands) 14장 ──
-      { sym: '🔥', name: '완드 에이스', en: 'Ace of Wands', keywords: '영감, 새 기회, 열정' },
-      { sym: '🔥', name: '완드 2', en: 'Two of Wands', keywords: '계획, 결정, 미래 비전' },
-      { sym: '🔥', name: '완드 3', en: 'Three of Wands', keywords: '확장, 선견지명, 기다림' },
-      { sym: '🔥', name: '완드 4', en: 'Four of Wands', keywords: '축하, 안정, 기쁨' },
-      { sym: '🔥', name: '완드 5', en: 'Five of Wands', keywords: '경쟁, 갈등, 도전' },
-      { sym: '🔥', name: '완드 6', en: 'Six of Wands', keywords: '승리, 인정, 자신감' },
-      { sym: '🔥', name: '완드 7', en: 'Seven of Wands', keywords: '방어, 끈기, 도전' },
-      { sym: '🔥', name: '완드 8', en: 'Eight of Wands', keywords: '속도, 진전, 메시지' },
-      { sym: '🔥', name: '완드 9', en: 'Nine of Wands', keywords: '인내, 회복력, 경계' },
-      { sym: '🔥', name: '완드 10', en: 'Ten of Wands', keywords: '부담, 책임, 완수' },
-      { sym: '🔥', name: '완드 시종', en: 'Page of Wands', keywords: '탐험, 열정, 발견' },
-      { sym: '🔥', name: '완드 기사', en: 'Knight of Wands', keywords: '모험, 에너지, 충동' },
-      { sym: '🔥', name: '완드 여왕', en: 'Queen of Wands', keywords: '자신감, 매력, 결단' },
-      { sym: '🔥', name: '완드 왕', en: 'King of Wands', keywords: '리더십, 비전, 기업가' },
-      // ── 컵 (Cups) 14장 ──
-      { sym: '💧', name: '컵 에이스', en: 'Ace of Cups', keywords: '새 감정, 사랑, 직관' },
-      { sym: '💧', name: '컵 2', en: 'Two of Cups', keywords: '파트너십, 사랑, 연결' },
-      { sym: '💧', name: '컵 3', en: 'Three of Cups', keywords: '우정, 축하, 커뮤니티' },
-      { sym: '💧', name: '컵 4', en: 'Four of Cups', keywords: '무관심, 성찰, 재평가' },
-      { sym: '💧', name: '컵 5', en: 'Five of Cups', keywords: '상실, 후회, 실망' },
-      { sym: '💧', name: '컵 6', en: 'Six of Cups', keywords: '향수, 추억, 순수' },
-      { sym: '💧', name: '컵 7', en: 'Seven of Cups', keywords: '환상, 선택, 상상' },
-      { sym: '💧', name: '컵 8', en: 'Eight of Cups', keywords: '떠남, 전환, 탐색' },
-      { sym: '💧', name: '컵 9', en: 'Nine of Cups', keywords: '만족, 소원 성취, 행복' },
-      { sym: '💧', name: '컵 10', en: 'Ten of Cups', keywords: '가정의 행복, 조화, 사랑' },
-      { sym: '💧', name: '컵 시종', en: 'Page of Cups', keywords: '창의성, 직관, 메시지' },
-      { sym: '💧', name: '컵 기사', en: 'Knight of Cups', keywords: '로맨스, 매력, 상상' },
-      { sym: '💧', name: '컵 여왕', en: 'Queen of Cups', keywords: '공감, 직관, 돌봄' },
-      { sym: '💧', name: '컵 왕', en: 'King of Cups', keywords: '감정 균형, 외교, 관용' },
-      // ── 소드 (Swords) 14장 ──
-      { sym: '⚔', name: '소드 에이스', en: 'Ace of Swords', keywords: '명확함, 진실, 돌파구' },
-      { sym: '⚔', name: '소드 2', en: 'Two of Swords', keywords: '결정 어려움, 교착, 균형' },
-      { sym: '⚔', name: '소드 3', en: 'Three of Swords', keywords: '슬픔, 이별, 상처' },
-      { sym: '⚔', name: '소드 4', en: 'Four of Swords', keywords: '휴식, 회복, 명상' },
-      { sym: '⚔', name: '소드 5', en: 'Five of Swords', keywords: '갈등, 패배, 자존심' },
-      { sym: '⚔', name: '소드 6', en: 'Six of Swords', keywords: '이동, 전환, 치유' },
-      { sym: '⚔', name: '소드 7', en: 'Seven of Swords', keywords: '전략, 속임, 은밀' },
-      { sym: '⚔', name: '소드 8', en: 'Eight of Swords', keywords: '속박, 제한, 무력감' },
-      { sym: '⚔', name: '소드 9', en: 'Nine of Swords', keywords: '불안, 걱정, 악몽' },
-      { sym: '⚔', name: '소드 10', en: 'Ten of Swords', keywords: '끝, 바닥, 새 시작' },
-      { sym: '⚔', name: '소드 시종', en: 'Page of Swords', keywords: '호기심, 경계, 관찰' },
-      { sym: '⚔', name: '소드 기사', en: 'Knight of Swords', keywords: '결단, 속도, 야망' },
-      { sym: '⚔', name: '소드 여왕', en: 'Queen of Swords', keywords: '독립, 명석, 직설' },
-      { sym: '⚔', name: '소드 왕', en: 'King of Swords', keywords: '권위, 지성, 진실' },
-      // ── 펜타클 (Pentacles) 14장 ──
-      { sym: '💰', name: '펜타클 에이스', en: 'Ace of Pentacles', keywords: '기회, 번영, 새 시작' },
-      { sym: '💰', name: '펜타클 2', en: 'Two of Pentacles', keywords: '균형, 적응, 유연' },
-      { sym: '💰', name: '펜타클 3', en: 'Three of Pentacles', keywords: '협업, 기술, 장인정신' },
-      { sym: '💰', name: '펜타클 4', en: 'Four of Pentacles', keywords: '안정, 절약, 소유욕' },
-      { sym: '💰', name: '펜타클 5', en: 'Five of Pentacles', keywords: '곤란, 고립, 걱정' },
-      { sym: '💰', name: '펜타클 6', en: 'Six of Pentacles', keywords: '나눔, 관대, 균형' },
-      { sym: '💰', name: '펜타클 7', en: 'Seven of Pentacles', keywords: '인내, 투자, 성과 기다림' },
-      { sym: '💰', name: '펜타클 8', en: 'Eight of Pentacles', keywords: '장인정신, 노력, 숙련' },
-      { sym: '💰', name: '펜타클 9', en: 'Nine of Pentacles', keywords: '풍요, 자립, 우아' },
-      { sym: '💰', name: '펜타클 10', en: 'Ten of Pentacles', keywords: '유산, 가문, 장기적 성공' },
-      { sym: '💰', name: '펜타클 시종', en: 'Page of Pentacles', keywords: '학습, 기회, 성실' },
-      { sym: '💰', name: '펜타클 기사', en: 'Knight of Pentacles', keywords: '근면, 책임감, 꾸준' },
-      { sym: '💰', name: '펜타클 여왕', en: 'Queen of Pentacles', keywords: '실용, 풍요, 안정' },
-      { sym: '💰', name: '펜타클 왕', en: 'King of Pentacles', keywords: '부, 사업, 안정' },
+      { sym: '☽', name: '달', en: 'The Moon', keywords: '직관, 감정, 신비' },
+      { sym: '★', name: '별', en: 'The Star', keywords: '희망, 영감, 치유' },
+      { sym: '⚡', name: '탑', en: 'The Tower', keywords: '변화, 각성, 해방' },
+      { sym: '♦', name: '황제', en: 'The Emperor', keywords: '권위, 안정, 통제' },
+      { sym: '∞', name: '마법사', en: 'The Magician', keywords: '의지, 창조, 기술' },
+      { sym: '⚖', name: '정의', en: 'Justice', keywords: '균형, 진실, 원인결과' },
+      { sym: '⏳', name: '은둔자', en: 'The Hermit', keywords: '내면탐구, 지혜, 고독' },
+      { sym: '☯', name: '절제', en: 'Temperance', keywords: '조화, 인내, 균형' },
+      { sym: '◉', name: '운명', en: 'Wheel of Fortune', keywords: '전환점, 기회, 흐름' },
     ];
     const TITLES = { tarot: '다아라 AI 타로 상담사', palm: '손금 분석', star: '별자리 운세', match: '궁합 보기', money: '금전 운세', today: '오늘의 운세' };
     let drawnCards = null, msgCount = 0, history = [], moneyCard = null, palmImageData = null, palmPreviewSrc = null;
@@ -1674,11 +2053,6 @@
       document.getElementById('panel-' + menu).classList.add('active');
       document.querySelectorAll('.main-title-text').forEach(t => t.textContent = TITLES[menu]);
     }
-    function escapeHTML(str) {
-      const div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
-    }
     function addMsg(role, content, type = 'text') {
       const box = document.getElementById('messages');
       const wrap = document.createElement('div'); wrap.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
@@ -1687,7 +2061,6 @@
       if (type === 'card-reveal') { bubble.className = 'card-reveal-msg'; bubble.innerHTML = content; }
       else if (type === 'ad') { bubble.className = 'ad-interstitial'; bubble.innerHTML = content; }
       else if (type === 'palm-result') { bubble.className = 'palm-result-msg'; bubble.innerHTML = content; }
-      else if (type === 'text' && role === 'user') { bubble.className = 'msg-bubble'; bubble.textContent = content; }
       else { bubble.className = 'msg-bubble'; bubble.innerHTML = content; }
       role === 'user' ? (wrap.appendChild(bubble), wrap.appendChild(av)) : (wrap.appendChild(av), wrap.appendChild(bubble));
       box.appendChild(wrap); box.scrollTop = box.scrollHeight;
@@ -1819,7 +2192,7 @@
         <div class="palm-line"><div class="palm-line-dot" style="background:#818CF8; color:#818CF8;"></div><div class="palm-line-text"><div class="palm-line-name">지능선</div>사고방식·재능</div></div>
         <div class="palm-line"><div class="palm-line-dot" style="background:#34D399; color:#34D399;"></div><div class="palm-line-text"><div class="palm-line-name">생명선</div>활력·건강</div></div>
         <div class="palm-line"><div class="palm-line-dot" style="background:#FBBF24; color:#FBBF24;"></div><div class="palm-line-text"><div class="palm-line-name">운명선</div>커리어·방향</div></div>
-      </div>
+       </div>
     </div>`;
     }
     async function runToday() {
@@ -1873,12 +2246,15 @@
     }
     function continueChat() { askClaude(null, false, null); }
     async function callAPI(body) {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      if (!res.ok) { const e = await res.json(); throw new Error(e?.error || 'API Error: ' + res.status); }
+      if (!API_KEY) throw new Error('NO_KEY');
+      const headers = {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      };
+      const res = await fetch('https://api.anthropic.com/v1/messages', { method: 'POST', headers, body: JSON.stringify(body) });
+      if (!res.ok) { const e = await res.json(); throw new Error(e?.error?.message || 'API Error: ' + res.status); }
       return res.json();
     }
     async function askClaude(overrideMsg, isAuto, userLabel) {
@@ -1894,11 +2270,11 @@
       try {
         const data = await callAPI({ model: 'claude-haiku-4-5-20251001', max_tokens: 500, system, messages });
         const reply = data?.content?.[0]?.text || '잠깐 다시 시도해 주실 수 있어요? 😊';
-        typingEl.classList.remove('typing'); typingEl.innerHTML = escapeHTML(reply).replace(/\n/g, '<br>');
+        typingEl.classList.remove('typing'); typingEl.innerHTML = reply.replace(/\n/g, '<br>');
         if (!isAuto) { history.push({ role: 'assistant', content: reply }); if (history.length > 12) history = history.slice(-12); }
       } catch (e) {
         typingEl.classList.remove('typing');
-        if (e.message === 'API Error: 500') { typingEl.innerHTML = '서버 설정을 확인해 주세요. Vercel 환경변수에 <b>ANTHROPIC_API_KEY</b>가 설정되어 있는지 확인해 주세요 😊'; }
+        if (!API_KEY) { typingEl.innerHTML = 'API 키가 없어서 AI 응답을 받을 수 없어요.<br>파일 상단의 <b>API_KEY</b> 변수에 키를 입력해 주세요 😊'; }
         else { typingEl.innerHTML = '잠깐 연결이 끊겼어요. 조금 있다 다시 시도해 주세요 😊'; }
       }
       btn.disabled = false; input.disabled = false; input.focus();
