@@ -1,3 +1,25 @@
+/* ── 소셜 프루프 ── */
+function getSocialCount(type) {
+  const hour = new Date().getHours();
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+  const seed = dayOfYear * 100 + hour;
+  const pseudo = ((seed * 9301 + 49297) % 233280) / 233280;
+  const ranges = {
+    consulting: [80, 280],
+    premium: [50, 150],
+  };
+  const [min, max] = ranges[type] || [50, 200];
+  const timeWeight = hour < 8 ? 0.4 : hour < 12 ? 0.7 : hour < 18 ? 0.85 : 1.0;
+  return Math.floor(min + (max - min) * pseudo * timeWeight);
+}
+
+function getPopularMenu() {
+  const day = new Date().getDay();
+  if (day === 0) return '별자리 운세';
+  if (day >= 5) return '연애 궁합';
+  return '오늘의 운세';
+}
+
 /* ── 사용량 제한 & 캐싱 ── */
 const FREE_LIMIT = 3;
 const PREMIUM_LIMIT = 10;
@@ -136,7 +158,7 @@ function submitUserInfo() {
   updateUserBadge();
   const u = getUserInfo();
   autoFillZodiac(u.zodiac);
-  addMsg('bot', `<b>${u.name}</b>님, 다시 오셨군요 😊<br>${u.zodiac} ${u.name}님만을 위한 AI 맞춤 운세가 준비되어 있어요.<br><br>카드를 뽑거나 메뉴에서 <b class="hl-gold">별자리·궁합·재물운·손금</b> 분석을 받아보세요 ✨`);
+  addMsg('bot', `<b>${u.name}</b>님, 오늘의 운세가 준비됐어요 😊<br>어제와는 다른 흐름이 보여요. 카드를 뽑아 확인해 보세요 ✨<br><span style="font-size:11px;color:var(--text-muted)">지금 가장 많이 받는 상담: ${getPopularMenu()} 🔥</span>`);
   if (pendingAction) { const fn = pendingAction; pendingAction = null; fn(); }
 }
 function updateUserBadge() {
@@ -269,11 +291,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   const u = getUserInfo();
+
   if (u) {
     updateUserBadge();
     autoFillZodiac(u.zodiac);
-    addMsg('bot', `<b>${u.name}</b>님, 다시 오셨군요 😊<br>${u.zodiac} ${u.name}님만을 위한 AI 맞춤 운세가 준비되어 있어요.<br><br>카드를 뽑거나 메뉴에서 <b class="hl-gold">별자리·궁합·재물운·손금</b> 분석을 받아보세요 ✨`);
+    addMsg('bot', `<b>${u.name}</b>님, 오늘의 운세가 준비됐어요 😊<br>어제와는 다른 흐름이 보여요. 카드를 뽑아 확인해 보세요 ✨<br><span style="font-size:11px;color:var(--text-muted)">지금 가장 많이 받는 상담: ${getPopularMenu()} 🔥</span>`);
   } else {
-    addMsg('bot', `반갑습니다 😊 <b>다아라</b>에 오신 걸 환영해요!<br>AI가 타로·별자리·궁합·재물운·손금을 실시간으로 분석해 드려요.<br><br>카드를 뽑거나 메뉴를 선택하면 <b class="hl-gold">무료로 바로 시작</b>할 수 있어요 ✨`);
+    addMsg('bot', `오늘 하루가 궁금하지 않으세요? 😊<br><b>다아라</b>가 AI로 당신만의 운세를 바로 봐드려요.<br><br>카드를 뽑거나 메뉴를 선택하면 <b class="hl-gold">무료로 바로 시작</b>할 수 있어요 ✨<br><span style="font-size:11px;color:var(--text-muted)">지금 가장 많이 받는 상담: ${getPopularMenu()} 🔥</span>`);
   }
+
+  // 소셜 프루프 동적 업데이트
+  const adBody = document.getElementById('ad-body');
+  if (adBody) adBody.textContent = `오늘 ${getSocialCount('consulting')}명이 상담 중`;
+  const limitSub = document.getElementById('limit-modal-sub');
+  if (limitSub) limitSub.innerHTML = `오늘의 무료 상담 3회를 모두 사용했어요.<br><b>지금 ${getSocialCount('premium')}명이 프리미엄으로 상담 중이에요.</b>`;
 });
