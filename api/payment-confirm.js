@@ -22,8 +22,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
-  // 금액 검증 (1900원만 허용)
-  if (Number(amount) !== 1900) {
+  // 금액 검증 (99원 1일 / 1900원 30일만 허용)
+  if (![99, 1900].includes(Number(amount))) {
     return res.status(400).json({ error: 'Invalid amount' });
   }
 
