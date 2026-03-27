@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>다아라 — AI가 봐주는 나만의 타로 & 운세</title>
+  <title>다아라 — 오늘 운명이 궁금하다면</title>
   <link rel="stylesheet" href="style.css">
   <!-- 토스페이먼츠 SDK -->
   <script src="https://js.tosspayments.com/v1/payment"></script>
@@ -18,7 +18,7 @@
           <div class="logo-mark">D</div>
           <div>
             <div class="logo-name main-title-text" id="main-title-m">다아라</div>
-            <div class="logo-sub">AI가 봐주는 나만의 타로 & 운세</div>
+            <div class="logo-sub">AI가 실시간으로 봐주는 타로·운세·손금</div>
           </div>
         </div>
         <div class="badges mobile-only" style="display:none;"><span class="badge rose">AI 비전</span><span class="badge indigo">실시간 상담</span></div>
@@ -52,9 +52,9 @@
         <div class="nav-item n-money" onclick="goMenu('money',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></span>재물운</div>
       </nav>
       <div class="ad-slot">
-        <div class="ad-tag">광고</div>
-        <div class="ad-body">AI 상담 10회 + 광고 제거</div>
-        <div class="ad-cta">99원으로 오늘 체험 →</div>
+        <div class="ad-tag">실시간</div>
+        <div class="ad-body" id="ad-body">오늘 128명이 상담 중</div>
+        <div class="ad-cta">커피 한 잔보다 싼 AI 운세 →</div>
       </div>
     </aside>
 
@@ -112,7 +112,7 @@
         <div class="form-panel">
           <div class="form-card">
             <div class="form-title" style="color:#6EE7B7">🌅 오늘의 운세</div>
-            <div class="form-desc">AI가 당신의 별자리와 생년월일을 분석해 오늘 하루를 미리 알려드려요</div>
+            <div class="form-desc">총운·애정·금전·건강까지 — 오늘 하루를 미리 알고 시작하세요</div>
             <div class="form-row">
               <div class="form-label">내 별자리</div>
               <div class="zodiac-grid" id="zg-today">
@@ -144,7 +144,7 @@
         <div class="form-panel">
           <div class="form-card">
             <div class="form-title" style="color:var(--gold)">⭐ 별자리 운세</div>
-            <div class="form-desc">12별자리별 AI 맞춤 운세 — 애정·금전·건강을 한눈에</div>
+            <div class="form-desc">지금 당신의 별자리에 어떤 기운이 흐르고 있을까요?</div>
             <div class="form-row">
               <div class="form-label">내 별자리 선택</div>
               <div class="zodiac-grid" id="zg-a">
@@ -171,7 +171,7 @@
         <div class="form-panel">
           <div class="form-card">
             <div class="form-title" style="color:var(--rose)">♡ 연애 궁합</div>
-            <div class="form-desc">두 별자리의 케미를 AI가 분석 — 잘 맞는 점, 조심할 점까지</div>
+            <div class="form-desc">그 사람과 나, 정말 잘 맞을까? AI가 솔직하게 알려드려요</div>
             <div class="form-row">
               <div class="form-label">나의 별자리</div>
               <div class="zodiac-grid" id="zg-m1">
@@ -224,7 +224,7 @@
         <div class="form-panel">
           <div class="form-card">
             <div class="form-title" style="color:var(--teal)">◈ 재물운</div>
-            <div class="form-desc">타로 + 별자리로 보는 오늘의 돈 흐름과 투자 타이밍</div>
+            <div class="form-desc">오늘 돈이 들어올 흐름인지, 조심해야 할 날인지 확인하세요</div>
             <div class="form-row">
               <div class="form-label">내 별자리</div>
               <div class="zodiac-grid" id="zg-mo">
@@ -264,8 +264,8 @@
   <div class="limit-modal-overlay" id="limit-modal-overlay" style="display:none">
     <div class="limit-modal">
       <div class="limit-modal-icon">🔮</div>
-      <div class="limit-modal-title serif">오늘의 무료 상담을 다 사용했어요</div>
-      <div class="limit-modal-sub">내일 0시에 무료 상담이 리셋돼요.<br>프리미엄이면 하루 10회까지 AI 상담을 받을 수 있어요.</div>
+      <div class="limit-modal-title serif">아직 더 궁금한 게 있으시죠?</div>
+      <div class="limit-modal-sub" id="limit-modal-sub">오늘의 무료 상담 3회를 모두 사용했어요.<br><b>지금 87명이 프리미엄으로 상담 중이에요.</b></div>
       <div class="limit-price-options">
         <div class="limit-price-card price-selected" id="price-opt-1" onclick="selectPriceOpt(1)">
           <div class="price-opt-badge hot">오늘만 체험</div>
@@ -280,7 +280,7 @@
       </div>
       <div class="limit-price-features">
         <div class="lpf-item">✓ 하루 10회 AI 맞춤 상담</div>
-        <div class="lpf-item">✓ 광고 없는 깔끔한 화면</div>
+        <div class="lpf-item">✓ 타로·손금·궁합·재물운 무제한 분석</div>
         <div class="lpf-item">✓ 빠른 응답 우선 처리</div>
       </div>
       <button class="limit-premium-btn" id="limit-pay-btn" onclick="startPayment()">99원으로 오늘 바로 시작</button>
@@ -292,7 +292,7 @@
   <div class="user-modal-overlay" id="user-modal-overlay">
     <div class="user-modal">
       <div class="user-modal-logo">D</div>
-      <div class="user-modal-title serif">30초만에 나만의 운세 시작</div>
+      <div class="user-modal-title serif">10초면 끝! 나만의 맞춤 운세 시작</div>
       <div class="user-modal-sub">이름과 생년월일만 알려주시면 AI가 맞춤 분석해 드려요</div>
       <div class="user-modal-field">
         <label class="user-modal-label">이름 (닉네임도 좋아요)</label>
