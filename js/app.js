@@ -195,6 +195,25 @@ function goMenu(menu, el) {
   document.getElementById('panel-' + menu).classList.add('active');
   document.querySelectorAll('.main-title-text').forEach(t => t.textContent = TITLES[menu]);
 }
+
+/* ── 사이드바 접기/펼치기 (모바일) ── */
+function toggleSidebar(collapse) {
+  const sb = document.querySelector('.sidebar');
+  if (!sb || window.innerWidth > 768) return;
+  if (collapse === undefined) collapse = !sb.classList.contains('collapsed');
+  sb.classList.toggle('collapsed', collapse);
+}
+document.addEventListener('click', function(e) {
+  if (window.innerWidth > 768) return;
+  const sb = document.querySelector('.sidebar');
+  if (!sb) return;
+  if (e.target.closest('.main')) {
+    if (!sb.classList.contains('collapsed')) toggleSidebar(true);
+  }
+  if (e.target.closest('.sidebar.collapsed .nav-item')) {
+    toggleSidebar(false);
+  }
+});
 function addMsg(role, content, type = 'text', cardIndex = null) {
   const box = document.getElementById('messages');
   const wrap = document.createElement('div'); wrap.className = 'msg ' + (role === 'user' ? 'user' : 'bot');

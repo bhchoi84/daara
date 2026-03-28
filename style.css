@@ -1654,4 +1654,51 @@ input[type=file] {
     width: 144px;
     height: 144px;
   }
+
+  /* ── 사이드바 접힘 상태 ── */
+  .sidebar {
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+  .sidebar.collapsed .logo,
+  .sidebar.collapsed .cards-section,
+  .sidebar.collapsed .ad-slot {
+    display: none;
+  }
+  .sidebar.collapsed {
+    border-bottom: 0.5px solid rgba(255,255,255,0.06);
+  }
+  .sidebar.collapsed .nav-section {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 6px;
+    padding: 8px 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .sidebar.collapsed .nav-section::-webkit-scrollbar {
+    display: none;
+  }
+  .sidebar.collapsed .nav-item {
+    flex: none;
+    flex-direction: row;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    white-space: nowrap;
+    gap: 0;
+    background: var(--surface2);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .sidebar.collapsed .nav-icon {
+    display: none;
+  }
+  .sidebar.collapsed .nav-item.n-tarot.active,
+  .sidebar.collapsed .nav-item.n-today.active,
+  .sidebar.collapsed .nav-item.n-palm.active,
+  .sidebar.collapsed .nav-item.n-star.active,
+  .sidebar.collapsed .nav-item.n-match.active,
+  .sidebar.collapsed .nav-item.n-money.active {
+    border-color: rgba(211, 187, 255, 0.3);
+  }
 }
