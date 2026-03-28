@@ -1144,15 +1144,15 @@ body {
   color: #e1c471;
 }
 .palm-scanner-text {
-  font-size: 13px;
+  font-size: 12px;
   color: #e1c471;
   font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 .palm-scanner-sub {
   font-size: 10px;
   color: var(--text-muted);
+  white-space: nowrap;
 }
 
 /* ── 분석 항목 벤토 그리드 ── */

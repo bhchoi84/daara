@@ -49,9 +49,9 @@ function selectPalmMode(mode, el) {
   el.classList.add('active');
   const dropTitle = document.getElementById('palm-drop-title');
   const dropSub = document.getElementById('palm-drop-sub');
-  if (mode === 'right') { dropTitle.textContent = '오른손 사진을 올려주세요'; dropSub.textContent = '오른손 손바닥이 잘 보이도록 찍어 올려주세요 ✋'; }
-  else if (mode === 'left') { dropTitle.textContent = '왼손 사진을 올려주세요'; dropSub.textContent = '왼손 손바닥이 잘 보이도록 찍어 올려주세요 🤚'; }
-  else { dropTitle.textContent = '얼굴 사진을 올려주세요'; dropSub.textContent = '정면 얼굴이 잘 보이도록 찍어 올려주세요 😊'; }
+  if (mode === 'right') { dropTitle.textContent = '오른손 촬영'; dropSub.textContent = '손바닥이 보이게'; }
+  else if (mode === 'left') { dropTitle.textContent = '왼손 촬영'; dropSub.textContent = '손바닥이 보이게'; }
+  else { dropTitle.textContent = '얼굴 촬영'; dropSub.textContent = '정면으로 찍기'; }
 }
 
 function onPalmFile(e) {
