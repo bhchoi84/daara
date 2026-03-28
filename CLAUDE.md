@@ -76,6 +76,34 @@ vercel.json       — /api/* 요청을 서버리스 함수로 라우팅
 
 운세 결과는 모두 `tarot` 패널의 채팅창(`#messages`)으로 출력된다.
 
+### 채팅 UI 구조
+
+메시지는 `addMsg(role, content, type)` 함수로 생성된다. 각 메시지의 DOM 구조:
+
+```
+.msg.bot / .msg.user
+  ├── .msg-avatar      — 봇: ✦ (틸 아이콘), 유저: 나
+  └── .msg-content
+       ├── .msg-label  — 봇: "다아라" (골드), 유저: "나의 질문"
+       └── .msg-bubble — 글래스모피즘 배경 + 좌측 골드 보더 (봇)
+```
+
+- 봇 버블: `backdrop-filter: blur(16px)` + 좌측 골드 보더 라인 + 좌상단 꼬리
+- 유저 버블: 인디고 배경 + 우상단 꼬리
+- 디자인 참조: `stitch/main/conversation.html`
+
+### 답변 스타일링
+
+`formatReply()` 함수 (`js/app.js`)가 API 응답을 HTML로 변환:
+
+| 패턴 | 변환 결과 | CSS 클래스 |
+|------|----------|-----------|
+| `\n` | `<br>` | — |
+| `**텍스트**` | 골드 볼드 | `.hl-accent` |
+| 이모지 헤더 (🔮🌙⚠️✨⭐💰♡◈🌅) | 골드 헤딩 블록 | `.reply-heading` |
+
+타로 3카드 해석은 구조화된 형식으로 출력: 🔮 오늘 → 🌙 미래 → ⚠️ 주의 → ✨ 한마디
+
 ### 타로 카드 데이터
 
 `js/cards.js`의 `CARDS` 배열에 메이저 아르카나 22장 + 마이너 아르카나 56장 = 78장이 정의되어 있다.

@@ -29,8 +29,8 @@ function getPopularMenu() {
 }
 
 /* ── 사용량 제한 & 캐싱 ── */
-const FREE_LIMIT = 3;
-const PREMIUM_LIMIT = 10;
+const FREE_LIMIT = 20;
+const PREMIUM_LIMIT = 20;
 
 function getToday() { return new Date().toISOString().slice(0,10); }
 
