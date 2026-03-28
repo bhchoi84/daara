@@ -1,3 +1,11 @@
+/* ── 답변 스타일링 ── */
+function formatReply(text) {
+  return text
+    .replace(/\n/g, '<br>')
+    .replace(/\*\*(.+?)\*\*/g, '<span class="hl-accent">$1</span>')
+    .replace(/(🔮|🌙|⚠️|✨|⭐|💰|♡|◈|🌅)(.+?)(?=<br>|$)/g, '<span class="reply-heading">$1$2</span>');
+}
+
 /* ── 소셜 프루프 ── */
 function getSocialCount(type) {
   const hour = new Date().getHours();
@@ -191,13 +199,17 @@ function addMsg(role, content, type = 'text', cardIndex = null) {
   const box = document.getElementById('messages');
   const wrap = document.createElement('div'); wrap.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
   if (cardIndex !== null) wrap.setAttribute('data-card-index', cardIndex);
-  const av = document.createElement('div'); av.className = 'msg-avatar ' + (role === 'user' ? 'user' : 'bot'); av.textContent = role === 'user' ? '나' : 'D';
+  const av = document.createElement('div'); av.className = 'msg-avatar ' + (role === 'user' ? 'user' : 'bot'); av.textContent = role === 'user' ? '나' : '✦';
+  const msgContent = document.createElement('div'); msgContent.className = 'msg-content';
+  const label = document.createElement('span'); label.className = 'msg-label';
+  label.textContent = role === 'user' ? '나의 질문' : '다아라';
   const bubble = document.createElement('div');
   if (type === 'card-reveal') { bubble.className = 'card-reveal-msg'; bubble.innerHTML = content; }
   else if (type === 'ad') { bubble.className = 'ad-interstitial'; bubble.innerHTML = content; }
   else if (type === 'palm-result') { bubble.className = 'palm-result-msg'; bubble.innerHTML = content; }
   else { bubble.className = 'msg-bubble'; bubble.innerHTML = content; }
-  role === 'user' ? (wrap.appendChild(bubble), wrap.appendChild(av)) : (wrap.appendChild(av), wrap.appendChild(bubble));
+  msgContent.appendChild(label); msgContent.appendChild(bubble);
+  role === 'user' ? (wrap.appendChild(msgContent), wrap.appendChild(av)) : (wrap.appendChild(av), wrap.appendChild(msgContent));
   box.appendChild(wrap); box.scrollTop = box.scrollHeight;
   return bubble;
 }
@@ -252,10 +264,10 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null) {
   try {
     const data = await callAPI({ model: 'claude-haiku-4-5-20251001', max_tokens: 500, system, messages });
     const reply = data?.content?.[0]?.text || '잠깐 다시 시도해 주실 수 있어요? 😊';
-    typingEl.classList.remove('typing'); typingEl.innerHTML = reply.replace(/\n/g, '<br>');
+    typingEl.classList.remove('typing'); typingEl.innerHTML = formatReply(reply);
     if (!isAuto) { history.push({ role: 'assistant', content: reply }); if (history.length > 12) history = history.slice(-12); }
     incrementUsage();
-    if (cacheKey) setCached(cacheKey, reply.replace(/\n/g, '<br>'));
+    if (cacheKey) setCached(cacheKey, formatReply(reply));
     updateUserBadge();
   } catch (e) {
     typingEl.classList.remove('typing');

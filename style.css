@@ -456,7 +456,8 @@ body {
 
 .msg {
   display: flex;
-  gap: 10px
+  gap: 10px;
+  align-items: flex-start
 }
 
 .msg.user {
@@ -464,8 +465,8 @@ body {
 }
 
 .msg-avatar {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -476,40 +477,74 @@ body {
 }
 
 .msg-avatar.bot {
-  background: linear-gradient(135deg, var(--indigo-dim), var(--indigo));
-  color: #fff;
-  font-family: Georgia, serif;
-  font-style: italic
+  background: var(--surface3);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  color: var(--teal);
+  font-size: 16px
 }
 
 .msg-avatar.user {
-  background: var(--surface3);
-  border: 0.5px solid var(--border2);
-  color: var(--text-muted);
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: var(--indigo-light);
   font-size: 9px
 }
 
+.msg-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-width: 85%
+}
+
+.msg.user .msg-content {
+  align-items: flex-end
+}
+
+.msg-label {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-left: 2px;
+  font-weight: 500
+}
+
+.msg.bot .msg-label {
+  color: var(--gold);
+}
+
+.msg.user .msg-label {
+  color: rgba(99, 102, 241, 0.5);
+  margin-right: 2px
+}
+
 .msg-bubble {
-  max-width: 82%;
-  padding: 10px 14px;
-  border-radius: 12px;
+  padding: 12px 16px;
+  border-radius: 16px;
   font-size: 13px;
-  line-height: 1.75
+  line-height: 1.8
 }
 
 .msg.bot .msg-bubble {
-  background: var(--surface);
+  background: rgba(21, 28, 41, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 0.5px solid var(--border);
+  border-left: 2px solid rgba(251, 191, 36, 0.3);
   color: var(--text);
-  border-bottom-left-radius: 2px
+  border-radius: 16px;
+  border-top-left-radius: 2px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15)
 }
 
 .msg.user .msg-bubble {
   background: var(--indigo-dim);
   border: 0.5px solid rgba(99, 102, 241, 0.4);
   color: var(--indigo-light);
-  border-bottom-right-radius: 2px;
-  font-size: 12px
+  border-radius: 16px;
+  border-top-right-radius: 2px;
+  font-size: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1)
 }
 
 .msg-bubble.typing {
@@ -519,6 +554,19 @@ body {
 
 .hl-gold {
   color: var(--gold)
+}
+.hl-accent {
+  color: var(--gold);
+  font-weight: 700;
+}
+.reply-heading {
+  display: block;
+  font-weight: 700;
+  font-size: 1.05em;
+  color: var(--gold);
+  margin-top: 6px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(251, 191, 36, 0.1);
 }
 
 .card-reveal-msg {
