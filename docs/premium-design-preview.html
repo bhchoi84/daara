@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>프리미엄 회원 관리 시스템 설계</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0f172a; color:#e2e8f0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; padding:24px; line-height:1.6; }
+  .container { max-width:800px; margin:0 auto; }
+  h2 { font-size:28px; margin-bottom:4px; color:#f8fafc; }
+  h3 { font-size:18px; margin:24px 0 12px; color:#f8fafc; }
+  .subtitle { color:#94a3b8; font-size:15px; margin-bottom:32px; }
+  .section { margin-bottom:32px; }
+  .box { background:rgba(99,102,241,0.08); border-radius:12px; padding:20px; border-left:4px solid #6366f1; margin-bottom:16px; }
+  .box p, .box li { color:#cbd5e1; }
+  .box strong { color:#6366f1; }
+  ul { padding-left:20px; }
+  li { margin-bottom:4px; color:#94a3b8; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th { text-align:left; padding:12px 8px; color:#94a3b8; border-bottom:2px solid rgba(99,102,241,0.3); }
+  th:nth-child(2), td:nth-child(2) { text-align:center; }
+  th:nth-child(3), td:nth-child(3) { text-align:center; }
+  th:nth-child(3) { color:#f59e0b; }
+  td { padding:12px 8px; border-bottom:1px solid rgba(255,255,255,0.05); }
+  .red { color:#ef4444; }
+  .green { color:#10b981; font-weight:bold; }
+  .muted { color:#94a3b8; }
+  .note { font-size:12px; color:#64748b; margin-top:8px; }
+  .pricing { display:flex; gap:16px; flex-wrap:wrap; }
+  .price-card { flex:1; min-width:200px; border-radius:12px; padding:24px; text-align:center; }
+  .price-card.basic { background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.2); }
+  .price-card.recommend { background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(99,102,241,0.1)); border:1px solid rgba(245,158,11,0.3); }
+  .price-label { font-size:12px; color:#94a3b8; }
+  .price-label.gold { color:#f59e0b; }
+  .price-amount { font-size:36px; font-weight:bold; margin:8px 0; }
+  .price-amount.indigo { color:#6366f1; }
+  .price-amount.gold { color:#f59e0b; }
+  .price-sub { font-size:13px; color:#64748b; }
+  .code { background:rgba(0,0,0,0.3); border-radius:8px; padding:16px; font-family:'SF Mono',Consolas,monospace; font-size:13px; line-height:1.8; }
+  .c-gold { color:#f59e0b; }
+  .c-indigo { color:#6366f1; }
+  .c-green { color:#10b981; }
+  .c-red { color:#ef4444; }
+  .c-muted { color:#94a3b8; }
+  .flow-box { border-radius:8px; padding:16px; margin-bottom:12px; }
+  .flow-box.old { background:rgba(239,68,68,0.08); border-left:3px solid #ef4444; }
+  .flow-box.new { background:rgba(16,185,129,0.08); border-left:3px solid #10b981; }
+  .flow-label { font-size:12px; font-weight:bold; margin-bottom:8px; }
+  .flow-label.red { color:#ef4444; }
+  .flow-label.green { color:#10b981; }
+  .flow-steps { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:13px; }
+  .flow-chip { background:rgba(99,102,241,0.15); padding:4px 10px; border-radius:6px; }
+  .flow-chip.highlight { background:rgba(245,158,11,0.2); border:1px solid rgba(245,158,11,0.3); }
+  .flow-arrow { color:#64748b; }
+  .flow-note { font-size:11px; color:#64748b; margin-top:8px; }
+  .endpoint { background:rgba(99,102,241,0.06); border-radius:8px; padding:14px; display:flex; align-items:center; gap:12px; margin-bottom:8px; flex-wrap:wrap; }
+  .method { color:white; font-size:11px; padding:2px 8px; border-radius:4px; font-weight:bold; }
+  .method.post { background:#6366f1; }
+  .method.get { background:#10b981; }
+  .ep-path { font-family:monospace; font-size:13px; }
+  .ep-tag { font-size:11px; margin-left:auto; }
+  .ep-tag.modify { color:#f59e0b; }
+  .ep-tag.new { color:#10b981; }
+  .ep-desc { color:#64748b; font-size:12px; }
+  .pros-cons { display:flex; gap:16px; flex-wrap:wrap; }
+  .pros-cons > div { flex:1; min-width:200px; border-radius:8px; padding:16px; }
+  .pros { background:rgba(16,185,129,0.08); }
+  .pros h4 { color:#10b981; margin-bottom:8px; font-size:14px; }
+  .pros li { color:#94a3b8; }
+  .cons { background:rgba(239,68,68,0.08); }
+  .cons h4 { color:#ef4444; margin-bottom:8px; font-size:14px; }
+  .cons li { color:#94a3b8; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h2>프리미엄 회원 관리 시스템 설계</h2>
+<p class="subtitle">Vercel KV(Redis) 기반 서버 측 프리미엄 관리</p>
+
+<!-- 목표 -->
+<div class="section">
+  <h3>목표</h3>
+  <p style="margin-bottom:16px;">localStorage 기반 → <strong style="color:#6366f1;">Vercel KV 서버 측 관리</strong>로 전환</p>
+  <div class="pros-cons">
+    <div class="pros">
+      <h4>해결되는 문제</h4>
+      <ul>
+        <li>위변조 방지 (개발자도구 조작 차단)</li>
+        <li>기기 간 프리미엄 상태 공유</li>
+        <li>서버 측 사용량 검증</li>
+      </ul>
+    </div>
+    <div class="cons">
+      <h4>현재 문제점</h4>
+      <ul>
+        <li>localStorage만으로 프리미엄 관리</li>
+        <li>브라우저에서 직접 수정 가능</li>
+        <li>기기 변경 시 프리미엄 소실</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 사용자 식별 -->
+<div class="section">
+  <h3>사용자 식별: 이메일 기반</h3>
+  <div class="box">
+    <p style="margin-bottom:8px;"><strong>왜 이메일인가?</strong></p>
+    <ul>
+      <li>유지보수 비용 <strong style="color:#6366f1;">0원</strong> (SMS 인증 비용 없음)</li>
+      <li>개발 기간 <strong style="color:#6366f1;">1~2일</strong></li>
+      <li>기기 간 공유 가능</li>
+      <li>향후 마케팅(프로모션) 활용 가능</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 무료 vs 프리미엄 -->
+<div class="section">
+  <h3>무료 vs 프리미엄 비교</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>항목</th>
+        <th>무료</th>
+        <th>프리미엄 ★</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>일일 타로/운세 상담</td>
+        <td class="red">3회</td>
+        <td class="green">20회</td>
+      </tr>
+      <tr>
+        <td>손금/관상 분석</td>
+        <td class="red">1회/일</td>
+        <td class="green">5회/일</td>
+      </tr>
+      <tr>
+        <td>광고</td>
+        <td class="red">있음</td>
+        <td class="green">없음</td>
+      </tr>
+      <tr>
+        <td>답변 깊이</td>
+        <td class="muted">간결 (3~6문장)</td>
+        <td class="green">상세 풀이 (8~12문장)</td>
+      </tr>
+      <tr>
+        <td>AI 모델</td>
+        <td class="muted">Haiku</td>
+        <td class="muted">Haiku (동일)</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="note">* 모델은 동일, 프롬프트로 답변 깊이 차별화 → API 비용 ~10배 절감</p>
+</div>
+
+<!-- 요금제 -->
+<div class="section">
+  <h3>요금제</h3>
+  <div class="pricing">
+    <div class="price-card basic">
+      <p class="price-label">1일권</p>
+      <p class="price-amount indigo">99원</p>
+      <p class="price-sub">오늘 하루 프리미엄</p>
+    </div>
+    <div class="price-card recommend">
+      <p class="price-label gold">30일권 (추천)</p>
+      <p class="price-amount gold">1,900원</p>
+      <p class="price-sub">1일당 ~63원</p>
+    </div>
+  </div>
+</div>
+
+<!-- 데이터 구조 -->
+<div class="section">
+  <h3>Vercel KV 데이터 구조</h3>
+  <div class="code">
+    <span class="c-gold">premium:</span><span class="c-indigo">{email}</span> → {<br>
+    &nbsp;&nbsp;plan: <span class="c-green">"1day"</span> | <span class="c-green">"30day"</span>,<br>
+    &nbsp;&nbsp;expiry: <span class="c-green">"2026-04-27"</span>,<br>
+    &nbsp;&nbsp;paymentKey, orderId, approvedAt<br>
+    }<br><br>
+    <span class="c-gold">usage:</span><span class="c-indigo">{email}</span>:<span class="c-muted">{date}</span> → {<br>
+    &nbsp;&nbsp;count: <span class="c-red">5</span>,<br>
+    &nbsp;&nbsp;palm: <span class="c-red">1</span><br>
+    }
+  </div>
+  <p class="note">TTL 자동 만료: 1일권 24h, 30일권 30d, usage 24h</p>
+</div>
+
+<!-- API 흐름 -->
+<div class="section">
+  <h3>API 흐름</h3>
+  <div class="flow-box old">
+    <p class="flow-label red">현재 (위변조 가능)</p>
+    <div class="flow-steps">
+      <span class="flow-chip">브라우저</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-chip">/api/chat</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-chip">Anthropic</span>
+      <span style="color:#64748b; font-size:11px; margin-left:8px;">프리미엄: localStorage만 체크</span>
+    </div>
+  </div>
+  <div class="flow-box new">
+    <p class="flow-label green">변경 후 (서버 검증)</p>
+    <div class="flow-steps">
+      <span class="flow-chip">브라우저</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-chip">/api/chat + email</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-chip highlight">KV 검증</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-chip">Anthropic</span>
+    </div>
+    <p class="flow-note">프리미엄 → 상세 프롬프트 | 무료 → 간결 프롬프트 | 한도초과 → 403</p>
+  </div>
+</div>
+
+<!-- API 엔드포인트 -->
+<div class="section">
+  <h3>API 엔드포인트</h3>
+  <div class="endpoint">
+    <span class="method post">POST</span>
+    <span class="ep-path">/api/chat</span>
+    <span class="ep-tag modify">수정</span>
+    <span class="ep-desc">+ email, KV 검증, 프롬프트 분기</span>
+  </div>
+  <div class="endpoint">
+    <span class="method post">POST</span>
+    <span class="ep-path">/api/payment-confirm</span>
+    <span class="ep-tag modify">수정</span>
+    <span class="ep-desc">+ KV에 프리미엄 저장</span>
+  </div>
+  <div class="endpoint">
+    <span class="method get">GET</span>
+    <span class="ep-path">/api/user-status</span>
+    <span class="ep-tag new">신규</span>
+    <span class="ep-desc">프리미엄 여부 + 잔여 횟수 조회</span>
+  </div>
+</div>
+
+<!-- 환경변수 -->
+<div class="section">
+  <h3>필요 환경변수</h3>
+  <div class="code">
+    <span class="c-muted">기존:</span> ANTHROPIC_API_KEY, TOSS_SECRET_KEY<br>
+    <span class="c-green">추가:</span> <span class="c-gold">KV_REST_API_URL</span>, <span class="c-gold">KV_REST_API_TOKEN</span>
+  </div>
+  <p class="note">Vercel Dashboard → Storage → KV 생성 후 자동 연결</p>
+</div>
+
+</div>
+</body>
+</html>
