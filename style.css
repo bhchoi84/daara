@@ -1058,66 +1058,180 @@ body {
   color: var(--gold)
 }
 
-.palm-drop {
-  border: 1.5px dashed var(--rose-border);
-  border-radius: 16px;
-  padding: 32px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: linear-gradient(145deg, rgba(244, 114, 182, 0.03) 0%, rgba(244, 114, 182, 0.08) 100%);
+/* ── 손금/관상 헤더 ── */
+.palm-header {
   text-align: center;
-  box-shadow: inset 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+}
+.palm-header-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #d3bbff;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+.palm-header-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
-.palm-drop:hover {
-  background: linear-gradient(145deg, rgba(244, 114, 182, 0.08) 0%, rgba(244, 114, 182, 0.15) 100%);
-  border-color: var(--rose);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(244, 114, 182, 0.15);
-}
-
-.palm-drop-icon {
+/* ── 스캐너 영역 ── */
+.palm-scanner {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 24px auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 54px;
-  height: 54px;
+  cursor: pointer;
+}
+.palm-scanner-ring {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 1px solid rgba(225, 196, 113, 0.2);
+  animation: palmPulse 3s ease-in-out infinite;
+}
+.palm-scanner-ring-outer {
+  width: 224px;
+  height: 224px;
+  border-color: rgba(138, 212, 197, 0.1);
+  animation-delay: 0.5s;
+}
+@keyframes palmPulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+.palm-scanner-inner {
+  position: relative;
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
   background: var(--surface);
-  border: 1px solid rgba(244, 114, 182, 0.2);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  color: var(--rose);
-  animation: pulse 2.5s infinite;
+  border: 2px solid rgba(225, 196, 113, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 0 30px rgba(111, 66, 193, 0.15);
+  overflow: hidden;
+  transition: all 0.3s;
+  z-index: 1;
+}
+.palm-scanner-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(211, 187, 255, 0.05), transparent);
+  pointer-events: none;
+}
+.palm-scanner:hover .palm-scanner-inner {
+  border-color: rgba(225, 196, 113, 0.5);
+  box-shadow: 0 0 40px rgba(111, 66, 193, 0.25);
+}
+.palm-scanner-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(211, 187, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e1c471;
+}
+.palm-scanner-text {
+  font-size: 13px;
+  color: #e1c471;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.palm-scanner-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* ── 분석 항목 벤토 그리드 ── */
+.palm-guide-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.palm-guide-card {
+  background: rgba(25, 32, 46, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.palm-guide-card-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+.palm-guide-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.palm-guide-card-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.palm-guide-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.palm-guide-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 500;
+}
+.palm-guide-bar {
+  height: 3px;
+  border-radius: 2px;
+  opacity: 0.4;
+}
+.palm-guide-row-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.palm-bar-track {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--surface3);
+  overflow: hidden;
+}
+.palm-bar-fill {
+  height: 100%;
+  border-radius: 3px;
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(244, 114, 182, 0.3); }
-  70% { box-shadow: 0 0 0 10px rgba(244, 114, 182, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(244, 114, 182, 0); }
-}
-
-.palm-drop-title {
-  font-size: 15px;
-  color: var(--rose);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.palm-drop-sub {
-  font-size: 11.5px;
-  color: var(--text-muted);
-  line-height: 1.55
-}
-
-.palm-guide {
-  background: linear-gradient(180deg, var(--surface), rgba(28, 35, 51, 0.4));
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px 18px;
+  0% { box-shadow: 0 0 0 0 rgba(211, 187, 255, 0.3); }
+  70% { box-shadow: 0 0 0 10px rgba(211, 187, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(211, 187, 255, 0); }
 }
 
 /* ── 사용 한도 모달 ── */
@@ -1296,82 +1410,58 @@ body {
 }
 .palm-mode-select {
   display: flex;
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin-bottom: 8px;
+  justify-content: center;
 }
 .palm-mode-btn {
   flex: 1;
-  padding: 9px 6px;
-  border-radius: 10px;
-  border: 1px solid var(--border2);
-  background: var(--surface2);
+  min-width: 80px;
+  padding: 12px 8px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(25, 32, 46, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.palm-mode-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+.palm-mode-label {
+  font-size: 12px;
+  font-weight: 600;
 }
 .palm-mode-btn:hover {
   background: var(--surface3);
   color: var(--text);
 }
 .palm-mode-btn.active {
-  background: var(--indigo-pale);
-  border-color: var(--indigo-light);
-  color: var(--indigo-light);
-}
-.palm-guide-title {
-  font-size: 11px;
-  color: var(--text-muted);
-  margin-bottom: 12px;
-  font-weight: 500
-}
-
-.palm-guide-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px
-}
-
-.palm-line {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-}
-
-.palm-line-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  box-shadow: 0 0 6px currentColor;
-}
-
-.palm-line-text {
-  font-size: 11px;
-  color: var(--text-muted);
-  line-height: 1.4
-}
-
-.palm-line-name {
-  font-size: 12px;
-  color: var(--text);
-  font-weight: 600;
-  margin-bottom: 2px
+  background: rgba(111, 66, 193, 0.2);
+  border-color: rgba(211, 187, 255, 0.3);
+  color: #d3bbff;
+  box-shadow: 0 4px 16px rgba(111, 66, 193, 0.2);
 }
 
 .palm-preview-wrap {
-  border-radius: 14px;
+  border-radius: 20px;
   overflow: hidden;
-  border: 0.5px solid var(--rose-border);
-  position: relative
+  border: 2px solid rgba(225, 196, 113, 0.3);
+  position: relative;
+  box-shadow: 0 0 30px rgba(111, 66, 193, 0.15)
 }
 
 .palm-preview-img {
   width: 100%;
-  max-height: 180px;
+  max-height: 220px;
   object-fit: cover;
   display: block
 }
@@ -1379,36 +1469,43 @@ body {
 .palm-preview-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(17, 24, 39, 0.55);
+  background: rgba(12, 19, 33, 0.6);
+  backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
   justify-content: center
 }
 
 .palm-analyze-btn {
-  padding: 11px 28px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, rgba(244, 114, 182, 0.8), var(--rose));
+  padding: 14px 32px;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #6f42c1, #d3bbff);
   border: none;
   color: #fff;
-  font-size: 13px;
+  font-size: 14px;
   font-family: inherit;
   cursor: pointer;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(244, 114, 182, 0.25);
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(111, 66, 193, 0.35);
   transition: all 0.2s;
+  letter-spacing: 0.02em;
 }
 
 .palm-analyze-btn:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
+  box-shadow: 0 12px 32px rgba(111, 66, 193, 0.45);
+  transform: translateY(-2px);
 }
 
 .palm-change-link {
   font-size: 11px;
-  color: var(--text-dim);
+  color: var(--text-muted);
   cursor: pointer;
-  text-align: center
+  text-align: center;
+  margin-top: 8px;
+  transition: color 0.15s;
+}
+.palm-change-link:hover {
+  color: #d3bbff;
 }
 
 input[type=file] {
@@ -1537,9 +1634,24 @@ input[type=file] {
     padding: 10px 14px;
   }
   .palm-guide-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
   }
-  .palm-drop {
-    padding: 20px 14px;
+  .palm-scanner {
+    width: 160px;
+    height: 160px;
+    margin: 16px auto;
+  }
+  .palm-scanner-ring {
+    width: 160px;
+    height: 160px;
+  }
+  .palm-scanner-ring-outer {
+    width: 184px;
+    height: 184px;
+  }
+  .palm-scanner-inner {
+    width: 144px;
+    height: 144px;
   }
 }

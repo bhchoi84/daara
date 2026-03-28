@@ -84,28 +84,64 @@
 
       <div class="panel" id="panel-palm">
         <div class="form-panel" id="palm-panel">
-          <div class="palm-mode-select">
-            <button class="palm-mode-btn" onclick="selectPalmMode('right',this)">✋ 오른손</button>
-            <button class="palm-mode-btn" onclick="selectPalmMode('left',this)">🤚 왼손</button>
-            <button class="palm-mode-btn" onclick="selectPalmMode('face',this)">😊 관상</button>
+          <div class="palm-header">
+            <div class="palm-header-title serif">AI 손금·관상</div>
+            <div class="palm-header-sub">먼저 항목을 선택해 주세요</div>
           </div>
-          <div class="palm-drop" onclick="document.getElementById('palm-file').click()">
-            <div class="palm-drop-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/><path d="m9 9 3 3-3 3"/><path d="m15 9-3 3 3 3"/></svg>
+          <div class="palm-mode-select">
+            <button class="palm-mode-btn" onclick="selectPalmMode('right',this)">
+              <span class="palm-mode-icon">✋</span>
+              <span class="palm-mode-label">오른손</span>
+            </button>
+            <button class="palm-mode-btn" onclick="selectPalmMode('left',this)">
+              <span class="palm-mode-icon">🤚</span>
+              <span class="palm-mode-label">왼손</span>
+            </button>
+            <button class="palm-mode-btn" onclick="selectPalmMode('face',this)">
+              <span class="palm-mode-icon">😊</span>
+              <span class="palm-mode-label">관상</span>
+            </button>
+          </div>
+          <div class="palm-scanner" onclick="document.getElementById('palm-file').click()">
+            <div class="palm-scanner-ring"></div>
+            <div class="palm-scanner-ring palm-scanner-ring-outer"></div>
+            <div class="palm-scanner-inner">
+              <div class="palm-scanner-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              </div>
+              <div class="palm-scanner-text" id="palm-drop-title">사진 업로드</div>
+              <div class="palm-scanner-sub" id="palm-drop-sub">탭하여 스캔 시작</div>
             </div>
-            <div class="palm-drop-title" id="palm-drop-title">먼저 항목을 선택해 주세요</div>
-            <div class="palm-drop-sub" id="palm-drop-sub">위에서 오른손 · 왼손 · 관상 중 하나를 선택하세요</div>
           </div>
           <input type="file" id="palm-file" accept="image/*" onchange="onPalmFile(event)">
-          <div class="palm-guide">
-            <div class="palm-guide-title">다아라가 분석하는 항목</div>
-            <div class="palm-guide-grid">
-              <div class="palm-line"><div class="palm-line-dot" style="background:#F472B6;"></div><div class="palm-line-text"><div class="palm-line-name">감정선</div>사랑·감수성</div></div>
-              <div class="palm-line"><div class="palm-line-dot" style="background:#818CF8;"></div><div class="palm-line-text"><div class="palm-line-name">지능선</div>사고방식·재능</div></div>
-              <div class="palm-line"><div class="palm-line-dot" style="background:#34D399;"></div><div class="palm-line-text"><div class="palm-line-name">생명선</div>활력·건강</div></div>
-              <div class="palm-line"><div class="palm-line-dot" style="background:#FBBF24;"></div><div class="palm-line-text"><div class="palm-line-name">운명선</div>커리어·방향</div></div>
-              <div class="palm-line"><div class="palm-line-dot" style="background:#60A5FA;"></div><div class="palm-line-text"><div class="palm-line-name">이마·눈썹</div>운세·성격</div></div>
-              <div class="palm-line"><div class="palm-line-dot" style="background:#F59E0B;"></div><div class="palm-line-text"><div class="palm-line-name">눈·코·입</div>인연·재물</div></div>
+          <div class="palm-guide-grid">
+            <div class="palm-guide-card">
+              <div class="palm-guide-card-header">
+                <div class="palm-guide-dot" style="background:#d3bbff"></div>
+                <span class="palm-guide-card-label" style="color:#d3bbff">Palm Lines</span>
+              </div>
+              <div class="palm-guide-items">
+                <div class="palm-guide-row"><span>감정선</span><div class="palm-guide-bar" style="background:#d3bbff;width:70%"></div></div>
+                <div class="palm-guide-row"><span>지능선</span><div class="palm-guide-bar" style="background:#8ad4c5;width:60%"></div></div>
+                <div class="palm-guide-row"><span>생명선</span><div class="palm-guide-bar" style="background:#e1c471;width:75%"></div></div>
+                <div class="palm-guide-row"><span>운명선</span><div class="palm-guide-bar" style="background:#d3bbff;width:50%"></div></div>
+              </div>
+            </div>
+            <div class="palm-guide-card">
+              <div class="palm-guide-card-header">
+                <div class="palm-guide-dot" style="background:#e1c471"></div>
+                <span class="palm-guide-card-label" style="color:#e1c471">Face Zones</span>
+              </div>
+              <div class="palm-guide-items">
+                <div class="palm-guide-row-bar">
+                  <span>이마·눈썹</span>
+                  <div class="palm-bar-track"><div class="palm-bar-fill" style="width:65%;background:linear-gradient(90deg,rgba(225,196,113,0.2),#e1c471)"></div></div>
+                </div>
+                <div class="palm-guide-row-bar">
+                  <span>눈·코·입</span>
+                  <div class="palm-bar-track"><div class="palm-bar-fill" style="width:50%;background:linear-gradient(90deg,rgba(138,212,197,0.2),#8ad4c5)"></div></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
