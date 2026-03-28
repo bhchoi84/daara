@@ -194,6 +194,7 @@ function goMenu(menu, el) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + menu).classList.add('active');
   document.querySelectorAll('.main-title-text').forEach(t => t.textContent = TITLES[menu]);
+  toggleSidebar(true);
 }
 
 /* ── 사이드바 접기/펼치기 (모바일) ── */
