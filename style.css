@@ -1717,6 +1717,8 @@ input[type=file] {
     width: 100%;
     border-right: none;
     border-bottom: 0.5px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+    z-index: 20;
   }
   .logo {
     padding: 10px 14px;
@@ -1802,6 +1804,7 @@ input[type=file] {
   }
   .main {
     min-height: 0;
+    overflow: hidden;
   }
   .zodiac-grid {
     grid-template-columns: repeat(3, 1fr);
