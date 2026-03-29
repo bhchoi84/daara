@@ -1922,11 +1922,21 @@ input[type=file] {
 }
 /* ── 하단 저작권 ── */
 .app-footer {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
   text-align: center;
-  padding: 16px 12px;
+  padding: 10px 12px;
   font-size: 11px;
   color: var(--text-muted);
-  opacity: 0.6;
+  opacity: 0;
+  background: var(--bg);
   border-top: 1px solid var(--border);
   line-height: 1.6;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 50;
+}
+.app-footer.visible {
+  opacity: 0.6;
+  pointer-events: auto;
 }

@@ -545,4 +545,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (adBody) adBody.textContent = `오늘 ${getSocialCount('consulting')}명이 상담 중`;
   const limitSub = document.getElementById('limit-modal-sub');
   if (limitSub) limitSub.innerHTML = `오늘의 무료 상담 3회를 모두 사용했어요.<br><b>지금 ${getSocialCount('premium')}명이 프리미엄으로 상담 중이에요.</b>`;
+
+  // 스크롤 맨 아래 감지 → 저작권 footer 표시
+  const footer = document.getElementById('app-footer');
+  function checkScrollBottom(el) {
+    if (!el || !footer) return;
+    const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 30;
+    footer.classList.toggle('visible', atBottom);
+  }
+  document.querySelectorAll('.form-panel, #messages').forEach(el => {
+    el.addEventListener('scroll', () => checkScrollBottom(el));
+  });
+  // input focus 시 footer 숨김
+  document.addEventListener('focusin', e => {
+    if (e.target.matches('input, select, textarea')) footer.classList.remove('visible');
+  });
 });
