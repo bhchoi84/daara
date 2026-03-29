@@ -210,8 +210,10 @@ function showUserInfoModal() {
     document.getElementById('um-job').value = u.job || '';
     if (u.gender) { selectedGender = u.gender; document.querySelectorAll('.user-modal-gender .gender-btn:not(.cal-btn)').forEach(b => { if (b.textContent.trim() === u.gender || (u.gender==='선택안함'&&b.textContent.trim()==='선택안함')) b.classList.add('active'); }); }
     selectedCalendar = u.calendar || '양력';
-    document.querySelectorAll('.cal-btn:not(.match-p-cal)').forEach(b => { b.classList.remove('active'); if (b.textContent.includes(selectedCalendar === '음력' ? '음력' : '양력')) b.classList.add('active'); });
+  } else {
+    selectedCalendar = '양력';
   }
+  document.querySelectorAll('.cal-btn:not(.match-p-cal)').forEach(b => { b.classList.remove('active'); if (b.textContent.includes(selectedCalendar === '음력' ? '음력' : '양력')) b.classList.add('active'); });
 }
 function ensureUserInfo(callback) {
   const u = getUserInfo();
