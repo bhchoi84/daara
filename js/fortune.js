@@ -9,9 +9,15 @@ async function runStar() {
 }
 
 let matchPartnerGender = '';
+let matchPartnerCalendar = '양력';
 function selectMatchGender(val, el) {
   matchPartnerGender = val;
   document.querySelectorAll('.match-p-gender').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+function selectMatchCalendar(val, el) {
+  matchPartnerCalendar = val;
+  document.querySelectorAll('.match-p-cal').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
 }
 
@@ -22,7 +28,8 @@ function updateMatchMyInfo() {
   if (!u) { el.innerHTML = '<span class="match-info-placeholder">먼저 내 정보를 입력해 주세요 →</span>'; return; }
   const ddi = getDdi(parseInt(u.birthdate.slice(0,4)));
   const emoji = DDI_EMOJI[ddi] || '';
-  let html = `<span class="match-info-filled"><b>${u.name}</b> · ${emoji} ${ddi} · ${u.age}세 · ${u.gender}`;
+  const cal = u.calendar || '양력';
+  let html = `<span class="match-info-filled"><b>${u.name}</b> · ${emoji} ${ddi} · ${cal} · ${u.age}세 · ${u.gender}`;
   if (u.saju) html += ` · 연주:${u.saju.year} 일주:${u.saju.day}`;
   if (u.siji) html += ` · ${u.siji.split('(')[0]}`;
   if (u.job) html += ` · ${u.job}`;
@@ -41,7 +48,8 @@ function getPartnerInfo() {
   const age = new Date().getFullYear() - parseInt(birth.slice(0,4));
   const saju = getSaju(birth);
   const ddi = getDdi(parseInt(birth.slice(0,4)));
-  return { name, birthdate: birth, gender, zodiac, age, saji: saju, siji, job, ddi };
+  const calendar = matchPartnerCalendar || '양력';
+  return { name, birthdate: birth, gender, zodiac, age, saji: saju, siji, job, ddi, calendar };
 }
 
 async function runMatch() {
@@ -56,7 +64,8 @@ async function runMatch() {
   const myYear = parseInt(u.birthdate.slice(0,4));
   const myDdi = getDdi(myYear);
   const myEmoji = DDI_EMOJI[myDdi] || '';
-  let myInfo = `${u.name}(${myEmoji} ${myDdi}, ${u.age}세, ${u.gender}`;
+  const myCal = u.calendar || '양력';
+  let myInfo = `${u.name}(${myEmoji} ${myDdi}, ${myCal} ${u.birthdate}, ${u.age}세, ${u.gender}`;
   if (u.saju) myInfo += `, 연주:${u.saju.year} 일주:${u.saju.day}`;
   if (u.siji) myInfo += `, ${u.siji.split('(')[0]}생`;
   if (u.job) myInfo += `, ${u.job}`;
@@ -66,7 +75,7 @@ async function runMatch() {
   const pYear = parseInt(partner.birthdate.slice(0,4));
   const pDdi = getDdi(pYear);
   const pEmoji = DDI_EMOJI[pDdi] || '';
-  let pInfo = `${partner.name}(${pEmoji} ${pDdi}, ${partner.age}세, ${partner.gender}`;
+  let pInfo = `${partner.name}(${pEmoji} ${pDdi}, ${partner.calendar || '양력'} ${partner.birthdate}, ${partner.age}세, ${partner.gender}`;
   if (partner.saji) pInfo += `, 연주:${partner.saji.year} 일주:${partner.saji.day}`;
   if (partner.siji) pInfo += `, ${partner.siji.split('(')[0]}생`;
   if (partner.job) pInfo += `, ${partner.job}`;
@@ -107,7 +116,8 @@ function updateMoneyMyInfo() {
   if (!u) { el.innerHTML = '<span class="match-info-placeholder">내 정보를 입력하면 사주 기반 분석이 가능해요 →</span>'; return; }
   const ddi = getDdi(parseInt(u.birthdate.slice(0,4)));
   const emoji = DDI_EMOJI[ddi] || '';
-  let html = `<span class="match-info-filled"><b>${u.name}</b> · ${emoji} ${ddi} · ${u.zodiac} · ${u.age}세`;
+  const cal = u.calendar || '양력';
+  let html = `<span class="match-info-filled"><b>${u.name}</b> · ${emoji} ${ddi} · ${cal} · ${u.age}세`;
   if (u.saju) html += ` · 연주:${u.saju.year} 일주:${u.saju.day}`;
   if (u.siji) html += ` · ${u.siji.split('(')[0]}생`;
   if (u.job) html += ` · ${u.job}`;

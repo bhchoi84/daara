@@ -144,13 +144,13 @@ function getUserInfo() {
     return stored;
   } catch { return null; }
 }
-function saveUserInfo(name, birthdate, gender, siji, job) {
+function saveUserInfo(name, birthdate, gender, siji, job, calendar) {
   const today = new Date().toISOString().slice(0,10);
   const zodiac = getZodiac(birthdate);
   const age = today.slice(0,4) - birthdate.slice(0,4);
   // 천간지지 계산 (사주 연주·일주)
   const saju = getSaju(birthdate);
-  localStorage.setItem('daara_user', JSON.stringify({ name, birthdate, gender, zodiac, age, siji: siji || '', job: job || '', saju, date: today }));
+  localStorage.setItem('daara_user', JSON.stringify({ name, birthdate, gender, zodiac, age, siji: siji || '', job: job || '', saju, calendar: calendar || '양력', date: today }));
 }
 function getSaju(birthdate) {
   const heavenly = ['갑','을','병','정','무','기','경','신','임','계'];
@@ -180,7 +180,7 @@ function getUserContext() {
   const hour = now.getHours();
   const currentSiji = ['자시','축시','인시','묘시','진시','사시','오시','미시','신시','유시','술시','해시'][Math.floor(((hour + 1) % 24) / 2)];
   if (!u) return `\n[현재] ${dateStr} ${timeStr} (${currentSiji})${locStr}`;
-  let ctx = `\n[사용자] 이름: ${u.name} / 생년월일: ${u.birthdate}(${u.age}세) / 성별: ${u.gender} / 별자리: ${u.zodiac}`;
+  let ctx = `\n[사용자] 이름: ${u.name} / 생년월일: ${u.birthdate}(${u.calendar || '양력'}, ${u.age}세) / 성별: ${u.gender} / 별자리: ${u.zodiac}`;
   if (u.saju) ctx += ` / 사주 연주: ${u.saju.year} / 일주: ${u.saju.day}`;
   if (u.siji) ctx += ` / 태어난 시: ${u.siji}`;
   if (u.job) ctx += ` / 직업: ${u.job}`;
@@ -189,7 +189,13 @@ function getUserContext() {
 }
 function selectGender(val, el) {
   selectedGender = val;
-  document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.user-modal-gender .gender-btn:not(.cal-btn)').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+let selectedCalendar = '양력';
+function selectCalendar(val, el) {
+  selectedCalendar = val;
+  document.querySelectorAll('.cal-btn:not(.match-p-cal)').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
 }
 
@@ -202,7 +208,9 @@ function showUserInfoModal() {
     document.getElementById('um-birth').value = u.birthdate || '';
     document.getElementById('um-siji').value = u.siji || '';
     document.getElementById('um-job').value = u.job || '';
-    if (u.gender) { selectedGender = u.gender; document.querySelectorAll('.gender-btn').forEach(b => { if (b.textContent.trim() === u.gender || (u.gender==='선택안함'&&b.textContent.trim()==='선택안함')) b.classList.add('active'); }); }
+    if (u.gender) { selectedGender = u.gender; document.querySelectorAll('.user-modal-gender .gender-btn:not(.cal-btn)').forEach(b => { if (b.textContent.trim() === u.gender || (u.gender==='선택안함'&&b.textContent.trim()==='선택안함')) b.classList.add('active'); }); }
+    selectedCalendar = u.calendar || '양력';
+    document.querySelectorAll('.cal-btn:not(.match-p-cal)').forEach(b => { b.classList.remove('active'); if (b.textContent.includes(selectedCalendar === '음력' ? '음력' : '양력')) b.classList.add('active'); });
   }
 }
 function ensureUserInfo(callback) {
@@ -236,7 +244,8 @@ function submitUserInfo() {
   const gender = selectedGender || '선택안함';
   const siji = document.getElementById('um-siji').value;
   const job = document.getElementById('um-job').value.trim();
-  saveUserInfo(name, birth, gender, siji, job);
+  const calendar = selectedCalendar || '양력';
+  saveUserInfo(name, birth, gender, siji, job, calendar);
   document.getElementById('user-modal-overlay').style.display = 'none';
   updateUserBadge();
   if (typeof updateMatchMyInfo === 'function') updateMatchMyInfo();
