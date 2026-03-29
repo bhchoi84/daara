@@ -1408,6 +1408,28 @@ body {
   margin-bottom: 10px;
 }
 .card-reading-block:last-child { margin-bottom: 0; }
+
+/* 3장 요약 카드 */
+.crb-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.crb-summary-item {
+  background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(167,139,250,0.06));
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.crb-summary-item:hover {
+  border-color: var(--gold-border);
+  background: linear-gradient(135deg, rgba(251,191,36,0.06), rgba(99,102,241,0.06));
+}
+.crb-summary-item:active {
+  transform: scale(0.98);
+}
 .crb-pos {
   font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase;
   color: var(--indigo-light); font-weight: 600; margin-bottom: 6px;
