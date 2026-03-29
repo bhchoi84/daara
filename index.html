@@ -333,7 +333,7 @@
       <button class="user-modal-close" onclick="document.getElementById('user-modal-overlay').style.display='none'">&times;</button>
       <div class="user-modal-logo">✨</div>
       <div class="user-modal-title serif">10초면 끝! 나만의 맞춤 운세 시작</div>
-      <div class="user-modal-sub">이름과 생년월일만 알려주시면 AI가 맞춤 분석해 드려요</div>
+      <div class="user-modal-sub">기본 정보만으로도 OK! 사주 시간·직업을 추가하면 더 정확해요</div>
       <div class="user-modal-field">
         <label class="user-modal-label">이름 (닉네임도 좋아요)</label>
         <input class="user-modal-input" id="um-name" type="text" placeholder="예: 지은이, 별이, 민준" maxlength="10">
@@ -349,6 +349,28 @@
           <button class="gender-btn" onclick="selectGender('남',this)">남성</button>
           <button class="gender-btn" onclick="selectGender('선택안함',this)">선택안함</button>
         </div>
+      </div>
+      <div class="user-modal-field">
+        <label class="user-modal-label">태어난 시 (사주용, 선택)</label>
+        <select class="user-modal-input" id="um-siji">
+          <option value="">모르겠어요</option>
+          <option value="자시(23:00~01:00)">🐀 자시 (23:00~01:00)</option>
+          <option value="축시(01:00~03:00)">🐂 축시 (01:00~03:00)</option>
+          <option value="인시(03:00~05:00)">🐅 인시 (03:00~05:00)</option>
+          <option value="묘시(05:00~07:00)">🐇 묘시 (05:00~07:00)</option>
+          <option value="진시(07:00~09:00)">🐉 진시 (07:00~09:00)</option>
+          <option value="사시(09:00~11:00)">🐍 사시 (09:00~11:00)</option>
+          <option value="오시(11:00~13:00)">🐴 오시 (11:00~13:00)</option>
+          <option value="미시(13:00~15:00)">🐑 미시 (13:00~15:00)</option>
+          <option value="신시(15:00~17:00)">🐵 신시 (15:00~17:00)</option>
+          <option value="유시(17:00~19:00)">🐔 유시 (17:00~19:00)</option>
+          <option value="술시(19:00~21:00)">🐶 술시 (19:00~21:00)</option>
+          <option value="해시(21:00~23:00)">🐷 해시 (21:00~23:00)</option>
+        </select>
+      </div>
+      <div class="user-modal-field">
+        <label class="user-modal-label">직업 (선택)</label>
+        <input class="user-modal-input" id="um-job" type="text" placeholder="예: 회사원, 학생, 자영업, 프리랜서" maxlength="20">
       </div>
       <button class="user-modal-submit" onclick="submitUserInfo()">무료로 운세 보기 ✨</button>
     </div>

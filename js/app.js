@@ -142,11 +142,31 @@ function getUserInfo() {
     return stored;
   } catch { return null; }
 }
-function saveUserInfo(name, birthdate, gender) {
+function saveUserInfo(name, birthdate, gender, siji, job) {
   const today = new Date().toISOString().slice(0,10);
   const zodiac = getZodiac(birthdate);
   const age = today.slice(0,4) - birthdate.slice(0,4);
-  localStorage.setItem('daara_user', JSON.stringify({ name, birthdate, gender, zodiac, age, date: today }));
+  // 천간지지 계산 (사주 연주·일주)
+  const saju = getSaju(birthdate);
+  localStorage.setItem('daara_user', JSON.stringify({ name, birthdate, gender, zodiac, age, siji: siji || '', job: job || '', saju, date: today }));
+}
+function getSaju(birthdate) {
+  const heavenly = ['갑','을','병','정','무','기','경','신','임','계'];
+  const earthly = ['자','축','인','묘','진','사','오','미','신','유','술','해'];
+  const y = parseInt(birthdate.slice(0,4));
+  // 연주 (년간지)
+  const yH = heavenly[(y - 4) % 10];
+  const yE = earthly[(y - 4) % 12];
+  // 일주 (일간지) — 기준일 2000-01-07(경진일)로부터 계산
+  const base = new Date(2000, 0, 7);
+  const target = new Date(birthdate);
+  const diff = Math.round((target - base) / 86400000);
+  const dH = heavenly[((diff % 10) + 10) % 10]; // 경=6이므로 offset 6
+  const dE = earthly[((diff % 12) + 12) % 12]; // 진=4이므로 offset 4
+  // 보정: 2000-01-07 = 경(6)진(4)
+  const dHi = (6 + diff % 10 + 10) % 10;
+  const dEi = (4 + diff % 12 + 12) % 12;
+  return { year: yH + yE, day: heavenly[dHi] + earthly[dEi] };
 }
 function getUserContext() {
   const u = getUserInfo();
@@ -154,8 +174,16 @@ function getUserContext() {
   const dateStr = now.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
   const timeStr = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
   const locStr = userLocation ? ` / 위치: ${userLocation.city}, ${userLocation.region}, ${userLocation.country}` : '';
-  if (!u) return `\n[현재] ${dateStr} ${timeStr}${locStr}`;
-  return `\n[사용자] 이름: ${u.name} / 생년월일: ${u.birthdate}(${u.age}세) / 성별: ${u.gender} / 별자리: ${u.zodiac}\n[현재] ${dateStr} ${timeStr}${locStr}`;
+  // 현재 시진 계산
+  const hour = now.getHours();
+  const currentSiji = ['자시','축시','인시','묘시','진시','사시','오시','미시','신시','유시','술시','해시'][Math.floor(((hour + 1) % 24) / 2)];
+  if (!u) return `\n[현재] ${dateStr} ${timeStr} (${currentSiji})${locStr}`;
+  let ctx = `\n[사용자] 이름: ${u.name} / 생년월일: ${u.birthdate}(${u.age}세) / 성별: ${u.gender} / 별자리: ${u.zodiac}`;
+  if (u.saju) ctx += ` / 사주 연주: ${u.saju.year} / 일주: ${u.saju.day}`;
+  if (u.siji) ctx += ` / 태어난 시: ${u.siji}`;
+  if (u.job) ctx += ` / 직업: ${u.job}`;
+  ctx += `\n[현재] ${dateStr} ${timeStr} (${currentSiji})${locStr}`;
+  return ctx;
 }
 function selectGender(val, el) {
   selectedGender = val;
@@ -170,6 +198,8 @@ function showUserInfoModal() {
   if (u) {
     document.getElementById('um-name').value = u.name || '';
     document.getElementById('um-birth').value = u.birthdate || '';
+    document.getElementById('um-siji').value = u.siji || '';
+    document.getElementById('um-job').value = u.job || '';
     if (u.gender) { selectedGender = u.gender; document.querySelectorAll('.gender-btn').forEach(b => { if (b.textContent.trim() === u.gender || (u.gender==='선택안함'&&b.textContent.trim()==='선택안함')) b.classList.add('active'); }); }
   }
 }
@@ -202,7 +232,9 @@ function submitUserInfo() {
   if (!name) { document.getElementById('um-name').focus(); return; }
   if (!birth) { document.getElementById('um-birth').focus(); return; }
   const gender = selectedGender || '선택안함';
-  saveUserInfo(name, birth, gender);
+  const siji = document.getElementById('um-siji').value;
+  const job = document.getElementById('um-job').value.trim();
+  saveUserInfo(name, birth, gender, siji, job);
   document.getElementById('user-modal-overlay').style.display = 'none';
   updateUserBadge();
   const u = getUserInfo();
@@ -365,10 +397,12 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null) {
   btn.disabled = true; input.disabled = true;
   if (userLabel) addMsg('user', userLabel);
   const typingEl = addMsg('bot', '생각하고 있어요···'); typingEl.classList.add('typing');
-  const system = `당신은 따뜻하고 섬세한 AI 타로·운세 상담사 '다아라'입니다.${getUserContext()}
+  const system = `당신은 따뜻하고 섬세한 AI 타로·운세·사주 상담사 '다아라'입니다.${getUserContext()}
 사용자 감정에 먼저 공감해 주세요. 친한 언니처럼 따뜻하고 공감 어린 존댓말을 씁니다.
-사용자의 이름, 별자리, 나이, 성별을 자연스럽게 반영해 개인화된 답변을 해주세요.
-오늘 날짜, 요일, 시간대와 사용자의 현재 위치(도시/지역)의 계절감·기운을 자연스럽게 녹여주세요.
+사용자의 이름, 별자리, 나이, 성별, 직업을 자연스럽게 반영해 개인화된 답변을 해주세요.
+사주 정보(연주, 일주, 태어난 시)가 있으면 천간지지·오행의 기운을 해석에 녹여주세요.
+오늘 날짜·요일·현재 시진과 사용자 위치의 계절감·기운을 자연스럽게 반영하세요.
+직업이 있으면 직업 특성에 맞는 구체적 조언(직장운, 사업운, 학업운 등)을 포함하세요.
 "~것 같아요", "~할 수 있어요" 처럼 단정 짓지 않고 부드럽게 표현합니다.
 이모지를 1~2개 자연스럽게 씁니다. 3~6문장 내외로 간결하고 따뜻하게 마무리합니다.
 답변은 항상 같은 사용자에 대한 일관된 흐름을 유지해 주세요.`;
@@ -397,10 +431,12 @@ async function askClaudeTarot3(prompt, cards) {
   const btn = document.getElementById('send-btn'), input = document.getElementById('chat-input');
   btn.disabled = true; input.disabled = true;
   const typingEl = addMsg('bot', '카드를 해석하고 있어요···'); typingEl.classList.add('typing');
-  const system = `당신은 따뜻하고 섬세한 AI 타로·운세 상담사 '다아라'입니다.${getUserContext()}
+  const system = `당신은 따뜻하고 섬세한 AI 타로·운세·사주 상담사 '다아라'입니다.${getUserContext()}
 사용자 감정에 먼저 공감해 주세요. 친한 언니처럼 따뜻하고 공감 어린 존댓말을 씁니다.
-사용자의 이름, 별자리, 나이, 성별을 자연스럽게 반영해 개인화된 답변을 해주세요.
-오늘 날짜, 요일, 시간대와 사용자의 현재 위치(도시/지역)의 계절감·기운을 자연스럽게 녹여주세요.
+사용자의 이름, 별자리, 나이, 성별, 직업을 자연스럽게 반영해 개인화된 답변을 해주세요.
+사주 정보(연주, 일주, 태어난 시)가 있으면 천간지지·오행의 기운을 해석에 녹여주세요.
+오늘 날짜·요일·현재 시진과 사용자 위치의 계절감·기운을 자연스럽게 반영하세요.
+직업이 있으면 직업 특성에 맞는 구체적 조언을 포함하세요.
 "~것 같아요", "~할 수 있어요" 처럼 단정 짓지 않고 부드럽게 표현합니다.
 이모지를 1~2개 자연스럽게 씁니다.
 답변은 항상 같은 사용자에 대한 일관된 흐름을 유지해 주세요.`;
