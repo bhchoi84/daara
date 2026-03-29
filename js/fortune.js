@@ -209,6 +209,8 @@ function selectPalmMode(mode, el) {
 }
 
 function openPalmUpload() {
+  const pc = document.getElementById('palm-copyright');
+  if (pc) pc.style.display = 'none';
   if (!palmMode) {
     // 모드 미선택 시 버튼 강조 애니메이션
     const modeSelect = document.querySelector('.palm-mode-select');
@@ -237,6 +239,8 @@ function getPalmModeExpect() {
 
 function onPalmFile(e) {
   const file = e.target.files[0]; if (!file) return;
+  const pc = document.getElementById('palm-copyright');
+  if (pc) pc.style.display = 'none';
   const reader = new FileReader();
   reader.onload = async ev => {
     const resized = await resizeImage(ev.target.result, 1024);

@@ -565,4 +565,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     }
   }
+
+  // 손금관상 패널 저작권: 스크롤 하단 도달 시 표시, 업로드 시 숨김
+  const palmCr = document.getElementById('palm-copyright');
+  const palmPanel = document.getElementById('palm-panel');
+  if (palmCr && palmPanel) {
+    palmPanel.addEventListener('scroll', () => {
+      const atBottom = palmPanel.scrollHeight - palmPanel.scrollTop - palmPanel.clientHeight < 30;
+      palmCr.style.display = atBottom ? '' : 'none';
+    });
+  }
 });
