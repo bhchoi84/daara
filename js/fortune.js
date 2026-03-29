@@ -20,8 +20,10 @@ function updateMatchMyInfo() {
   if (!el) return;
   const u = getUserInfo();
   if (!u) { el.innerHTML = '<span class="match-info-placeholder">먼저 내 정보를 입력해 주세요 →</span>'; return; }
-  let html = `<span class="match-info-filled"><b>${u.name}</b> · ${u.zodiac} · ${u.age}세 · ${u.gender}`;
-  if (u.saju) html += ` · ${u.saju.year}년 ${u.saju.day}일`;
+  const ddi = getDdi(parseInt(u.birthdate.slice(0,4)));
+  const emoji = DDI_EMOJI[ddi] || '';
+  let html = `<span class="match-info-filled"><b>${u.name}</b> · ${emoji} ${ddi} · ${u.age}세 · ${u.gender}`;
+  if (u.saju) html += ` · 연주:${u.saju.year} 일주:${u.saju.day}`;
   if (u.siji) html += ` · ${u.siji.split('(')[0]}`;
   if (u.job) html += ` · ${u.job}`;
   html += `</span> <span style="font-size:11px;color:var(--text-muted)">수정 →</span>`;
@@ -38,7 +40,8 @@ function getPartnerInfo() {
   const zodiac = getZodiac(birth);
   const age = new Date().getFullYear() - parseInt(birth.slice(0,4));
   const saju = getSaju(birth);
-  return { name, birthdate: birth, gender, zodiac, age, saji: saju, siji, job };
+  const ddi = getDdi(parseInt(birth.slice(0,4)));
+  return { name, birthdate: birth, gender, zodiac, age, saji: saju, siji, job, ddi };
 }
 
 async function runMatch() {
@@ -49,30 +52,38 @@ async function runMatch() {
   const u = getUserInfo();
   showChatPanel('match');
 
-  // 나의 사주 정보
-  let myInfo = `${u.name}(${u.zodiac}, ${u.age}세, ${u.gender}`;
+  // 나의 띠·사주 정보
+  const myYear = parseInt(u.birthdate.slice(0,4));
+  const myDdi = getDdi(myYear);
+  const myEmoji = DDI_EMOJI[myDdi] || '';
+  let myInfo = `${u.name}(${myEmoji} ${myDdi}, ${u.age}세, ${u.gender}`;
   if (u.saju) myInfo += `, 연주:${u.saju.year} 일주:${u.saju.day}`;
   if (u.siji) myInfo += `, ${u.siji.split('(')[0]}생`;
   if (u.job) myInfo += `, ${u.job}`;
   myInfo += ')';
 
-  // 상대 사주 정보
-  let pInfo = `${partner.name}(${partner.zodiac}, ${partner.age}세, ${partner.gender}`;
+  // 상대 띠·사주 정보
+  const pYear = parseInt(partner.birthdate.slice(0,4));
+  const pDdi = getDdi(pYear);
+  const pEmoji = DDI_EMOJI[pDdi] || '';
+  let pInfo = `${partner.name}(${pEmoji} ${pDdi}, ${partner.age}세, ${partner.gender}`;
   if (partner.saji) pInfo += `, 연주:${partner.saji.year} 일주:${partner.saji.day}`;
   if (partner.siji) pInfo += `, ${partner.siji.split('(')[0]}생`;
   if (partner.job) pInfo += `, ${partner.job}`;
   pInfo += ')';
 
+  const today = new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
   const cacheKey = `match_${u.birthdate}_${partner.birthdate}_${rel}`;
   await askClaude(
-    `궁합 분석을 부탁해요!\n` +
+    `궁합 분석을 부탁해요! 오늘은 ${today}입니다.\n` +
     `나: ${myInfo}\n상대: ${pInfo}\n관계: ${rel}\n\n` +
-    `두 사람의 사주(천간지지·오행 상생상극), 별자리 궁합, 성격 궁합을 종합 분석해 주세요.\n` +
+    `동양 사주학과 12지신 기반으로 두 사람의 궁합을 분석해 주세요. 별자리가 아닌 천간지지·오행 상생상극, 12지신 삼합·육합·상충·상극, 띠 궁합을 중심으로 풀어주세요.\n\n` +
     `아래 형식으로 알려주세요:\n\n` +
     `💕 두 사람의 궁합 점수\n(100점 만점으로 총점과 한줄 요약)\n\n` +
-    `🔥 잘 맞는 점\n(사주·별자리 기반 2~3가지)\n\n` +
-    `⚡ 조심할 점\n(충돌 가능성 2~3가지)\n\n` +
-    `💌 관계를 더 좋게 만드는 조언\n(구체적 행동 2~3가지)\n\n` +
+    `🐾 띠 궁합\n(두 사람의 띠가 삼합·육합·상충 중 어디에 해당하는지, 그 의미 2~3문장)\n\n` +
+    `🔥 잘 맞는 점\n(사주 오행·천간지지 기반 2~3가지)\n\n` +
+    `⚡ 조심할 점\n(충·극이 있는 부분 2~3가지)\n\n` +
+    `💌 관계를 더 좋게 만드는 조언\n(오행 보완법, 구체적 행동 2~3가지)\n\n` +
     `✨ 다아라의 한마디\n(따뜻한 마무리)`,
     true, `♡ 궁합 분석 (${u.name} ↔ ${partner.name})`, cacheKey
   );
