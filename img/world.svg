@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="goldRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5d77a"/>
+      <stop offset="50%" stop-color="#e1c471"/>
+      <stop offset="100%" stop-color="#c4a24e"/>
+    </linearGradient>
+  </defs>
+  <!-- Laurel wreath (outer ring) -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="url(#goldRing)" stroke-width="3"/>
+  <circle cx="32" cy="32" r="25" fill="none" stroke="#c4a24e" stroke-width="1" opacity="0.5"/>
+  <!-- Globe background (dark) -->
+  <circle cx="32" cy="32" r="20" fill="#0c1321"/>
+  <!-- Globe gold grid lines - meridians -->
+  <ellipse cx="32" cy="32" rx="20" ry="20" fill="none" stroke="#c4a24e" stroke-width="0.8"/>
+  <ellipse cx="32" cy="32" rx="10" ry="20" fill="none" stroke="#c4a24e" stroke-width="0.6" opacity="0.7"/>
+  <ellipse cx="32" cy="32" rx="3" ry="20" fill="none" stroke="#c4a24e" stroke-width="0.5" opacity="0.5"/>
+  <!-- Latitude lines -->
+  <line x1="12" y1="24" x2="52" y2="24" stroke="#c4a24e" stroke-width="0.5" opacity="0.6"/>
+  <line x1="12" y1="32" x2="52" y2="32" stroke="#c4a24e" stroke-width="0.7" opacity="0.7"/>
+  <line x1="12" y1="40" x2="52" y2="40" stroke="#c4a24e" stroke-width="0.5" opacity="0.6"/>
+  <!-- Continents (gold land masses) -->
+  <!-- Europe/Africa -->
+  <path d="M30 20 C32 19 34 20 35 22 C36 24 34 26 33 27 C34 29 36 30 35 33 C34 36 32 38 30 40 C28 42 29 44 30 45 C28 44 27 42 27 39 C27 36 28 34 29 32 C28 30 27 28 28 26 C28 24 29 21 30 20Z"
+    fill="#c4a24e" opacity="0.8"/>
+  <!-- Americas -->
+  <path d="M22 22 C23 21 24 22 24 24 C24 26 23 28 22 29 C21 30 20 32 21 34 C22 36 21 38 20 40 C21 39 22 37 22 35 C23 33 24 31 23 29 C22 27 23 24 22 22Z"
+    fill="#c4a24e" opacity="0.7"/>
+  <!-- Asia -->
+  <path d="M37 22 C39 21 41 22 42 24 C43 26 42 27 40 28 C42 29 43 30 42 32 C41 33 39 33 38 32 C37 31 36 29 37 27 C38 25 37 23 37 22Z"
+    fill="#c4a24e" opacity="0.75"/>
+  <!-- Corner decorations (laurel leaves) -->
+  <path d="M10 10 C14 8 16 12 12 14Z" fill="#c4a24e" opacity="0.4"/>
+  <path d="M54 10 C50 8 48 12 52 14Z" fill="#c4a24e" opacity="0.4"/>
+  <path d="M10 54 C14 56 16 52 12 50Z" fill="#c4a24e" opacity="0.4"/>
+  <path d="M54 54 C50 56 48 52 52 50Z" fill="#c4a24e" opacity="0.4"/>
+</svg>

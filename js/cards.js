@@ -1,5 +1,10 @@
 /* ── 타로 카드 데이터 (78장) ── */
 
+// 이미지 심볼 (SVG 파일 사용)
+const SYM_PENTACLE = '<img src="img/pentacle.svg" class="card-sym-img" alt="동전">';
+const SYM_WAND = '<img src="img/wand.svg" class="card-sym-img" alt="지팡이">';
+const SYM_WORLD = '<img src="img/world.svg" class="card-sym-img" alt="세계">';
+
 const CARDS = [
   // ── 메이저 아르카나 (22장) ──
   { sym: '🎭', name: '광대', en: 'The Fool', keywords: '새로운 시작, 순수, 모험' },
@@ -23,22 +28,22 @@ const CARDS = [
   { sym: '🌛', name: '달', en: 'The Moon', keywords: '직관, 감정, 신비' },
   { sym: '☀️', name: '태양', en: 'The Sun', keywords: '활력, 성공, 기쁨' },
   { sym: '📯', name: '심판', en: 'Judgement', keywords: '부활, 각성, 결단' },
-  { sym: '🌐', name: '세계', en: 'The World', keywords: '완성, 달성, 통합' },
+  { sym: SYM_WORLD, name: '세계', en: 'The World', keywords: '완성, 달성, 통합' },
   // ── 마이너 아르카나 — 완드 (14장) ──
-  { sym: '🏑', name: '지팡이의 시작', en: 'Ace of Wands', keywords: '창의적 시작, 열정, 잠재력' },
-  { sym: '🏑', name: '두 개의 지팡이', en: 'Two of Wands', keywords: '계획, 결단, 미래 전망' },
-  { sym: '🏑', name: '세 개의 지팡이', en: 'Three of Wands', keywords: '확장, 진취, 협력' },
-  { sym: '🏑', name: '네 개의 지팡이', en: 'Four of Wands', keywords: '축하, 가정의 화목, 안정' },
-  { sym: '🏑', name: '다섯 개의 지팡이', en: 'Five of Wands', keywords: '경쟁, 갈등, 도전' },
-  { sym: '🏑', name: '여섯 개의 지팡이', en: 'Six of Wands', keywords: '승리, 인정, 자신감' },
-  { sym: '🏑', name: '일곱 개의 지팡이', en: 'Seven of Wands', keywords: '수호, 용기, 도전' },
-  { sym: '🏑', name: '여덟 개의 지팡이', en: 'Eight of Wands', keywords: '속도, 메시지, 빠른 변화' },
-  { sym: '🏑', name: '아홉 개의 지팡이', en: 'Nine of Wands', keywords: '인내, 경계, 끈기' },
-  { sym: '🏑', name: '열 개의 지팡이', en: 'Ten of Wands', keywords: '부담, 책임, 과부하' },
-  { sym: '🏑', name: '지팡이의 시종', en: 'Page of Wands', keywords: '탐험, 열정, 메시지' },
-  { sym: '🏑', name: '지팡이의 기사', en: 'Knight of Wands', keywords: '모험, 충동, 에너지' },
-  { sym: '🏑', name: '지팡이의 여왕', en: 'Queen of Wands', keywords: '카리스마, 열정, 자신감' },
-  { sym: '🏑', name: '지팡이의 왕', en: 'King of Wands', keywords: '비전, 리더십, 창의' },
+  { sym: SYM_WAND, name: '지팡이의 시작', en: 'Ace of Wands', keywords: '창의적 시작, 열정, 잠재력' },
+  { sym: SYM_WAND, name: '두 개의 지팡이', en: 'Two of Wands', keywords: '계획, 결단, 미래 전망' },
+  { sym: SYM_WAND, name: '세 개의 지팡이', en: 'Three of Wands', keywords: '확장, 진취, 협력' },
+  { sym: SYM_WAND, name: '네 개의 지팡이', en: 'Four of Wands', keywords: '축하, 가정의 화목, 안정' },
+  { sym: SYM_WAND, name: '다섯 개의 지팡이', en: 'Five of Wands', keywords: '경쟁, 갈등, 도전' },
+  { sym: SYM_WAND, name: '여섯 개의 지팡이', en: 'Six of Wands', keywords: '승리, 인정, 자신감' },
+  { sym: SYM_WAND, name: '일곱 개의 지팡이', en: 'Seven of Wands', keywords: '수호, 용기, 도전' },
+  { sym: SYM_WAND, name: '여덟 개의 지팡이', en: 'Eight of Wands', keywords: '속도, 메시지, 빠른 변화' },
+  { sym: SYM_WAND, name: '아홉 개의 지팡이', en: 'Nine of Wands', keywords: '인내, 경계, 끈기' },
+  { sym: SYM_WAND, name: '열 개의 지팡이', en: 'Ten of Wands', keywords: '부담, 책임, 과부하' },
+  { sym: SYM_WAND, name: '지팡이의 시종', en: 'Page of Wands', keywords: '탐험, 열정, 메시지' },
+  { sym: SYM_WAND, name: '지팡이의 기사', en: 'Knight of Wands', keywords: '모험, 충동, 에너지' },
+  { sym: SYM_WAND, name: '지팡이의 여왕', en: 'Queen of Wands', keywords: '카리스마, 열정, 자신감' },
+  { sym: SYM_WAND, name: '지팡이의 왕', en: 'King of Wands', keywords: '비전, 리더십, 창의' },
   // ── 마이너 아르카나 — 컵 (14장) ──
   { sym: '🏆', name: '성배의 시작', en: 'Ace of Cups', keywords: '새로운 감정, 사랑, 직관' },
   { sym: '🏆', name: '두 개의 성배', en: 'Two of Cups', keywords: '유대, 파트너십, 상호 이해' },
@@ -70,20 +75,20 @@ const CARDS = [
   { sym: '🗡️', name: '검의 여왕', en: 'Queen of Swords', keywords: '독립, 명석함, 직설' },
   { sym: '🗡️', name: '검의 왕', en: 'King of Swords', keywords: '지성, 권위, 분석' },
   // ── 마이너 아르카나 — 펜타클 (14장) ──
-  { sym: '🪙', name: '별의 동전', en: 'Ace of Pentacles', keywords: '물질적 시작, 기회, 풍요' },
-  { sym: '🪙', name: '두 개의 동전', en: 'Two of Pentacles', keywords: '균형, 적응, 유연성' },
-  { sym: '🪙', name: '세 개의 동전', en: 'Three of Pentacles', keywords: '협력, 기술, 노력' },
-  { sym: '🪙', name: '네 개의 동전', en: 'Four of Pentacles', keywords: '소유, 절약, 안정' },
-  { sym: '🪙', name: '다섯 개의 동전', en: 'Five of Pentacles', keywords: '결핍, 어려움, 고난' },
-  { sym: '🪙', name: '여섯 개의 동전', en: 'Six of Pentacles', keywords: '나눔, 자선, 균형' },
-  { sym: '🪙', name: '일곱 개의 동전', en: 'Seven of Pentacles', keywords: '인내, 평가, 결실' },
-  { sym: '🪙', name: '여덟 개의 동전', en: 'Eight of Pentacles', keywords: '성실, 숙련, 노력' },
-  { sym: '🪙', name: '아홉 개의 동전', en: 'Nine of Pentacles', keywords: '독립, 풍요, 여유' },
-  { sym: '🪙', name: '열 개의 동전', en: 'Ten of Pentacles', keywords: '유산, 가족 번영, 완성' },
-  { sym: '🪙', name: '동전의 시종', en: 'Page of Pentacles', keywords: '학습, 목표, 성실' },
-  { sym: '🪙', name: '동전의 기사', en: 'Knight of Pentacles', keywords: '근면, 신뢰, 꾸준함' },
-  { sym: '🪙', name: '동전의 여왕', en: 'Queen of Pentacles', keywords: '실용, 풍요, 돌봄' },
-  { sym: '🪙', name: '동전의 왕', en: 'King of Pentacles', keywords: '부, 안정, 성공' },
+  { sym: SYM_PENTACLE, name: '별의 동전', en: 'Ace of Pentacles', keywords: '물질적 시작, 기회, 풍요' },
+  { sym: SYM_PENTACLE, name: '두 개의 동전', en: 'Two of Pentacles', keywords: '균형, 적응, 유연성' },
+  { sym: SYM_PENTACLE, name: '세 개의 동전', en: 'Three of Pentacles', keywords: '협력, 기술, 노력' },
+  { sym: SYM_PENTACLE, name: '네 개의 동전', en: 'Four of Pentacles', keywords: '소유, 절약, 안정' },
+  { sym: SYM_PENTACLE, name: '다섯 개의 동전', en: 'Five of Pentacles', keywords: '결핍, 어려움, 고난' },
+  { sym: SYM_PENTACLE, name: '여섯 개의 동전', en: 'Six of Pentacles', keywords: '나눔, 자선, 균형' },
+  { sym: SYM_PENTACLE, name: '일곱 개의 동전', en: 'Seven of Pentacles', keywords: '인내, 평가, 결실' },
+  { sym: SYM_PENTACLE, name: '여덟 개의 동전', en: 'Eight of Pentacles', keywords: '성실, 숙련, 노력' },
+  { sym: SYM_PENTACLE, name: '아홉 개의 동전', en: 'Nine of Pentacles', keywords: '독립, 풍요, 여유' },
+  { sym: SYM_PENTACLE, name: '열 개의 동전', en: 'Ten of Pentacles', keywords: '유산, 가족 번영, 완성' },
+  { sym: SYM_PENTACLE, name: '동전의 시종', en: 'Page of Pentacles', keywords: '학습, 목표, 성실' },
+  { sym: SYM_PENTACLE, name: '동전의 기사', en: 'Knight of Pentacles', keywords: '근면, 신뢰, 꾸준함' },
+  { sym: SYM_PENTACLE, name: '동전의 여왕', en: 'Queen of Pentacles', keywords: '실용, 풍요, 돌봄' },
+  { sym: SYM_PENTACLE, name: '동전의 왕', en: 'King of Pentacles', keywords: '부, 안정, 성공' },
 ];
 
 const TITLES = { tarot: '다아라', palm: 'AI 손금·관상', star: '별자리 운세', match: '연애 궁합', money: '재물운', today: '오늘의 운세' };

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="woodGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a0724e"/>
+      <stop offset="40%" stop-color="#8B5E3C"/>
+      <stop offset="100%" stop-color="#6B4226"/>
+    </linearGradient>
+  </defs>
+  <!-- Main staff -->
+  <path d="M30 58 C30 58 29 20 31 12 C32 8 34 6 35 8 C36 10 34 14 33 18 L33 58"
+    fill="url(#woodGrad)" stroke="#5a3518" stroke-width="1"/>
+  <!-- Wood grain lines -->
+  <line x1="31" y1="25" x2="32" y2="35" stroke="#5a3518" stroke-width="0.5" opacity="0.4"/>
+  <line x1="31.5" y1="40" x2="32.5" y2="50" stroke="#5a3518" stroke-width="0.5" opacity="0.3"/>
+  <!-- Curved top knob -->
+  <ellipse cx="33" cy="9" rx="4" ry="3.5" fill="#8B5E3C" stroke="#5a3518" stroke-width="1"/>
+  <!-- Leaf bud left -->
+  <path d="M28 22 C24 18 22 22 26 25 C28 26 29 24 28 22Z" fill="#5a8a4a" stroke="#3d6b35" stroke-width="0.5"/>
+  <!-- Leaf bud right -->
+  <path d="M35 16 C38 12 40 15 37 18 C35 19 34 17.5 35 16Z" fill="#6a9a58" stroke="#3d6b35" stroke-width="0.5"/>
+  <!-- Small bud -->
+  <path d="M29 36 C27 34 26 36 28 37.5 C29 38 29.5 37 29 36Z" fill="#5a8a4a" stroke="#3d6b35" stroke-width="0.4"/>
+</svg>

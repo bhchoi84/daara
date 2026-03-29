@@ -13,7 +13,7 @@ function flipOne(i) {
   const el = document.getElementById('sc' + i);
   el.classList.remove('unflipped');
   el.classList.add('revealed');
-  el.querySelector('.card-sym').textContent = drawnCards[i].sym;
+  el.querySelector('.card-sym').innerHTML = drawnCards[i].sym;
   const c = drawnCards[i];
   const allFlipped = flippedCards.every(f => f);
   const hintEl = document.getElementById('card-hint');
@@ -44,7 +44,7 @@ function flipOne(i) {
 
 function drawMoneyCard() {
   moneyCard = CARDS[Math.floor(Math.random() * CARDS.length)];
-  document.getElementById('money-card-sym').textContent = moneyCard.sym;
+  document.getElementById('money-card-sym').innerHTML = moneyCard.sym;
   document.getElementById('money-card-name').textContent = moneyCard.name + ' — ' + moneyCard.keywords;
   document.getElementById('money-card-box').classList.add('drawn');
 }
@@ -62,7 +62,7 @@ function drawCards() {
       const el = document.getElementById('sc' + i);
       el.classList.remove('unflipped');
       el.classList.add('revealed');
-      el.querySelector('.card-sym').textContent = c.sym;
+      el.querySelector('.card-sym').innerHTML = c.sym;
       flippedCards[i] = true;
     });
     document.getElementById('card-hint').textContent = '카드가 모두 열렸어요 ✨';
