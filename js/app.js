@@ -1,9 +1,33 @@
 /* ── 답변 스타일링 ── */
 function formatReply(text) {
-  return text
-    .replace(/\n/g, '<br>')
-    .replace(/\*\*(.+?)\*\*/g, '<span class="hl-accent">$1</span>')
-    .replace(/(🔮|🌙|⚠️|✨|⭐|💰|♡|◈|🌅)(.+?)(?=<br>|$)/g, '<span class="reply-heading">$1$2</span>');
+  // 이모지 헤딩 패턴
+  const headingRe = /^(🔮|🌙|⚠️|✨|⭐|💰|♡|◈|🌅|💕|🏠|💼|🩺|🍀|🔢|🎨|♈|♉|♊|♋|♌|♍|♎|♏|♐|♑|♒|♓)(.+)/;
+  const lines = text.split('\n');
+  let html = '';
+  let inSection = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) {
+      if (!inSection) html += '<br>';
+      continue;
+    }
+    const m = line.match(headingRe);
+    if (m) {
+      if (inSection) html += '</div>'; // 이전 섹션 닫기
+      html += `<div class="reply-section"><div class="reply-heading">${m[1]}${m[2].replace(/\*\*(.+?)\*\*/g, '<span class="hl-accent">$1</span>')}</div><div class="reply-body">`;
+      inSection = true;
+    } else {
+      const styled = line.replace(/\*\*(.+?)\*\*/g, '<span class="hl-accent">$1</span>');
+      if (inSection) {
+        html += `<p>${styled}</p>`;
+      } else {
+        html += `<p>${styled}</p>`;
+      }
+    }
+  }
+  if (inSection) html += '</div></div>';
+  return html;
 }
 
 /* ── 소셜 프루프 ── */

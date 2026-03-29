@@ -654,14 +654,36 @@ body {
   color: var(--gold);
   font-weight: 700;
 }
+/* 답변 섹션 블록 */
+.reply-section {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 8px 0;
+}
+.reply-section:first-child {
+  margin-top: 0;
+}
 .reply-heading {
   display: block;
   font-weight: 700;
   font-size: 1.05em;
   color: var(--gold);
-  margin-top: 6px;
-  padding-bottom: 2px;
+  padding-bottom: 6px;
+  margin-bottom: 6px;
   border-bottom: 1px solid rgba(251, 191, 36, 0.1);
+}
+.reply-body p {
+  margin: 4px 0;
+  line-height: 1.75;
+  color: var(--text);
+  font-size: 13px;
+}
+/* 섹션 밖 일반 텍스트 */
+.msg-bubble > p {
+  margin: 4px 0;
+  line-height: 1.75;
 }
 
 .card-reveal-msg {
