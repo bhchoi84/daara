@@ -1315,29 +1315,30 @@ body {
 .usage-dot.used { opacity: 1; }
 /* ── 사용자 정보 모달 ── */
 .user-modal-overlay {
-  position: fixed; inset: 0; z-index: 1000;
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000;
   background: rgba(10,14,26,0.88);
   backdrop-filter: blur(6px);
   display: none; align-items: center; justify-content: center;
-  padding: 20px;
+  padding: 16px;
 }
 .user-modal {
   background: var(--surface);
   border: 1px solid var(--border2);
   border-radius: 20px;
-  padding: 32px 28px 28px;
-  width: 100%; max-width: 360px;
-  max-height: 90dvh;
+  padding: 18px 24px 16px;
+  width: 100%; max-width: 400px;
+  max-height: 92dvh;
   overflow-y: auto;
   box-shadow: 0 30px 80px rgba(0,0,0,0.6);
-  display: flex; flex-direction: column; gap: 18px;
+  display: flex; flex-direction: column; gap: 10px;
   position: relative;
+  margin: 0 auto;
 }
 .user-modal-close {
   position: sticky;
-  top: -32px; right: 0;
+  top: -18px; right: 0;
   align-self: flex-end;
-  margin-top: -24px; margin-bottom: -8px; margin-right: -8px;
+  margin-top: -14px; margin-bottom: -6px; margin-right: -4px;
   width: 32px; height: 32px;
   border-radius: 50%;
   border: none;
@@ -1356,42 +1357,42 @@ body {
   color: var(--text);
 }
 .user-modal-logo {
-  width: 44px; height: 44px; border-radius: 12px;
+  width: 36px; height: 36px; border-radius: 10px;
   background: linear-gradient(135deg, var(--indigo), #a78bfa);
   display: flex; align-items: center; justify-content: center;
-  font-size: 20px; font-weight: 700; color: #fff;
-  margin: 0 auto 2px;
+  font-size: 17px; font-weight: 700; color: #fff;
+  margin: 0 auto 0;
 }
 .user-modal-title {
-  font-size: 18px; font-weight: 600; color: var(--text);
+  font-size: 16px; font-weight: 600; color: var(--text);
   text-align: center; letter-spacing: -0.3px;
 }
 .user-modal-sub {
-  font-size: 13px; color: var(--text-muted); text-align: center; margin-top: -12px;
+  font-size: 12px; color: var(--text-muted); text-align: center; margin-top: -6px;
 }
-.user-modal-field { display: flex; flex-direction: column; gap: 6px; }
+.user-modal-field { display: flex; flex-direction: column; gap: 4px; }
 .user-modal-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.3px; }
 .user-modal-input {
   background: var(--surface2); border: 1px solid var(--border2);
-  border-radius: 10px; padding: 10px 14px;
-  color: var(--text); font-size: 14px; outline: none;
+  border-radius: 8px; padding: 8px 12px;
+  color: var(--text); font-size: 13px; outline: none;
   transition: border-color 0.15s;
   color-scheme: dark;
 }
 .user-modal-input:focus { border-color: var(--indigo-light); }
-.user-modal-gender { display: flex; gap: 8px; }
+.user-modal-gender { display: flex; gap: 6px; }
 .gender-btn {
-  flex: 1; padding: 9px 4px;
-  border-radius: 10px; border: 1px solid var(--border2);
+  flex: 1; padding: 7px 4px;
+  border-radius: 8px; border: 1px solid var(--border2);
   background: var(--surface2); color: var(--text-muted);
-  font-size: 13px; cursor: pointer; transition: all 0.15s;
+  font-size: 12px; cursor: pointer; transition: all 0.15s;
 }
 .gender-btn.active { background: var(--indigo-pale); border-color: var(--indigo-light); color: var(--indigo-light); }
 .user-modal-submit {
-  margin-top: 4px; padding: 13px;
-  border-radius: 12px; border: none;
+  margin-top: 2px; padding: 11px;
+  border-radius: 10px; border: none;
   background: linear-gradient(135deg, var(--indigo), #a78bfa);
-  color: #fff; font-size: 15px; font-weight: 600;
+  color: #fff; font-size: 14px; font-weight: 600;
   cursor: pointer; transition: opacity 0.15s;
 }
 .user-modal-submit:hover { opacity: 0.9; }
