@@ -370,6 +370,49 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null) {
   btn.disabled = false; input.disabled = false; input.focus();
   document.getElementById('messages').scrollTop = 99999;
 }
+/* 타로 3카드 해석 — API 1회 호출, 결과를 카드별 3개 메시지로 분리 */
+async function askClaudeTarot3(prompt, cards) {
+  if (!canUseAPI()) {
+    document.getElementById('limit-modal-overlay').style.display = 'flex';
+    return;
+  }
+  const btn = document.getElementById('send-btn'), input = document.getElementById('chat-input');
+  btn.disabled = true; input.disabled = true;
+  const typingEl = addMsg('bot', '카드를 해석하고 있어요···'); typingEl.classList.add('typing');
+  const system = `당신은 따뜻하고 섬세한 AI 타로·운세 상담사 '다아라'입니다.${getUserContext()}
+사용자 감정에 먼저 공감해 주세요. 친한 언니처럼 따뜻하고 공감 어린 존댓말을 씁니다.
+사용자의 이름, 별자리, 나이, 성별을 자연스럽게 반영해 개인화된 답변을 해주세요.
+"~것 같아요", "~할 수 있어요" 처럼 단정 짓지 않고 부드럽게 표현합니다.
+이모지를 1~2개 자연스럽게 씁니다.
+답변은 항상 같은 사용자에 대한 일관된 흐름을 유지해 주세요.`;
+  try {
+    const data = await callAPI({ model: 'claude-haiku-4-5-20251001', max_tokens: 700, system, messages: [{ role: 'user', content: prompt }] });
+    const reply = data?.content?.[0]?.text || '';
+    typingEl.remove(); // typing 메시지 제거
+    // 카드별로 분리: 🔮, 🌙, ⚠️, ✨ 기준
+    const sections = reply.split(/(?=🔮|🌙|⚠️|✨)/);
+    const cardEmojis = ['🔮', '🌙', '⚠️'];
+    let cardIdx = 0;
+    for (const sec of sections) {
+      const trimmed = sec.trim();
+      if (!trimmed) continue;
+      if (cardIdx < 3 && cardEmojis.some(e => trimmed.startsWith(e))) {
+        addMsg('bot', formatReply(trimmed), 'text', cardIdx);
+        cardIdx++;
+      } else {
+        // ✨ 다아라의 한마디 등
+        addMsg('bot', formatReply(trimmed));
+      }
+    }
+    incrementUsage();
+    updateUserBadge();
+  } catch (e) {
+    typingEl.classList.remove('typing');
+    typingEl.innerHTML = '잠깐 연결이 끊겼어요. 조금 있다 다시 시도해 주세요 😊';
+  }
+  btn.disabled = false; input.disabled = false; input.focus();
+  document.getElementById('messages').scrollTop = 99999;
+}
 async function sendMessage() {
   if (!ensureUserInfo(() => sendMessage())) return;
   const input = document.getElementById('chat-input');

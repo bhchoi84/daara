@@ -20,12 +20,17 @@ function flipOne(i) {
   if (allFlipped) {
     hintEl.textContent = '카드가 모두 열렸어요 ✨';
     setTimeout(() => {
-      drawnCards.forEach((c, idx) => {
-        addMsg('bot', `<div class="card-reading-block"><div class="crb-pos">${CARD_POS[idx]}</div><div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name}</div><div class="crb-en">${c.en}</div></div></div><span class="crb-keywords">${c.keywords}</span></div>`, 'card-reveal', idx);
-      });
+      const summaryHtml = drawnCards.map((c, idx) =>
+        `<div class="crb-summary-item" onclick="scrollToCardResult(${idx})" data-idx="${idx}">` +
+          `<div class="crb-pos">${CARD_POS[idx]}</div>` +
+          `<div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name}</div><div class="crb-en">${c.en}</div></div></div>` +
+          `<span class="crb-keywords">${c.keywords}</span>` +
+        `</div>`
+      ).join('');
+      addMsg('bot', `<div class="crb-summary">${summaryHtml}</div>`, 'card-reveal');
       const u = getUserInfo();
       const ctx = u ? `${u.name}님(${u.zodiac}, ${u.age}세 ${u.gender})의 ` : '';
-      askClaude(`${ctx}타로 3카드: 오늘의 카드 ${drawnCards[0].name}(${drawnCards[0].keywords}), 미래의 카드 ${drawnCards[1].name}(${drawnCards[1].keywords}), 주의할 일의 카드 ${drawnCards[2].name}(${drawnCards[2].keywords}). 아래 형식으로 각 카드별 해석을 줄바꿈으로 구분해서 알려주세요:\n\n🔮 오늘의 카드 — [카드명]\n(2문장 해석)\n\n🌙 미래의 카드 — [카드명]\n(2문장 해석)\n\n⚠️ 주의할 일 — [카드명]\n(2문장 해석)\n\n✨ 다아라의 한마디\n(따뜻한 마무리 1문장)\n\n별자리 특성과 연결해 따뜻하고 구체적으로 해석해 주세요.`, true, null);
+      askClaudeTarot3(`${ctx}타로 3카드: 오늘의 카드 ${drawnCards[0].name}(${drawnCards[0].keywords}), 미래의 카드 ${drawnCards[1].name}(${drawnCards[1].keywords}), 주의할 일의 카드 ${drawnCards[2].name}(${drawnCards[2].keywords}). 아래 형식으로 각 카드별 해석을 줄바꿈으로 구분해서 알려주세요:\n\n🔮 오늘의 카드 — [카드명] (키워드)\n(3~4문장 해석)\n\n🌙 미래의 카드 — [카드명] (키워드)\n(3~4문장 해석)\n\n⚠️ 주의할 일 — [카드명] (키워드)\n(3~4문장 해석)\n\n✨ 다아라의 한마디\n(따뜻한 마무리 1문장)\n\n별자리 특성과 연결해 따뜻하고 구체적으로 해석해 주세요.`, drawnCards);
     }, 300);
   } else {
     const remaining = 3 - flippedCards.filter(f => f).length;
@@ -73,27 +78,22 @@ function drawCards() {
     addMsg('bot', `<div class="crb-summary">${summaryHtml}</div>`, 'card-reveal');
     const u = getUserInfo();
     const ctx = u ? `${u.name}님(${u.zodiac}, ${u.age}세 ${u.gender})의 ` : '';
-    askClaude(`${ctx}타로 3카드: 오늘의 카드 ${drawnCards[0].name}(${drawnCards[0].keywords}), 미래의 카드 ${drawnCards[1].name}(${drawnCards[1].keywords}), 주의할 일의 카드 ${drawnCards[2].name}(${drawnCards[2].keywords}). 아래 형식으로 각 카드별 해석을 줄바꿈으로 구분해서 알려주세요:\n\n🔮 오늘의 카드 — [카드명]\n(2문장 해석)\n\n🌙 미래의 카드 — [카드명]\n(2문장 해석)\n\n⚠️ 주의할 일 — [카드명]\n(2문장 해석)\n\n✨ 다아라의 한마디\n(따뜻한 마무리 1문장)\n\n별자리 특성과 연결해 따뜻하고 구체적으로 해석해 주세요.`, true, null);
+    askClaudeTarot3(`${ctx}타로 3카드: 오늘의 카드 ${drawnCards[0].name}(${drawnCards[0].keywords}), 미래의 카드 ${drawnCards[1].name}(${drawnCards[1].keywords}), 주의할 일의 카드 ${drawnCards[2].name}(${drawnCards[2].keywords}). 아래 형식으로 각 카드별 해석을 줄바꿈으로 구분해서 알려주세요:\n\n🔮 오늘의 카드 — [카드명] (키워드)\n(3~4문장 해석)\n\n🌙 미래의 카드 — [카드명] (키워드)\n(3~4문장 해석)\n\n⚠️ 주의할 일 — [카드명] (키워드)\n(3~4문장 해석)\n\n✨ 다아라의 한마디\n(따뜻한 마무리 1문장)\n\n별자리 특성과 연결해 따뜻하고 구체적으로 해석해 주세요.`, drawnCards);
   }, 700);
 }
 
 function scrollToCardResult(i) {
-  // 해석 결과 메시지에서 카드별 이모지 헤딩을 찾아 스크롤
-  const emojis = ['🔮', '🌙', '⚠️'];
-  const headings = document.querySelectorAll('#messages .reply-heading');
-  for (const h of headings) {
-    if (h.textContent.includes(emojis[i])) {
-      const section = h.closest('.reply-section') || h;
-      goMenu('tarot', document.querySelector('.n-tarot'));
-      section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      section.style.transition = 'background 0.3s';
-      section.style.background = 'rgba(99,102,241,0.1)';
-      section.style.borderRadius = '8px';
-      setTimeout(() => { section.style.background = ''; }, 1200);
-      return;
-    }
+  // 개별 해석 메시지(data-card-index)로 스크롤
+  const msg = document.querySelector(`[data-card-index="${i}"]`);
+  if (msg) {
+    goMenu('tarot', document.querySelector('.n-tarot'));
+    msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    msg.style.transition = 'background 0.3s';
+    msg.style.background = 'rgba(99,102,241,0.1)';
+    setTimeout(() => msg.style.background = '', 1200);
+    return;
   }
-  // 폴백: 해석이 아직 안 나왔으면 요약 카드 영역으로
+  // 폴백
   scrollToCardMsg(i);
 }
 
