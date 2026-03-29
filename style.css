@@ -1116,9 +1116,9 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 4px;
   box-shadow: 0 0 30px rgba(111, 66, 193, 0.15);
-  overflow: hidden;
+  overflow: visible;
   transition: all 0.3s;
   z-index: 1;
 }
@@ -1134,8 +1134,8 @@ body {
   box-shadow: 0 0 40px rgba(111, 66, 193, 0.25);
 }
 .palm-scanner-icon {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: rgba(211, 187, 255, 0.12);
   display: flex;
@@ -1153,6 +1153,8 @@ body {
   font-size: 10px;
   color: var(--text-muted);
   white-space: nowrap;
+  max-width: 140px;
+  text-align: center;
 }
 
 /* ── 분석 항목 벤토 그리드 ── */
@@ -1506,6 +1508,83 @@ body {
 }
 .palm-change-link:hover {
   color: #d3bbff;
+}
+
+/* 모드 미선택 시 흔들림 애니메이션 */
+@keyframes palmShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+.palm-mode-select.shake {
+  animation: palmShake 0.5s ease;
+}
+.palm-mode-select.shake .palm-mode-btn {
+  border-color: var(--gold);
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.3);
+}
+
+/* 스캐너 활성화 표시 */
+.palm-scanner.ready .palm-scanner-inner {
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
+/* 프리뷰 확인 모드 표시 */
+.palm-confirm-mode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--indigo-pale);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+}
+.palm-confirm-icon {
+  font-size: 20px;
+}
+.palm-confirm-label {
+  font-size: 13px;
+  color: var(--text);
+}
+.palm-confirm-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+/* 다시 올리기 영역 */
+.palm-reupload-area {
+  text-align: center;
+  margin-top: 10px;
+}
+.palm-reupload-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.palm-reupload-btn {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 6px 14px;
+  cursor: pointer;
+  margin: 0 4px;
+  transition: all 0.15s;
+}
+.palm-reupload-btn:hover {
+  color: var(--text);
+  border-color: var(--indigo);
+  background: var(--indigo-pale);
+}
+.palm-reset-btn:hover {
+  border-color: var(--gold);
+  background: var(--gold-dim);
 }
 
 input[type=file] {

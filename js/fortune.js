@@ -52,6 +52,36 @@ function selectPalmMode(mode, el) {
   if (mode === 'right') { dropTitle.textContent = '오른손 촬영'; dropSub.textContent = '손바닥이 보이게'; }
   else if (mode === 'left') { dropTitle.textContent = '왼손 촬영'; dropSub.textContent = '손바닥이 보이게'; }
   else { dropTitle.textContent = '얼굴 촬영'; dropSub.textContent = '정면으로 찍기'; }
+  // 선택 후 스캐너 활성화 표시
+  const scanner = document.querySelector('.palm-scanner');
+  if (scanner) scanner.classList.add('ready');
+}
+
+function openPalmUpload() {
+  if (!palmMode) {
+    // 모드 미선택 시 버튼 강조 애니메이션
+    const modeSelect = document.querySelector('.palm-mode-select');
+    if (modeSelect) {
+      modeSelect.classList.add('shake');
+      setTimeout(() => modeSelect.classList.remove('shake'), 600);
+    }
+    return;
+  }
+  document.getElementById('palm-file').click();
+}
+
+function getPalmModeLabel() {
+  if (palmMode === 'right') return '오른손';
+  if (palmMode === 'left') return '왼손';
+  if (palmMode === 'face') return '얼굴';
+  return '';
+}
+
+function getPalmModeExpect() {
+  if (palmMode === 'right') return '손바닥이 보이는 오른손 사진';
+  if (palmMode === 'left') return '손바닥이 보이는 왼손 사진';
+  if (palmMode === 'face') return '정면 얼굴 사진';
+  return '';
 }
 
 function onPalmFile(e) {
@@ -59,18 +89,29 @@ function onPalmFile(e) {
   const reader = new FileReader();
   reader.onload = ev => {
     palmPreviewSrc = ev.target.result; palmImageData = ev.target.result.split(',')[1];
+    const modeLabel = getPalmModeLabel();
+    const modeExpect = getPalmModeExpect();
+    const modeIcon = palmMode === 'face' ? '😊' : palmMode === 'right' ? '✋' : '🤚';
     const panel = document.getElementById('palm-panel');
     panel.innerHTML = `
   <div class="palm-header">
     <div class="palm-header-title serif">AI 손금·관상</div>
     <div class="palm-header-sub">사진이 준비됐어요</div>
   </div>
+  <div class="palm-confirm-mode">
+    <span class="palm-confirm-icon">${modeIcon}</span>
+    <span class="palm-confirm-label">선택: <b>${modeLabel}</b></span>
+    <span class="palm-confirm-hint">${modeExpect}이 맞나요?</span>
+  </div>
   <div class="palm-preview-wrap">
-    <img src="${palmPreviewSrc}" class="palm-preview-img" alt="손금 사진">
+    <img src="${palmPreviewSrc}" class="palm-preview-img" alt="${modeLabel} 사진">
     <div class="palm-preview-overlay"><button class="palm-analyze-btn" onclick="analyzePalm()">✨ AI 분석 시작하기</button></div>
   </div>
-  <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:8px">버튼을 누르면 다아라가 바로 분석해 드려요</p>
-  <p class="palm-change-link" onclick="document.getElementById('pf2').click()">다른 사진 선택</p>
+  <div class="palm-reupload-area">
+    <p class="palm-reupload-hint">사진이 ${modeExpect}이 아니라면 다시 올려주세요</p>
+    <button class="palm-reupload-btn" onclick="document.getElementById('pf2').click()">📷 다른 사진 선택</button>
+    <button class="palm-reupload-btn palm-reset-btn" onclick="resetPalmPanel()">↩ 항목부터 다시 선택</button>
+  </div>
   <input type="file" id="pf2" accept="image/*" onchange="onPalmFile(event)">`;
   };
   reader.readAsDataURL(file);
@@ -134,7 +175,7 @@ function resetPalmPanel() {
   <button class="palm-mode-btn" onclick="selectPalmMode('left',this)"><span class="palm-mode-icon">🤚</span><span class="palm-mode-label">왼손</span></button>
   <button class="palm-mode-btn" onclick="selectPalmMode('face',this)"><span class="palm-mode-icon">😊</span><span class="palm-mode-label">관상</span></button>
 </div>
-<div class="palm-scanner" onclick="document.getElementById('palm-file').click()">
+<div class="palm-scanner" onclick="openPalmUpload()">
   <div class="palm-scanner-ring"></div>
   <div class="palm-scanner-ring palm-scanner-ring-outer"></div>
   <div class="palm-scanner-inner">
