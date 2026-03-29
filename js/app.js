@@ -240,6 +240,7 @@ function submitUserInfo() {
   document.getElementById('user-modal-overlay').style.display = 'none';
   updateUserBadge();
   if (typeof updateMatchMyInfo === 'function') updateMatchMyInfo();
+  if (typeof updateMoneyMyInfo === 'function') updateMoneyMyInfo();
   const u = getUserInfo();
   autoFillZodiac(u.zodiac);
   addMsg('bot', `<b>${u.name}</b>님, 오늘의 운세가 준비됐어요 😊<br>어제와는 다른 흐름이 보여요. 카드를 뽑아 확인해 보세요 ✨<br><span style="font-size:11px;color:var(--text-muted)">지금 가장 많이 받는 상담: ${getPopularMenu()} 🔥</span>`);
@@ -271,6 +272,7 @@ function goMenu(menu, el) {
   document.getElementById('panel-' + menu).classList.add('active');
   document.querySelectorAll('.main-title-text').forEach(t => t.textContent = TITLES[menu]);
   if (menu === 'match' && typeof updateMatchMyInfo === 'function') updateMatchMyInfo();
+  if (menu === 'money' && typeof updateMoneyMyInfo === 'function') updateMoneyMyInfo();
   toggleSidebar(true);
 }
 // 패널만 전환 (메뉴 하이라이트는 원래 메뉴 유지)

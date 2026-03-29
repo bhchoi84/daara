@@ -274,37 +274,33 @@
       <div class="panel" id="panel-money">
         <div class="form-panel">
           <div class="form-card">
-            <div class="form-title" style="color:var(--teal)">◈ 재물운</div>
-            <div class="form-desc">오늘 돈이 들어올 흐름인지, 조심해야 할 날인지 확인하세요</div>
+            <div class="form-title" style="color:var(--teal)">◈ 사주 재물운</div>
+            <div class="form-desc">사주 천간지지·오행·12지신으로 보는 오늘의 재물 흐름</div>
+            <div class="money-my-info" id="money-my-info" onclick="showUserInfoModal()">
+              <span class="match-info-placeholder">내 정보를 입력하면 사주 기반 분석이 가능해요 →</span>
+            </div>
             <div class="form-row">
-              <div class="form-label">내 별자리</div>
+              <div class="form-label">내 띠 (12지신)</div>
               <div class="zodiac-grid" id="zg-mo">
-                <button class="zodiac-btn" onclick="selectZ('mo',this,'양자리')">🐏 양</button>
-                <button class="zodiac-btn" onclick="selectZ('mo',this,'황소자리')">🐂 황소</button>
-                <button class="zodiac-btn" onclick="selectZ('mo',this,'쌍둥이자리')">👯 쌍둥</button>
-                <button class="zodiac-btn" onclick="selectZ('mo',this,'게자리')">🦀 게</button>
-                <button class="zodiac-btn" onclick="selectZ('mo',this,'사자자리')">🦁 사자</button>
-                <button class="zodiac-btn" onclick="selectZ('mo',this,'처녀자리')">🧚 처녀</button>
-                <button class="zodiac-btn" onclick="selectZ('mo',this,'천칭자리')">⚖️ 천칭</button>
-                <button class="zodiac-btn" onclick="selectZ('mo',this,'전갈자리')">🦂 전갈</button>
-                <button class="zodiac-btn" onclick="selectZ('mo',this,'사수자리')">🏹 사수</button>
-                <button class="zodiac-btn" onclick="selectZ('mo',this,'염소자리')">🐐 염소</button>
-                <button class="zodiac-btn" onclick="selectZ('mo',this,'물병자리')">🌊 물병</button>
-                <button class="zodiac-btn" onclick="selectZ('mo',this,'물고기자리')">🐠 물고기</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'쥐띠')">🐀 쥐</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'소띠')">🐂 소</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'호랑이띠')">🐅 호랑이</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'토끼띠')">🐇 토끼</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'용띠')">🐉 용</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'뱀띠')">🐍 뱀</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'말띠')">🐴 말</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'양띠')">🐑 양</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'원숭이띠')">🐵 원숭이</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'닭띠')">🐔 닭</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'개띠')">🐶 개</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'돼지띠')">🐷 돼지</button>
               </div>
             </div>
             <div class="form-row">
               <div class="form-label">요즘 재정 고민 (선택)</div>
               <input class="form-input" id="money-concern" placeholder="예: 투자, 이직, 부업, 지출 등...">
             </div>
-            <div class="form-row">
-              <div class="form-label">금전 타로 카드</div>
-              <div class="money-card-box" id="money-card-box" onclick="drawMoneyCard()">
-                <div class="money-card-sym" id="money-card-sym">✦</div>
-                <div class="money-card-name" id="money-card-name">탭해서 카드 뽑기</div>
-              </div>
-            </div>
-            <button class="submit-btn teal-btn" onclick="runMoney()">AI 재물운 분석 💰</button>
+            <button class="submit-btn teal-btn" onclick="runMoney()">사주 재물운 분석 🪙</button>
           </div>
         </div>
       </div>

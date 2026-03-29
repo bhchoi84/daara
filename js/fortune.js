@@ -78,14 +78,68 @@ async function runMatch() {
   );
 }
 
+// 12지신 띠 계산
+const DDI_ANIMALS = ['원숭이띠','닭띠','개띠','돼지띠','쥐띠','소띠','호랑이띠','토끼띠','용띠','뱀띠','말띠','양띠'];
+const DDI_EMOJI = { '쥐띠':'🐀','소띠':'🐂','호랑이띠':'🐅','토끼띠':'🐇','용띠':'🐉','뱀띠':'🐍','말띠':'🐴','양띠':'🐑','원숭이띠':'🐵','닭띠':'🐔','개띠':'🐶','돼지띠':'🐷' };
+function getDdi(year) { return DDI_ANIMALS[year % 12]; }
+
+function selectDdi(group, el, name) {
+  document.querySelectorAll('#zg-mo .zodiac-btn').forEach(b => b.classList.remove('sel-mo'));
+  el.classList.add('sel-mo');
+  sel.mo = name;
+}
+
+function updateMoneyMyInfo() {
+  const el = document.getElementById('money-my-info');
+  if (!el) return;
+  const u = getUserInfo();
+  if (!u) { el.innerHTML = '<span class="match-info-placeholder">내 정보를 입력하면 사주 기반 분석이 가능해요 →</span>'; return; }
+  const ddi = getDdi(parseInt(u.birthdate.slice(0,4)));
+  const emoji = DDI_EMOJI[ddi] || '';
+  let html = `<span class="match-info-filled"><b>${u.name}</b> · ${emoji} ${ddi} · ${u.zodiac} · ${u.age}세`;
+  if (u.saju) html += ` · 연주:${u.saju.year} 일주:${u.saju.day}`;
+  if (u.siji) html += ` · ${u.siji.split('(')[0]}생`;
+  if (u.job) html += ` · ${u.job}`;
+  html += `</span> <span style="font-size:11px;color:var(--text-muted)">수정 →</span>`;
+  el.innerHTML = html;
+  // 띠 자동 선택
+  if (!sel.mo) {
+    sel.mo = ddi;
+    document.querySelectorAll('#zg-mo .zodiac-btn').forEach(b => {
+      b.classList.remove('sel-mo');
+      if (b.textContent.includes(ddi.replace('띠',''))) b.classList.add('sel-mo');
+    });
+  }
+}
+
 async function runMoney() {
   if (!ensureUserInfo(() => runMoney())) return;
-  if (!sel.mo) { alert('별자리를 선택해 주세요!'); return; }
+  if (!sel.mo) { alert('띠를 선택해 주세요!'); return; }
+  const u = getUserInfo();
   const concern = document.getElementById('money-concern').value;
-  const card = moneyCard ? `금전 타로 카드로 "${moneyCard.name}"(${moneyCard.keywords})이 나왔어요. ` : '';
   showChatPanel('money');
-  const cacheKey = `money_${sel.mo}_${moneyCard?.name || ''}`;
-  await askClaude(`나는 ${sel.mo}이에요. ${card}${concern ? `요즘 "${concern}"에 대한 고민이 있어요. ` : ''}오늘의 금전 운세를 재물운 흐름, 주의할 점, 기회가 될 수 있는 것으로 나눠서 구체적이고 따뜻하게 알려주세요 💰`, true, `◈ 금전 운세 요청 (${sel.mo})`, cacheKey);
+
+  const ddi = sel.mo;
+  const today = new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
+
+  let sajuInfo = '';
+  if (u.saju) sajuInfo += `사주 연주: ${u.saju.year}, 일주: ${u.saju.day}. `;
+  if (u.siji) sajuInfo += `태어난 시: ${u.siji}. `;
+
+  const cacheKey = `money_saju_${u.birthdate}_${ddi}`;
+  await askClaude(
+    `나는 ${ddi}(${DDI_EMOJI[ddi] || ''})이고, ${u.zodiac}이에요. ${sajuInfo}` +
+    `오늘은 ${today}입니다.\n` +
+    `${concern ? `요즘 "${concern}"에 대한 재정 고민이 있어요.\n` : ''}` +
+    `동양 사주학과 12지신 기반으로 오늘의 재물운을 분석해 주세요. 타로가 아닌 천간지지·오행·12지신의 상생상극으로 풀어주세요.\n\n` +
+    `아래 형식으로 알려주세요:\n\n` +
+    `🪙 오늘의 재물 기운\n(내 띠와 사주의 오행이 오늘 날의 기운과 어떻게 만나는지 2~3문장)\n\n` +
+    `💰 돈이 들어오는 흐름\n(재물이 유리한 시간대·방향·행동 2~3문장)\n\n` +
+    `⚠️ 재물 주의사항\n(충·극이 있는 부분, 피해야 할 것 2~3문장)\n\n` +
+    `🔮 이번 주 재물 전망\n(단기적 흐름 1~2문장)\n\n` +
+    `✨ 다아라의 한마디\n(따뜻한 마무리)`,
+    true, `◈ 사주 재물운 (${ddi})`, cacheKey
+  );
 }
 
 async function runToday() {
