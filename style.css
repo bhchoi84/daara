@@ -1591,6 +1591,75 @@ input[type=file] {
   display: none
 }
 
+/* 별자리 불일치 확인 모달 */
+.zodiac-mismatch-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.zodiac-mismatch-modal {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 28px 24px;
+  max-width: 340px;
+  width: 90%;
+  text-align: center;
+}
+.zmm-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+.zmm-title {
+  font-size: 18px;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.zmm-body {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.zmm-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.zmm-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+.zmm-continue {
+  background: var(--indigo-pale);
+  color: var(--indigo-light);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+.zmm-continue:hover {
+  background: rgba(99, 102, 241, 0.2);
+}
+.zmm-change {
+  background: var(--gold-dim);
+  color: var(--gold);
+  border: 1px solid var(--gold-border);
+}
+.zmm-change:hover {
+  background: rgba(251, 191, 36, 0.2);
+}
+
 /* Mobile Responsive Styles */
 @media (max-width: 768px) {
   body {

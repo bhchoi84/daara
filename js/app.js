@@ -215,6 +215,10 @@ document.addEventListener('click', function(e) {
     toggleSidebar(false);
   }
 });
+document.addEventListener('DOMContentLoaded', function() {
+  const msgs = document.getElementById('messages');
+  if (msgs) msgs.addEventListener('scroll', function() { toggleSidebar(true); });
+});
 function addMsg(role, content, type = 'text', cardIndex = null) {
   const box = document.getElementById('messages');
   const wrap = document.createElement('div'); wrap.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
@@ -246,8 +250,54 @@ function scrollToCardMsg(i) {
 }
 function selectZ(group, el, name) {
   const ids = { a: 'zg-a', m1: 'zg-m1', m2: 'zg-m2', mo: 'zg-mo', today: 'zg-today' };
+  // 본인 별자리 그룹에서 저장된 정보와 다르면 확인 팝업
+  const myGroups = ['a', 'today', 'mo', 'm1'];
+  const u = getUserInfo();
+  if (u && u.zodiac && myGroups.includes(group) && name !== u.zodiac) {
+    showZodiacMismatchModal(u.zodiac, name, function() {
+      // 그대로 진행
+      applyZodiacSelection(group, el, name, ids);
+    });
+    return;
+  }
+  applyZodiacSelection(group, el, name, ids);
+}
+function applyZodiacSelection(group, el, name, ids) {
   document.querySelectorAll('#' + ids[group] + ' .zodiac-btn').forEach(b => b.classList.remove('sel-a', 'sel-m1', 'sel-m2', 'sel-mo', 'sel-today'));
   el.classList.add(group === 'today' ? 'sel-a' : 'sel-' + group); sel[group] = name;
+}
+function showZodiacMismatchModal(savedZodiac, selectedZodiac, onContinue) {
+  // 기존 모달이 있으면 제거
+  let overlay = document.getElementById('zodiac-mismatch-overlay');
+  if (overlay) overlay.remove();
+  overlay = document.createElement('div');
+  overlay.id = 'zodiac-mismatch-overlay';
+  overlay.className = 'zodiac-mismatch-overlay';
+  overlay.innerHTML = `
+    <div class="zodiac-mismatch-modal">
+      <div class="zmm-icon">⚠️</div>
+      <div class="zmm-title serif">별자리가 달라요</div>
+      <div class="zmm-body">
+        입력하신 생년월일 기준 별자리는 <b class="hl-gold">${savedZodiac}</b>인데,<br>
+        지금 <b style="color:var(--indigo-light)">${selectedZodiac}</b>를 선택하셨어요.
+      </div>
+      <div class="zmm-buttons">
+        <button class="zmm-btn zmm-continue" id="zmm-continue">${selectedZodiac}로 계속하기</button>
+        <button class="zmm-btn zmm-change" id="zmm-change">내 정보 수정하기</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('zmm-continue').onclick = function() {
+    overlay.remove();
+    onContinue();
+  };
+  document.getElementById('zmm-change').onclick = function() {
+    overlay.remove();
+    showUserInfoModal();
+  };
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) overlay.remove();
+  });
 }
 
 /* ── API ── */
