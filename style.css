@@ -1921,22 +1921,12 @@ input[type=file] {
   }
 }
 /* ── 하단 저작권 ── */
-.app-footer {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
+.app-footer { display: none; }
+.panel-copyright {
   text-align: center;
-  padding: 10px 12px;
-  font-size: 11px;
+  padding: 20px 0 8px;
+  font-size: 10px;
   color: var(--text-muted);
-  opacity: 0;
-  background: var(--bg);
-  border-top: 1px solid var(--border);
-  line-height: 1.6;
-  transition: opacity 0.3s;
-  pointer-events: none;
-  z-index: 50;
-}
-.app-footer.visible {
-  opacity: 0.6;
-  pointer-events: auto;
+  opacity: 0.45;
+  line-height: 1.5;
 }
