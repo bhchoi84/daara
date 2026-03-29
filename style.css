@@ -654,35 +654,31 @@ body {
   color: var(--gold);
   font-weight: 700;
 }
-/* 답변 섹션 블록 */
+/* 답변 섹션 구분 */
 .reply-section {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 14px;
-  margin: 8px 0;
+  padding: 4px 0;
+  margin: 10px 0;
+  border-top: 1px solid rgba(251, 191, 36, 0.08);
 }
 .reply-section:first-child {
   margin-top: 0;
+  border-top: none;
 }
 .reply-heading {
   display: block;
   font-weight: 700;
   font-size: 1.05em;
   color: var(--gold);
-  padding-bottom: 6px;
-  margin-bottom: 6px;
-  border-bottom: 1px solid rgba(251, 191, 36, 0.1);
+  margin-bottom: 4px;
 }
 .reply-body p {
-  margin: 4px 0;
+  margin: 3px 0;
   line-height: 1.75;
   color: var(--text);
   font-size: 13px;
 }
-/* 섹션 밖 일반 텍스트 */
 .msg-bubble > p {
-  margin: 4px 0;
+  margin: 3px 0;
   line-height: 1.75;
 }
 
