@@ -145,20 +145,23 @@ async function analyzePalm() {
   addMsg('user', `<div class="user-palm-preview"><img src="${palmPreviewSrc}" alt="${modeLabel}"><span>다아라, ${modeLabel} 분석 부탁해요!</span></div>`);
   const typingEl = addMsg('bot', '사진을 찬찬히 살펴보고 있어요···'); typingEl.classList.add('typing');
   let system, userText, resultTitle, resultSub;
+  const ctx = getUserContext();
   if (palmMode === 'right' || palmMode === 'left') {
     const hand = palmMode === 'right' ? '오른손' : '왼손';
-    system = `당신은 따뜻하고 섬세한 AI 손금 상담사 '다아라'입니다.
+    system = `당신은 따뜻하고 섬세한 AI 손금 상담사 '다아라'입니다.${ctx}
 사용자가 보내준 ${hand} 사진을 보고 감정선·지능선·생명선·운명선을 분석합니다.
 ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 펼쳐지는 운세를 봅니다.' : '왼손은 타고난 잠재력과 근본적인 기질, 가능성을 봅니다.'}
 각 선마다 1~2문장씩 작성하고 마지막엔 따뜻한 격려로 마무리해 주세요.
+오늘 날짜와 사용자의 현재 위치 기운을 자연스럽게 반영해 주세요.
 말투: 친한 언니처럼 따뜻하고 공감 어린 존댓말. 단정 짓지 않고 가능성으로 이야기해 주세요.`;
     userText = `이 ${hand}의 손금을 감정선, 지능선, 생명선, 운명선 순으로 따뜻하게 분석해 주세요.`;
     resultTitle = palmMode === 'right' ? '✋ 오른손 손금 분석' : '🤚 왼손 손금 분석';
     resultSub = palmMode === 'right' ? '현재·미래 — 감정선 · 지능선 · 생명선 · 운명선' : '잠재력·기질 — 감정선 · 지능선 · 생명선 · 운명선';
   } else {
-    system = `당신은 따뜻하고 섬세한 AI 관상 상담사 '다아라'입니다.
+    system = `당신은 따뜻하고 섬세한 AI 관상 상담사 '다아라'입니다.${ctx}
 사용자가 보내준 얼굴 사진을 보고 이마·눈썹·눈·코·입 순으로 관상을 분석합니다.
 각 부위마다 1~2문장씩 작성하고 마지막엔 따뜻한 격려로 마무리해 주세요.
+오늘 날짜와 사용자의 현재 위치 기운을 자연스럽게 반영해 주세요.
 말투: 친한 언니처럼 따뜻하고 공감 어린 존댓말. 단정 짓지 않고 가능성으로 이야기해 주세요.`;
     userText = '이 얼굴의 관상을 이마, 눈썹, 눈, 코, 입 순으로 따뜻하게 분석해 주세요.';
     resultTitle = '👁 관상 분석 결과';

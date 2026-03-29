@@ -52,6 +52,18 @@ function getPopularMenu() {
   return '오늘의 운세';
 }
 
+/* ── 위치 정보 (IP 기반) ── */
+let userLocation = null;
+(async function fetchLocation() {
+  try {
+    const res = await fetch('https://ipapi.co/json/');
+    if (res.ok) {
+      const d = await res.json();
+      userLocation = { city: d.city, region: d.region, country: d.country_name };
+    }
+  } catch {}
+})();
+
 /* ── 사용량 제한 & 캐싱 ── */
 const FREE_LIMIT = 20;
 const PREMIUM_LIMIT = 20;
@@ -137,8 +149,13 @@ function saveUserInfo(name, birthdate, gender) {
   localStorage.setItem('daara_user', JSON.stringify({ name, birthdate, gender, zodiac, age, date: today }));
 }
 function getUserContext() {
-  const u = getUserInfo(); if (!u) return '';
-  return `\n[사용자] 이름: ${u.name} / 생년월일: ${u.birthdate}(${u.age}세) / 성별: ${u.gender} / 별자리: ${u.zodiac} / 오늘: ${new Date().toLocaleDateString('ko-KR')}`;
+  const u = getUserInfo();
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+  const timeStr = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+  const locStr = userLocation ? ` / 위치: ${userLocation.city}, ${userLocation.region}, ${userLocation.country}` : '';
+  if (!u) return `\n[현재] ${dateStr} ${timeStr}${locStr}`;
+  return `\n[사용자] 이름: ${u.name} / 생년월일: ${u.birthdate}(${u.age}세) / 성별: ${u.gender} / 별자리: ${u.zodiac}\n[현재] ${dateStr} ${timeStr}${locStr}`;
 }
 function selectGender(val, el) {
   selectedGender = val;
@@ -351,6 +368,7 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null) {
   const system = `당신은 따뜻하고 섬세한 AI 타로·운세 상담사 '다아라'입니다.${getUserContext()}
 사용자 감정에 먼저 공감해 주세요. 친한 언니처럼 따뜻하고 공감 어린 존댓말을 씁니다.
 사용자의 이름, 별자리, 나이, 성별을 자연스럽게 반영해 개인화된 답변을 해주세요.
+오늘 날짜, 요일, 시간대와 사용자의 현재 위치(도시/지역)의 계절감·기운을 자연스럽게 녹여주세요.
 "~것 같아요", "~할 수 있어요" 처럼 단정 짓지 않고 부드럽게 표현합니다.
 이모지를 1~2개 자연스럽게 씁니다. 3~6문장 내외로 간결하고 따뜻하게 마무리합니다.
 답변은 항상 같은 사용자에 대한 일관된 흐름을 유지해 주세요.`;
@@ -382,6 +400,7 @@ async function askClaudeTarot3(prompt, cards) {
   const system = `당신은 따뜻하고 섬세한 AI 타로·운세 상담사 '다아라'입니다.${getUserContext()}
 사용자 감정에 먼저 공감해 주세요. 친한 언니처럼 따뜻하고 공감 어린 존댓말을 씁니다.
 사용자의 이름, 별자리, 나이, 성별을 자연스럽게 반영해 개인화된 답변을 해주세요.
+오늘 날짜, 요일, 시간대와 사용자의 현재 위치(도시/지역)의 계절감·기운을 자연스럽게 녹여주세요.
 "~것 같아요", "~할 수 있어요" 처럼 단정 짓지 않고 부드럽게 표현합니다.
 이모지를 1~2개 자연스럽게 씁니다.
 답변은 항상 같은 사용자에 대한 일관된 흐름을 유지해 주세요.`;
