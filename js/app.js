@@ -549,7 +549,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // 스크롤 맨 아래 감지 → 저작권 footer 표시
   const footer = document.getElementById('app-footer');
   function checkScrollBottom(el) {
-    if (!el || !footer) return;
+    if (!el || !footer || inputFocused) return;
     const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 30;
     footer.classList.toggle('visible', atBottom);
   }
@@ -557,7 +557,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     el.addEventListener('scroll', () => checkScrollBottom(el));
   });
   // input focus 시 footer 숨김
+  let inputFocused = false;
   document.addEventListener('focusin', e => {
-    if (e.target.matches('input, select, textarea')) footer.classList.remove('visible');
+    if (e.target.matches('input, select, textarea')) { inputFocused = true; footer.classList.remove('visible'); }
   });
+  document.addEventListener('focusout', () => { inputFocused = false; });
+  // 모바일 키보드 올라올 때 (visualViewport resize)
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => { if (inputFocused) footer.classList.remove('visible'); });
+  }
 });
