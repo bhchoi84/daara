@@ -62,8 +62,9 @@ function drawCards() {
     });
     document.getElementById('card-hint').textContent = '카드가 모두 열렸어요 ✨';
     btn.textContent = '다시 뽑기'; btn.disabled = false;
-    const html = drawnCards.map((c, i) => `<div class="card-reading-block"><div class="crb-pos">${CARD_POS[i]}</div><div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name}</div><div class="crb-en">${c.en}</div></div></div><span class="crb-keywords">${c.keywords}</span></div>`).join('');
-    addMsg('bot', html, 'card-reveal');
+    drawnCards.forEach((c, i) => {
+      addMsg('bot', `<div class="card-reading-block"><div class="crb-pos">${CARD_POS[i]}</div><div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name}</div><div class="crb-en">${c.en}</div></div></div><span class="crb-keywords">${c.keywords}</span></div>`, 'card-reveal', i);
+    });
     const u = getUserInfo();
     const ctx = u ? `${u.name}님(${u.zodiac}, ${u.age}세 ${u.gender})의 ` : '';
     askClaude(`${ctx}타로 3카드: 오늘의 카드 ${drawnCards[0].name}(${drawnCards[0].keywords}), 미래의 카드 ${drawnCards[1].name}(${drawnCards[1].keywords}), 주의할 일의 카드 ${drawnCards[2].name}(${drawnCards[2].keywords}). 아래 형식으로 각 카드별 해석을 줄바꿈으로 구분해서 알려주세요:\n\n🔮 오늘의 카드 — [카드명]\n(2문장 해석)\n\n🌙 미래의 카드 — [카드명]\n(2문장 해석)\n\n⚠️ 주의할 일 — [카드명]\n(2문장 해석)\n\n✨ 다아라의 한마디\n(따뜻한 마무리 1문장)\n\n별자리 특성과 연결해 따뜻하고 구체적으로 해석해 주세요.`, true, null);
