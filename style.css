@@ -1390,6 +1390,22 @@ body {
   cursor: pointer; transition: opacity 0.15s;
 }
 .user-modal-submit:hover { opacity: 0.9; }
+
+/* ── 궁합 섹션 ── */
+.match-section-label {
+  font-size: 13px; font-weight: 600; color: var(--indigo-light);
+  padding: 6px 0 2px; border-top: 1px solid var(--border2); margin-top: 4px;
+}
+.match-info-summary {
+  padding: 10px 14px; border-radius: 12px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  font-size: 12px; color: var(--text-muted); cursor: pointer;
+  transition: border-color 0.15s; line-height: 1.6;
+}
+.match-info-summary:hover { border-color: var(--indigo-light); }
+.match-info-summary .match-info-filled { color: var(--text); }
+.match-info-placeholder { font-style: italic; }
+
 /* ── 사용자 배지 ── */
 .user-info-badge {
   padding: 8px 16px;

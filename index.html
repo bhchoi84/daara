@@ -210,43 +210,55 @@
         <div class="form-panel">
           <div class="form-card">
             <div class="form-title" style="color:var(--rose)">♡ 연애 궁합</div>
-            <div class="form-desc">그 사람과 나, 정말 잘 맞을까? AI가 솔직하게 알려드려요</div>
+            <div class="form-desc">사주·별자리·오행까지 — 둘의 궁합을 정밀 분석해 드려요</div>
+
+            <div class="match-section-label">💜 나의 정보</div>
+            <div class="match-info-summary" id="match-my-info" onclick="showUserInfoModal()">
+              <span class="match-info-placeholder">먼저 내 정보를 입력해 주세요 →</span>
+            </div>
+
+            <div class="match-section-label" style="color:var(--rose)">💗 상대방 정보</div>
             <div class="form-row">
-              <div class="form-label">나의 별자리</div>
-              <div class="zodiac-grid" id="zg-m1">
-                <button class="zodiac-btn" onclick="selectZ('m1',this,'양자리')">🐏 양</button>
-                <button class="zodiac-btn" onclick="selectZ('m1',this,'황소자리')">🐂 황소</button>
-                <button class="zodiac-btn" onclick="selectZ('m1',this,'쌍둥이자리')">👯 쌍둥</button>
-                <button class="zodiac-btn" onclick="selectZ('m1',this,'게자리')">🦀 게</button>
-                <button class="zodiac-btn" onclick="selectZ('m1',this,'사자자리')">🦁 사자</button>
-                <button class="zodiac-btn" onclick="selectZ('m1',this,'처녀자리')">🧚 처녀</button>
-                <button class="zodiac-btn" onclick="selectZ('m1',this,'천칭자리')">⚖️ 천칭</button>
-                <button class="zodiac-btn" onclick="selectZ('m1',this,'전갈자리')">🦂 전갈</button>
-                <button class="zodiac-btn" onclick="selectZ('m1',this,'사수자리')">🏹 사수</button>
-                <button class="zodiac-btn" onclick="selectZ('m1',this,'염소자리')">🐐 염소</button>
-                <button class="zodiac-btn" onclick="selectZ('m1',this,'물병자리')">🌊 물병</button>
-                <button class="zodiac-btn" onclick="selectZ('m1',this,'물고기자리')">🐠 물고기</button>
+              <div class="form-label">이름 (닉네임)</div>
+              <input class="form-input" id="match-p-name" type="text" placeholder="예: 수현, 민수" maxlength="10">
+            </div>
+            <div class="form-row">
+              <div class="form-label">생년월일</div>
+              <input class="form-input" id="match-p-birth" type="date" max="2010-12-31" min="1930-01-01">
+            </div>
+            <div class="form-row">
+              <div class="form-label">성별</div>
+              <div class="user-modal-gender">
+                <button class="gender-btn match-p-gender" onclick="selectMatchGender('여',this)">여성</button>
+                <button class="gender-btn match-p-gender" onclick="selectMatchGender('남',this)">남성</button>
+                <button class="gender-btn match-p-gender" onclick="selectMatchGender('선택안함',this)">선택안함</button>
               </div>
             </div>
             <div class="form-row">
-              <div class="form-label">상대방 별자리</div>
-              <div class="zodiac-grid" id="zg-m2">
-                <button class="zodiac-btn" onclick="selectZ('m2',this,'양자리')">🐏 양</button>
-                <button class="zodiac-btn" onclick="selectZ('m2',this,'황소자리')">🐂 황소</button>
-                <button class="zodiac-btn" onclick="selectZ('m2',this,'쌍둥이자리')">👯 쌍둥</button>
-                <button class="zodiac-btn" onclick="selectZ('m2',this,'게자리')">🦀 게</button>
-                <button class="zodiac-btn" onclick="selectZ('m2',this,'사자자리')">🦁 사자</button>
-                <button class="zodiac-btn" onclick="selectZ('m2',this,'처녀자리')">🧚 처녀</button>
-                <button class="zodiac-btn" onclick="selectZ('m2',this,'천칭자리')">⚖️ 천칭</button>
-                <button class="zodiac-btn" onclick="selectZ('m2',this,'전갈자리')">🦂 전갈</button>
-                <button class="zodiac-btn" onclick="selectZ('m2',this,'사수자리')">🏹 사수</button>
-                <button class="zodiac-btn" onclick="selectZ('m2',this,'염소자리')">🐐 염소</button>
-                <button class="zodiac-btn" onclick="selectZ('m2',this,'물병자리')">🌊 물병</button>
-                <button class="zodiac-btn" onclick="selectZ('m2',this,'물고기자리')">🐠 물고기</button>
-              </div>
+              <div class="form-label">태어난 시 (선택)</div>
+              <select class="form-input" id="match-p-siji">
+                <option value="">모르겠어요</option>
+                <option value="자시(23:00~01:00)">🐀 자시 (23:00~01:00)</option>
+                <option value="축시(01:00~03:00)">🐂 축시 (01:00~03:00)</option>
+                <option value="인시(03:00~05:00)">🐅 인시 (03:00~05:00)</option>
+                <option value="묘시(05:00~07:00)">🐇 묘시 (05:00~07:00)</option>
+                <option value="진시(07:00~09:00)">🐉 진시 (07:00~09:00)</option>
+                <option value="사시(09:00~11:00)">🐍 사시 (09:00~11:00)</option>
+                <option value="오시(11:00~13:00)">🐴 오시 (11:00~13:00)</option>
+                <option value="미시(13:00~15:00)">🐑 미시 (13:00~15:00)</option>
+                <option value="신시(15:00~17:00)">🐵 신시 (15:00~17:00)</option>
+                <option value="유시(17:00~19:00)">🐔 유시 (17:00~19:00)</option>
+                <option value="술시(19:00~21:00)">🐶 술시 (19:00~21:00)</option>
+                <option value="해시(21:00~23:00)">🐷 해시 (21:00~23:00)</option>
+              </select>
             </div>
             <div class="form-row">
-              <div class="form-label">관계 (선택)</div>
+              <div class="form-label">직업 (선택)</div>
+              <input class="form-input" id="match-p-job" type="text" placeholder="예: 회사원, 학생, 자영업" maxlength="20">
+            </div>
+
+            <div class="form-row">
+              <div class="form-label">관계</div>
               <select class="form-input" id="match-rel">
                 <option value="연인">💕 연인 / 썸</option>
                 <option value="친구">👫 친구</option>

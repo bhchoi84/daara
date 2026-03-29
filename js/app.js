@@ -237,6 +237,7 @@ function submitUserInfo() {
   saveUserInfo(name, birth, gender, siji, job);
   document.getElementById('user-modal-overlay').style.display = 'none';
   updateUserBadge();
+  if (typeof updateMatchMyInfo === 'function') updateMatchMyInfo();
   const u = getUserInfo();
   autoFillZodiac(u.zodiac);
   addMsg('bot', `<b>${u.name}</b>님, 오늘의 운세가 준비됐어요 😊<br>어제와는 다른 흐름이 보여요. 카드를 뽑아 확인해 보세요 ✨<br><span style="font-size:11px;color:var(--text-muted)">지금 가장 많이 받는 상담: ${getPopularMenu()} 🔥</span>`);
@@ -267,6 +268,7 @@ function goMenu(menu, el) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + menu).classList.add('active');
   document.querySelectorAll('.main-title-text').forEach(t => t.textContent = TITLES[menu]);
+  if (menu === 'match' && typeof updateMatchMyInfo === 'function') updateMatchMyInfo();
   toggleSidebar(true);
 }
 

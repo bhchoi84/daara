@@ -8,13 +8,74 @@ async function runStar() {
   await askClaude(`나는 ${sel.a}이에요. 오늘(${new Date().toLocaleDateString('ko-KR')}) 나의 별자리 운세를 애정운, 금전운, 건강운으로 나눠서 따뜻하고 구체적으로 알려주세요. 마지막에 오늘의 한마디로 마무리해 주세요.`, true, '⭐ 별자리 운세 요청', cacheKey);
 }
 
+let matchPartnerGender = '';
+function selectMatchGender(val, el) {
+  matchPartnerGender = val;
+  document.querySelectorAll('.match-p-gender').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function updateMatchMyInfo() {
+  const el = document.getElementById('match-my-info');
+  if (!el) return;
+  const u = getUserInfo();
+  if (!u) { el.innerHTML = '<span class="match-info-placeholder">먼저 내 정보를 입력해 주세요 →</span>'; return; }
+  let html = `<span class="match-info-filled"><b>${u.name}</b> · ${u.zodiac} · ${u.age}세 · ${u.gender}`;
+  if (u.saju) html += ` · ${u.saju.year}년 ${u.saju.day}일`;
+  if (u.siji) html += ` · ${u.siji.split('(')[0]}`;
+  if (u.job) html += ` · ${u.job}`;
+  html += `</span> <span style="font-size:11px;color:var(--text-muted)">수정 →</span>`;
+  el.innerHTML = html;
+}
+
+function getPartnerInfo() {
+  const name = document.getElementById('match-p-name').value.trim();
+  const birth = document.getElementById('match-p-birth').value;
+  if (!name || !birth) return null;
+  const gender = matchPartnerGender || '선택안함';
+  const siji = document.getElementById('match-p-siji').value;
+  const job = document.getElementById('match-p-job').value.trim();
+  const zodiac = getZodiac(birth);
+  const age = new Date().getFullYear() - parseInt(birth.slice(0,4));
+  const saju = getSaju(birth);
+  return { name, birthdate: birth, gender, zodiac, age, saji: saju, siji, job };
+}
+
 async function runMatch() {
   if (!ensureUserInfo(() => runMatch())) return;
-  if (!sel.m1 || !sel.m2) { alert('두 사람의 별자리를 모두 선택해 주세요!'); return; }
+  const partner = getPartnerInfo();
+  if (!partner) { alert('상대방의 이름과 생년월일을 입력해 주세요!'); return; }
   const rel = document.getElementById('match-rel').value;
+  const u = getUserInfo();
   goMenu('tarot', document.querySelector('.n-tarot'));
-  const cacheKey = `match_${sel.m1}_${sel.m2}_${rel}`;
-  await askClaude(`나는 ${sel.m1}이고, 상대방은 ${sel.m2}예요. 우리는 ${rel} 사이에요. 두 별자리의 궁합을 분석해 주세요. 잘 맞는 점, 조심해야 할 점, 관계를 더 좋게 만들 수 있는 따뜻한 조언도 함께 알려주세요 💕`, true, `♡ 궁합 요청 (${sel.m1} ↔ ${sel.m2})`, cacheKey);
+
+  // 나의 사주 정보
+  let myInfo = `${u.name}(${u.zodiac}, ${u.age}세, ${u.gender}`;
+  if (u.saju) myInfo += `, 연주:${u.saju.year} 일주:${u.saju.day}`;
+  if (u.siji) myInfo += `, ${u.siji.split('(')[0]}생`;
+  if (u.job) myInfo += `, ${u.job}`;
+  myInfo += ')';
+
+  // 상대 사주 정보
+  let pInfo = `${partner.name}(${partner.zodiac}, ${partner.age}세, ${partner.gender}`;
+  if (partner.saji) pInfo += `, 연주:${partner.saji.year} 일주:${partner.saji.day}`;
+  if (partner.siji) pInfo += `, ${partner.siji.split('(')[0]}생`;
+  if (partner.job) pInfo += `, ${partner.job}`;
+  pInfo += ')';
+
+  const cacheKey = `match_${u.birthdate}_${partner.birthdate}_${rel}`;
+  await askClaude(
+    `궁합 분석을 부탁해요!\n` +
+    `나: ${myInfo}\n상대: ${pInfo}\n관계: ${rel}\n\n` +
+    `두 사람의 사주(천간지지·오행 상생상극), 별자리 궁합, 성격 궁합을 종합 분석해 주세요.\n` +
+    `아래 형식으로 알려주세요:\n\n` +
+    `💕 두 사람의 궁합 점수\n(100점 만점으로 총점과 한줄 요약)\n\n` +
+    `🔥 잘 맞는 점\n(사주·별자리 기반 2~3가지)\n\n` +
+    `⚡ 조심할 점\n(충돌 가능성 2~3가지)\n\n` +
+    `💌 관계를 더 좋게 만드는 조언\n(구체적 행동 2~3가지)\n\n` +
+    `✨ 다아라의 한마디\n(따뜻한 마무리)`,
+    true, `♡ 궁합 분석 (${u.name} ↔ ${partner.name})`, cacheKey
+  );
 }
 
 async function runMoney() {
