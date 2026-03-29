@@ -14,7 +14,7 @@ const CARDS = [
   { sym: '⏳', name: '은둔자', en: 'The Hermit', keywords: '내면탐구, 지혜, 고독' },
   { sym: '◉', name: '운명의 수레바퀴', en: 'Wheel of Fortune', keywords: '전환점, 기회, 흐름' },
   { sym: '⚖', name: '정의', en: 'Justice', keywords: '균형, 진실, 원인결과' },
-  { sym: '⊥', name: '매달린 남자', en: 'The Hanged Man', keywords: '희생, 기다림, 새 관점' },
+  { sym: '♄', name: '매달린 남자', en: 'The Hanged Man', keywords: '희생, 기다림, 새 관점' },
   { sym: '✕', name: '죽음', en: 'Death', keywords: '변화, 끝과 시작, 전환' },
   { sym: '☯', name: '절제', en: 'Temperance', keywords: '조화, 인내, 균형' },
   { sym: '◆', name: '악마', en: 'The Devil', keywords: '집착, 욕망, 속박' },
