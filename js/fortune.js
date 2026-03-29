@@ -41,6 +41,21 @@ async function runToday() {
 
 /* ── 손금·관상 분석 ── */
 
+function resizeImage(dataUrl, maxWidth = 1024) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      let w = img.width, h = img.height;
+      if (w > maxWidth) { h = Math.round(h * maxWidth / w); w = maxWidth; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', 0.85));
+    };
+    img.src = dataUrl;
+  });
+}
+
 let palmMode = null; // 'right' | 'left' | 'face'
 
 function selectPalmMode(mode, el) {
@@ -87,8 +102,9 @@ function getPalmModeExpect() {
 function onPalmFile(e) {
   const file = e.target.files[0]; if (!file) return;
   const reader = new FileReader();
-  reader.onload = ev => {
-    palmPreviewSrc = ev.target.result; palmImageData = ev.target.result.split(',')[1];
+  reader.onload = async ev => {
+    const resized = await resizeImage(ev.target.result, 1024);
+    palmPreviewSrc = resized; palmImageData = resized.split(',')[1];
     const modeLabel = getPalmModeLabel();
     const modeExpect = getPalmModeExpect();
     const modeIcon = palmMode === 'face' ? '😊' : palmMode === 'right' ? '✋' : '🤚';
@@ -155,7 +171,8 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
     typingEl.innerHTML = `<div class="palm-result-header"><img src="${palmPreviewSrc}" class="palm-result-thumb" alt="${modeLabel}"><div><div class="palm-result-title">${resultTitle}</div><div class="palm-result-sub">${resultSub}</div></div></div><div class="palm-result-text">${formatReply(reply)}</div>`;
     incrementUsage(); updateUserBadge();
   } catch (err) {
-    typingEl.classList.remove('typing'); typingEl.innerHTML = '분석 중 오류가 생겼어요. 잠깐 후 다시 시도해 주세요 😊';
+    console.error('Palm analysis error:', err);
+    typingEl.classList.remove('typing'); typingEl.innerHTML = '분석 중 오류가 생겼어요. 잠깐 후 다시 시도해 주세요 😊<br><small style="opacity:0.5">' + (err.message || '') + '</small>';
   }
   btn.disabled = false; input.disabled = false; input.focus();
   document.getElementById('messages').scrollTop = 99999;
