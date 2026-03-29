@@ -546,4 +546,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   const limitSub = document.getElementById('limit-modal-sub');
   if (limitSub) limitSub.innerHTML = `오늘의 무료 상담 3회를 모두 사용했어요.<br><b>지금 ${getSocialCount('premium')}명이 프리미엄으로 상담 중이에요.</b>`;
 
+  // 타로 패널 저작권: 스크롤 하단 도달 시 표시, 입력 포커스 시 숨김
+  const tarotCr = document.getElementById('tarot-copyright');
+  const msgBox = document.getElementById('messages');
+  if (tarotCr && msgBox) {
+    msgBox.addEventListener('scroll', () => {
+      const atBottom = msgBox.scrollHeight - msgBox.scrollTop - msgBox.clientHeight < 30;
+      tarotCr.style.display = atBottom ? '' : 'none';
+    });
+    const chatInput = document.getElementById('chat-input');
+    if (chatInput) {
+      chatInput.addEventListener('focus', () => { tarotCr.style.display = 'none'; });
+      chatInput.addEventListener('blur', () => {
+        setTimeout(() => {
+          const atBottom = msgBox.scrollHeight - msgBox.scrollTop - msgBox.clientHeight < 30;
+          tarotCr.style.display = atBottom ? '' : 'none';
+        }, 300);
+      });
+    }
+  }
 });
