@@ -54,16 +54,28 @@ function getPopularMenu() {
   return '오늘의 운세';
 }
 
-/* ── 위치 정보 (IP 기반) ── */
+/* ── 위치 정보 (GPS 기반, IP 폴백) ── */
 let userLocation = null;
-(async function fetchLocation() {
-  try {
-    const res = await fetch('https://ipapi.co/json/');
-    if (res.ok) {
-      const d = await res.json();
-      userLocation = { city: d.city, region: d.region, country: d.country_name };
-    }
-  } catch {}
+(function fetchLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(async pos => {
+      try {
+        const { latitude: lat, longitude: lon } = pos.coords;
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=ko`);
+        if (res.ok) {
+          const d = await res.json();
+          const a = d.address || {};
+          userLocation = { city: a.city || a.town || a.village || a.county || '', region: a.state || a.province || '', country: a.country || '' };
+        }
+      } catch { fallbackIP(); }
+    }, () => fallbackIP(), { timeout: 5000 });
+  } else { fallbackIP(); }
+  async function fallbackIP() {
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      if (res.ok) { const d = await res.json(); userLocation = { city: d.city, region: d.region, country: d.country_name }; }
+    } catch {}
+  }
 })();
 
 /* ── 사용량 제한 & 캐싱 ── */
