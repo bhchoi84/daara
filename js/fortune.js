@@ -3,7 +3,7 @@
 async function runStar() {
   if (!ensureUserInfo(() => runStar())) return;
   if (!sel.a) { alert('별자리를 선택해 주세요!'); return; }
-  goMenu('tarot', document.querySelector('.n-tarot'));
+  showChatPanel('star');
   const cacheKey = `star_${sel.a}`;
   await askClaude(`나는 ${sel.a}이에요. 오늘(${new Date().toLocaleDateString('ko-KR')}) 나의 별자리 운세를 애정운, 금전운, 건강운으로 나눠서 따뜻하고 구체적으로 알려주세요. 마지막에 오늘의 한마디로 마무리해 주세요.`, true, '⭐ 별자리 운세 요청', cacheKey);
 }
@@ -47,7 +47,7 @@ async function runMatch() {
   if (!partner) { alert('상대방의 이름과 생년월일을 입력해 주세요!'); return; }
   const rel = document.getElementById('match-rel').value;
   const u = getUserInfo();
-  goMenu('tarot', document.querySelector('.n-tarot'));
+  showChatPanel('match');
 
   // 나의 사주 정보
   let myInfo = `${u.name}(${u.zodiac}, ${u.age}세, ${u.gender}`;
@@ -83,7 +83,7 @@ async function runMoney() {
   if (!sel.mo) { alert('별자리를 선택해 주세요!'); return; }
   const concern = document.getElementById('money-concern').value;
   const card = moneyCard ? `금전 타로 카드로 "${moneyCard.name}"(${moneyCard.keywords})이 나왔어요. ` : '';
-  goMenu('tarot', document.querySelector('.n-tarot'));
+  showChatPanel('money');
   const cacheKey = `money_${sel.mo}_${moneyCard?.name || ''}`;
   await askClaude(`나는 ${sel.mo}이에요. ${card}${concern ? `요즘 "${concern}"에 대한 고민이 있어요. ` : ''}오늘의 금전 운세를 재물운 흐름, 주의할 점, 기회가 될 수 있는 것으로 나눠서 구체적이고 따뜻하게 알려주세요 💰`, true, `◈ 금전 운세 요청 (${sel.mo})`, cacheKey);
 }
@@ -92,7 +92,7 @@ async function runToday() {
   if (!ensureUserInfo(() => runToday())) return;
   if (!sel.today) { alert('별자리를 선택해 주세요!'); return; }
   const concern = document.getElementById('today-concern').value;
-  goMenu('tarot', document.querySelector('.n-tarot'));
+  showChatPanel('today');
   const cacheKey = `today_${sel.today}${concern ? '_c' : ''}`;
   await askClaude(
     `나는 ${sel.today}이에요. 오늘(${new Date().toLocaleDateString('ko-KR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })})의 전체 운세를 봐주세요.${concern ? ` 특히 "${concern}"에 대해 신경이 쓰여요.` : ''} 오늘의 총운, 애정운, 금전운, 건강운, 오늘의 행운 색깔/숫자를 포함해서 따뜻하고 구체적으로 알려주세요. 마지막에 오늘 하루를 위한 다아라의 한마디로 마무리해 주세요 🌅`,
@@ -199,7 +199,7 @@ async function analyzePalm() {
   if (!palmImageData) return;
   if (!palmMode) { alert('오른손 / 왼손 / 관상 중 하나를 먼저 선택해 주세요!'); return; }
   if (!canUseAPI()) { document.getElementById('limit-modal-overlay').style.display = 'flex'; return; }
-  goMenu('tarot', document.querySelector('.n-tarot'));
+  showChatPanel('palm');
   const btn = document.getElementById('send-btn'), input = document.getElementById('chat-input');
   btn.disabled = true; input.disabled = true;
   const modeLabel = palmMode === 'right' ? '오른손 손금' : palmMode === 'left' ? '왼손 손금' : '관상';

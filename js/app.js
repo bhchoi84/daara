@@ -1,7 +1,9 @@
 /* ── 답변 스타일링 ── */
 function formatReply(text) {
+  // 마크다운 헤딩 제거 (## / ### / #)
+  text = text.replace(/^#{1,3}\s*/gm, '');
   // 이모지 헤딩 패턴
-  const headingRe = /^(🔮|🌙|⚠️|✨|⭐|💰|♡|◈|🌅|💕|🏠|💼|🩺|🍀|🔢|🎨|♈|♉|♊|♋|♌|♍|♎|♏|♐|♑|♒|♓)(.+)/;
+  const headingRe = /^(🔮|🌙|⚠️|✨|⭐|💰|♡|◈|🌅|💕|🏠|💼|🩺|🍀|🔢|🎨|💵|💲|🫰|🤑|💸|🧡|❤️|💛|💚|💙|💜|🩷|🔥|📊|🏥|🧘|♈|♉|♊|♋|♌|♍|♎|♏|♐|♑|♒|♓)(.+)/;
   const lines = text.split('\n');
   let html = '';
   let inSection = false;
@@ -269,6 +271,13 @@ function goMenu(menu, el) {
   document.getElementById('panel-' + menu).classList.add('active');
   document.querySelectorAll('.main-title-text').forEach(t => t.textContent = TITLES[menu]);
   if (menu === 'match' && typeof updateMatchMyInfo === 'function') updateMatchMyInfo();
+  toggleSidebar(true);
+}
+// 패널만 전환 (메뉴 하이라이트는 원래 메뉴 유지)
+function showChatPanel(sourceMenu) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-tarot').classList.add('active');
+  document.querySelectorAll('.main-title-text').forEach(t => t.textContent = TITLES[sourceMenu] || TITLES.tarot);
   toggleSidebar(true);
 }
 
