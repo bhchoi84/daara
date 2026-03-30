@@ -633,9 +633,11 @@ function showBpDay(yBtn, mBtn, dBtn) {
   }
   const yLabel = yBtn.dataset.value ? yBtn.dataset.value + '년 ' : '';
   const mLabel = mBtn.dataset.value ? parseInt(mBtn.dataset.value) + '월' : '';
+  const isPartner = yBtn.dataset.group && yBtn.dataset.group.includes('match');
+  const calLabel = isPartner ? (matchPartnerCalendar || '양력') : (selectedCalendar || '양력');
   const pop = bpWrap(
     `<button class="bp-close-top" onclick="closeBp()">&times;</button>` +
-    `<div class="bp-header"><span class="bp-title">${yLabel}${mLabel}</span></div>` +
+    `<div class="bp-header"><span class="bp-title">${yLabel}${mLabel} <span class="bp-cal-tag">${calLabel}</span></span></div>` +
     `<div class="bp-grid bp-grid-day">${dayHeader}${items}</div>`
   );
   pop.querySelectorAll('.bp-item').forEach(b => b.onclick = () => {

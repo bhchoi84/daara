@@ -1452,6 +1452,12 @@ body {
 .bp-item.sun.selected { color: #f87171; }
 .bp-item.sat.selected { color: #60a5fa; }
 .bp-empty { }
+.bp-cal-tag {
+  font-size: 11px; font-weight: 500;
+  padding: 2px 6px; border-radius: 4px;
+  background: rgba(225,196,113,0.15); color: var(--gold);
+  margin-left: 4px; vertical-align: middle;
+}
 .user-modal-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.3px; }
 .user-modal-input {
   background: var(--surface2); border: 1px solid var(--border2);
