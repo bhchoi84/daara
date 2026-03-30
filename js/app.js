@@ -543,7 +543,7 @@ let bpOverlay = null;
 let bpDecade = 1970;
 
 function openBirthPicker(mode, yBtn, mBtn, dBtn) {
-  if (mode === 'year') { bpDecade = 1970; showBpYear(yBtn, mBtn, dBtn); }
+  if (mode === 'year') { bpDecade = 2000; showBpYear(yBtn, mBtn, dBtn); }
   else if (mode === 'month') { showBpMonth(yBtn, mBtn, dBtn); }
   else { showBpDay(yBtn, mBtn, dBtn); }
 }
@@ -599,7 +599,7 @@ function showBpMonth(yBtn, mBtn, dBtn) {
     items += `<button class="bp-item${sel}" data-val="${mv}">${m}월</button>`;
   }
   const pop = bpWrap(
-    `<div class="bp-header"><span class="bp-title">월 선택</span></div>` +
+    `<div class="bp-header"><span class="bp-title">월 선택</span><button class="bp-close" onclick="closeBp()">&times;</button></div>` +
     `<div class="bp-grid bp-grid-month">${items}</div>`
   );
   pop.querySelectorAll('.bp-item').forEach(b => b.onclick = () => {
@@ -623,7 +623,7 @@ function showBpDay(yBtn, mBtn, dBtn) {
   }
   const mLabel = mBtn.dataset.value ? parseInt(mBtn.dataset.value) + '월' : '';
   const pop = bpWrap(
-    `<div class="bp-header"><span class="bp-title">${mLabel} 일 선택</span></div>` +
+    `<div class="bp-header"><span class="bp-title">${mLabel} 일 선택</span><button class="bp-close" onclick="closeBp()">&times;</button></div>` +
     `<div class="bp-grid bp-grid-day">${items}</div>`
   );
   pop.querySelectorAll('.bp-item').forEach(b => b.onclick = () => {
