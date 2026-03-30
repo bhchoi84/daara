@@ -541,9 +541,10 @@ function initBirthSelects(yId, mId, dId) {
 /* ── 통합 팝업 피커 ── */
 let bpOverlay = null;
 let bpDecade = 1970;
+const BP_MAX_YEAR = new Date().getFullYear();
 
 function openBirthPicker(mode, yBtn, mBtn, dBtn) {
-  if (mode === 'year') { bpDecade = 2000; showBpYear(yBtn, mBtn, dBtn); }
+  if (mode === 'year') { bpDecade = Math.floor(BP_MAX_YEAR / 10) * 10; showBpYear(yBtn, mBtn, dBtn); }
   else if (mode === 'month') { showBpMonth(yBtn, mBtn, dBtn); }
   else { showBpDay(yBtn, mBtn, dBtn); }
 }
@@ -566,16 +567,16 @@ function closeBp() { if (bpOverlay) { bpOverlay.remove(); bpOverlay = null; } }
 
 // 년도 피커
 function showBpYear(yBtn, mBtn, dBtn) {
-  const start = bpDecade, end = Math.min(bpDecade + 9, 2010);
+  const start = bpDecade, end = Math.min(bpDecade + 9, BP_MAX_YEAR);
   const prevVis = bpDecade > 1940 ? '' : 'visibility:hidden';
-  const nextVis = bpDecade + 10 <= 2010 ? '' : 'visibility:hidden';
+  const nextVis = bpDecade + 10 <= BP_MAX_YEAR ? '' : 'visibility:hidden';
   let items = '';
   for (let y = start; y <= end; y++) {
     const sel = yBtn.dataset.value === String(y) ? ' selected' : '';
     items += `<button class="bp-item${sel}" data-val="${y}">${y}년</button>`;
   }
   const pop = bpWrap(
-    `<div class="bp-header"><button class="bp-nav" style="${prevVis}" data-dir="prev">◀</button><span class="bp-title">${start}~${end}</span><button class="bp-nav" style="${nextVis}" data-dir="next">▶</button></div>` +
+    `<div class="bp-header"><button class="bp-nav" style="${prevVis}" data-dir="prev">◀</button><span class="bp-title">${start}~${end}</span><button class="bp-nav" style="${nextVis}" data-dir="next">▶</button><button class="bp-close" onclick="closeBp()">&times;</button></div>` +
     `<div class="bp-grid bp-grid-year">${items}</div>`
   );
   pop.querySelectorAll('.bp-nav').forEach(b => b.onclick = () => {
@@ -615,16 +616,24 @@ function showBpDay(yBtn, mBtn, dBtn) {
   const y = parseInt(yBtn.dataset.value) || 2000;
   const m = parseInt(mBtn.dataset.value) || 1;
   const days = new Date(y, m, 0).getDate();
+  const firstDay = new Date(y, m - 1, 1).getDay(); // 0=일, 1=월...
+  const dayNames = ['일','월','화','수','목','금','토'];
+  let dayHeader = dayNames.map((d, i) => `<span class="bp-day-name${i === 0 ? ' sun' : i === 6 ? ' sat' : ''}">${d}</span>`).join('');
   let items = '';
+  // 1일 전 빈칸
+  for (let e = 0; e < firstDay; e++) items += '<span class="bp-empty"></span>';
   for (let d = 1; d <= days; d++) {
     const dv = String(d).padStart(2, '0');
     const sel = dBtn.dataset.value === dv ? ' selected' : '';
-    items += `<button class="bp-item${sel}" data-val="${dv}">${d}</button>`;
+    const dow = (firstDay + d - 1) % 7;
+    const dayClass = dow === 0 ? ' sun' : dow === 6 ? ' sat' : '';
+    items += `<button class="bp-item${sel}${dayClass}" data-val="${dv}">${d}</button>`;
   }
+  const yLabel = yBtn.dataset.value ? yBtn.dataset.value + '년 ' : '';
   const mLabel = mBtn.dataset.value ? parseInt(mBtn.dataset.value) + '월' : '';
   const pop = bpWrap(
-    `<div class="bp-header"><span class="bp-title">${mLabel} 일 선택</span><button class="bp-close" onclick="closeBp()">&times;</button></div>` +
-    `<div class="bp-grid bp-grid-day">${items}</div>`
+    `<div class="bp-header"><span class="bp-title">${yLabel}${mLabel}</span><button class="bp-close" onclick="closeBp()">&times;</button></div>` +
+    `<div class="bp-grid bp-grid-day">${dayHeader}${items}</div>`
   );
   pop.querySelectorAll('.bp-item').forEach(b => b.onclick = () => {
     dBtn.dataset.value = b.dataset.val;
