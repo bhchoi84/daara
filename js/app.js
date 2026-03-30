@@ -513,124 +513,146 @@ async function sendMessage() {
   await askClaude(null, false, null);
 }
 
-/* ── 생년월일 드롭다운 생성 ── */
+/* ── 생년월일 커스텀 피커 ── */
 function initBirthSelects(yId, mId, dId) {
   const yEl = document.getElementById(yId), mEl = document.getElementById(mId), dEl = document.getElementById(dId);
   if (!yEl || !mEl || !dEl) return;
-  // 년도: select → 커스텀 버튼으로 변환
-  const yBtn = document.createElement('button');
-  yBtn.type = 'button';
-  yBtn.className = 'birth-year-btn ' + yEl.className;
-  yBtn.textContent = '년';
-  yBtn.dataset.value = '';
-  yBtn.dataset.targetId = yId;
-  yEl.parentNode.replaceChild(yBtn, yEl);
-  yBtn.addEventListener('click', () => openYearPicker(yBtn));
-  // 월
-  mEl.innerHTML = '<option value="">월</option>';
-  for (let m = 1; m <= 12; m++) mEl.innerHTML += `<option value="${String(m).padStart(2,'0')}">${m}월</option>`;
-  // 일
-  function updateDays() {
-    const y = parseInt(yBtn.dataset.value) || 2000, m = parseInt(mEl.value) || 1;
-    const days = new Date(y, m, 0).getDate();
-    const prev = dEl.value;
-    dEl.innerHTML = '<option value="">일</option>';
-    for (let d = 1; d <= days; d++) dEl.innerHTML += `<option value="${String(d).padStart(2,'0')}">${d}일</option>`;
-    if (parseInt(prev) <= days) dEl.value = prev;
+  // 년·월·일 모두 커스텀 버튼으로 변환
+  function makeBtn(el, label, groupId) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'birth-pick-btn ' + el.className;
+    btn.textContent = label;
+    btn.dataset.value = '';
+    btn.dataset.group = groupId;
+    el.parentNode.replaceChild(btn, el);
+    return btn;
   }
-  yBtn._updateDays = updateDays;
-  mEl.addEventListener('change', updateDays);
-  updateDays();
+  const group = yId; // 그룹 식별자
+  const yBtn = makeBtn(yEl, '년', group);
+  const mBtn = makeBtn(mEl, '월', group);
+  const dBtn = makeBtn(dEl, '일', group);
+  yBtn.dataset.role = 'y'; mBtn.dataset.role = 'm'; dBtn.dataset.role = 'd';
+  yBtn.addEventListener('click', () => openBirthPicker('year', yBtn, mBtn, dBtn));
+  mBtn.addEventListener('click', () => openBirthPicker('month', yBtn, mBtn, dBtn));
+  dBtn.addEventListener('click', () => openBirthPicker('day', yBtn, mBtn, dBtn));
 }
 
-/* ── 년도 팝업 피커 ── */
-let yearPickerOverlay = null;
-let yearPickerTarget = null;
-let yearPickerDecade = 1970; // 시작 연대
+/* ── 통합 팝업 피커 ── */
+let bpOverlay = null;
+let bpDecade = 1970;
 
-function openYearPicker(btn) {
-  yearPickerTarget = btn;
-  yearPickerDecade = 1970;
-  showYearPickerPopup();
+function openBirthPicker(mode, yBtn, mBtn, dBtn) {
+  if (mode === 'year') { bpDecade = 1970; showBpYear(yBtn, mBtn, dBtn); }
+  else if (mode === 'month') { showBpMonth(yBtn, mBtn, dBtn); }
+  else { showBpDay(yBtn, mBtn, dBtn); }
 }
 
-function showYearPickerPopup() {
-  if (yearPickerOverlay) yearPickerOverlay.remove();
+function bpWrap(content) {
+  if (bpOverlay) bpOverlay.remove();
   const ov = document.createElement('div');
-  ov.className = 'year-picker-overlay';
+  ov.className = 'bp-overlay';
   const pop = document.createElement('div');
-  pop.className = 'year-picker-popup';
-  // 헤더
-  const header = document.createElement('div');
-  header.className = 'year-picker-header';
-  const prevBtn = document.createElement('button');
-  prevBtn.className = 'year-picker-nav';
-  prevBtn.textContent = '◀';
-  prevBtn.onclick = () => { yearPickerDecade -= 10; showYearPickerPopup(); };
-  if (yearPickerDecade <= 1940) prevBtn.style.visibility = 'hidden';
-  const title = document.createElement('span');
-  title.className = 'year-picker-title';
-  title.textContent = `${yearPickerDecade}~${yearPickerDecade + 9}`;
-  const nextBtn = document.createElement('button');
-  nextBtn.className = 'year-picker-nav';
-  nextBtn.textContent = '▶';
-  nextBtn.onclick = () => { yearPickerDecade += 10; showYearPickerPopup(); };
-  if (yearPickerDecade + 10 > 2010) nextBtn.style.visibility = 'hidden';
-  header.append(prevBtn, title, nextBtn);
-  pop.appendChild(header);
-  // 년도 그리드
-  const grid = document.createElement('div');
-  grid.className = 'year-picker-grid';
-  const endYear = Math.min(yearPickerDecade + 9, 2010);
-  for (let y = yearPickerDecade; y <= endYear; y++) {
-    const yb = document.createElement('button');
-    yb.className = 'year-picker-item';
-    if (yearPickerTarget && yearPickerTarget.dataset.value === String(y)) yb.classList.add('selected');
-    yb.textContent = y + '년';
-    yb.onclick = () => selectYear(y);
-    grid.appendChild(yb);
-  }
-  pop.appendChild(grid);
+  pop.className = 'bp-popup';
+  pop.innerHTML = content;
   ov.appendChild(pop);
-  ov.addEventListener('click', e => { if (e.target === ov) closeYearPicker(); });
+  ov.addEventListener('click', e => { if (e.target === ov) closeBp(); });
   document.body.appendChild(ov);
-  yearPickerOverlay = ov;
+  bpOverlay = ov;
+  return pop;
 }
 
-function selectYear(y) {
-  if (!yearPickerTarget) return;
-  yearPickerTarget.dataset.value = y;
-  yearPickerTarget.textContent = y + '년';
-  yearPickerTarget.classList.add('has-value');
-  if (yearPickerTarget._updateDays) yearPickerTarget._updateDays();
-  closeYearPicker();
+function closeBp() { if (bpOverlay) { bpOverlay.remove(); bpOverlay = null; } }
+
+// 년도 피커
+function showBpYear(yBtn, mBtn, dBtn) {
+  const start = bpDecade, end = Math.min(bpDecade + 9, 2010);
+  const prevVis = bpDecade > 1940 ? '' : 'visibility:hidden';
+  const nextVis = bpDecade + 10 <= 2010 ? '' : 'visibility:hidden';
+  let items = '';
+  for (let y = start; y <= end; y++) {
+    const sel = yBtn.dataset.value === String(y) ? ' selected' : '';
+    items += `<button class="bp-item${sel}" data-val="${y}">${y}년</button>`;
+  }
+  const pop = bpWrap(
+    `<div class="bp-header"><button class="bp-nav" style="${prevVis}" data-dir="prev">◀</button><span class="bp-title">${start}~${end}</span><button class="bp-nav" style="${nextVis}" data-dir="next">▶</button></div>` +
+    `<div class="bp-grid bp-grid-year">${items}</div>`
+  );
+  pop.querySelectorAll('.bp-nav').forEach(b => b.onclick = () => {
+    bpDecade += b.dataset.dir === 'prev' ? -10 : 10;
+    showBpYear(yBtn, mBtn, dBtn);
+  });
+  pop.querySelectorAll('.bp-item').forEach(b => b.onclick = () => {
+    yBtn.dataset.value = b.dataset.val;
+    yBtn.textContent = b.dataset.val + '년';
+    yBtn.classList.add('has-value');
+    closeBp();
+  });
 }
 
-function closeYearPicker() {
-  if (yearPickerOverlay) { yearPickerOverlay.remove(); yearPickerOverlay = null; }
+// 월 피커
+function showBpMonth(yBtn, mBtn, dBtn) {
+  let items = '';
+  for (let m = 1; m <= 12; m++) {
+    const mv = String(m).padStart(2, '0');
+    const sel = mBtn.dataset.value === mv ? ' selected' : '';
+    items += `<button class="bp-item${sel}" data-val="${mv}">${m}월</button>`;
+  }
+  const pop = bpWrap(
+    `<div class="bp-header"><span class="bp-title">월 선택</span></div>` +
+    `<div class="bp-grid bp-grid-month">${items}</div>`
+  );
+  pop.querySelectorAll('.bp-item').forEach(b => b.onclick = () => {
+    mBtn.dataset.value = b.dataset.val;
+    mBtn.textContent = parseInt(b.dataset.val) + '월';
+    mBtn.classList.add('has-value');
+    closeBp();
+  });
 }
+
+// 일 피커
+function showBpDay(yBtn, mBtn, dBtn) {
+  const y = parseInt(yBtn.dataset.value) || 2000;
+  const m = parseInt(mBtn.dataset.value) || 1;
+  const days = new Date(y, m, 0).getDate();
+  let items = '';
+  for (let d = 1; d <= days; d++) {
+    const dv = String(d).padStart(2, '0');
+    const sel = dBtn.dataset.value === dv ? ' selected' : '';
+    items += `<button class="bp-item${sel}" data-val="${dv}">${d}</button>`;
+  }
+  const mLabel = mBtn.dataset.value ? parseInt(mBtn.dataset.value) + '월' : '';
+  const pop = bpWrap(
+    `<div class="bp-header"><span class="bp-title">${mLabel} 일 선택</span></div>` +
+    `<div class="bp-grid bp-grid-day">${items}</div>`
+  );
+  pop.querySelectorAll('.bp-item').forEach(b => b.onclick = () => {
+    dBtn.dataset.value = b.dataset.val;
+    dBtn.textContent = parseInt(b.dataset.val) + '일';
+    dBtn.classList.add('has-value');
+    closeBp();
+  });
+}
+
 function getBirthFromSelects(yId, mId, dId) {
-  const yBtn = document.querySelector(`.birth-year-btn[data-target-id="${yId}"]`);
-  const y = yBtn ? yBtn.dataset.value : '';
-  const m = document.getElementById(mId)?.value;
-  const d = document.getElementById(dId)?.value;
+  const g = document.querySelector(`.birth-pick-btn[data-group="${yId}"][data-role="y"]`);
+  const gm = document.querySelector(`.birth-pick-btn[data-group="${yId}"][data-role="m"]`);
+  const gd = document.querySelector(`.birth-pick-btn[data-group="${yId}"][data-role="d"]`);
+  const y = g ? g.dataset.value : '';
+  const m = gm ? gm.dataset.value : '';
+  const d = gd ? gd.dataset.value : '';
   if (!y || !m || !d) return '';
   return `${y}-${m}-${d}`;
 }
 function setBirthSelects(yId, mId, dId, dateStr) {
   if (!dateStr) return;
   const [y, m, d] = dateStr.split('-');
-  const yBtn = document.querySelector(`.birth-year-btn[data-target-id="${yId}"]`);
-  if (yBtn) { yBtn.dataset.value = y; yBtn.textContent = y + '년'; yBtn.classList.add('has-value'); }
-  const mEl = document.getElementById(mId);
-  if (mEl) mEl.value = m;
-  const dEl = document.getElementById(dId);
-  const days = new Date(parseInt(y), parseInt(m), 0).getDate();
-  if (dEl) {
-    dEl.innerHTML = '<option value="">일</option>';
-    for (let i = 1; i <= days; i++) dEl.innerHTML += `<option value="${String(i).padStart(2,'0')}">${i}일</option>`;
-    dEl.value = d;
-  }
+  const g = document.querySelector(`.birth-pick-btn[data-group="${yId}"][data-role="y"]`);
+  const gm = document.querySelector(`.birth-pick-btn[data-group="${yId}"][data-role="m"]`);
+  const gd = document.querySelector(`.birth-pick-btn[data-group="${yId}"][data-role="d"]`);
+  if (g) { g.dataset.value = y; g.textContent = y + '년'; g.classList.add('has-value'); }
+  if (gm) { gm.dataset.value = m; gm.textContent = parseInt(m) + '월'; gm.classList.add('has-value'); }
+  if (gd) { gd.dataset.value = d; gd.textContent = parseInt(d) + '일'; gd.classList.add('has-value'); }
 }
 
 /* ── 초기화 ── */

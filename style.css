@@ -1373,32 +1373,32 @@ body {
 .user-modal-field { display: flex; flex-direction: column; gap: 4px; }
 .birth-select-row { display: flex; gap: 6px; }
 .birth-sel { flex: 1; text-align: center; }
-/* 년도 버튼 */
-.birth-year-btn {
+/* 생년월일 피커 버튼 */
+.birth-pick-btn {
   cursor: pointer; text-align: center;
   color: var(--text-muted);
 }
-.birth-year-btn.has-value { color: var(--text); }
-/* 년도 피커 팝업 */
-.year-picker-overlay {
+.birth-pick-btn.has-value { color: var(--text); }
+/* 통합 팝업 피커 */
+.bp-overlay {
   position: fixed; inset: 0; z-index: 1100;
   background: rgba(10,14,26,0.85);
   display: flex; align-items: center; justify-content: center;
-  padding: 20px;
+  padding: 16px;
 }
-.year-picker-popup {
+.bp-popup {
   background: var(--surface);
   border: 1px solid var(--border2);
   border-radius: 16px;
   padding: 16px;
-  width: 100%; max-width: 300px;
+  width: 100%; max-width: 320px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
 }
-.year-picker-header {
+.bp-header {
   display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 12px; min-height: 36px;
 }
-.year-picker-nav {
+.bp-nav {
   width: 36px; height: 36px; border-radius: 50%;
   border: 1px solid var(--border2);
   background: var(--surface2); color: var(--text-muted);
@@ -1406,22 +1406,24 @@ body {
   display: flex; align-items: center; justify-content: center;
   transition: all 0.15s;
 }
-.year-picker-nav:hover { background: var(--surface3); color: var(--text); }
-.year-picker-title {
+.bp-nav:hover { background: var(--surface3); color: var(--text); }
+.bp-title {
   font-size: 15px; font-weight: 600; color: var(--text);
+  flex: 1; text-align: center;
 }
-.year-picker-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
-}
-.year-picker-item {
-  padding: 12px 8px;
-  border-radius: 10px; border: 1px solid var(--border2);
+.bp-grid { display: grid; gap: 6px; }
+.bp-grid-year { grid-template-columns: repeat(2, 1fr); }
+.bp-grid-month { grid-template-columns: repeat(4, 1fr); }
+.bp-grid-day { grid-template-columns: repeat(7, 1fr); }
+.bp-item {
+  padding: 10px 4px;
+  border-radius: 8px; border: 1px solid var(--border2);
   background: var(--surface2); color: var(--text);
-  font-size: 15px; cursor: pointer;
+  font-size: 14px; cursor: pointer;
   transition: all 0.15s; text-align: center;
 }
-.year-picker-item:hover { background: var(--surface3); border-color: var(--indigo-light); }
-.year-picker-item.selected {
+.bp-item:hover { background: var(--surface3); border-color: var(--indigo-light); }
+.bp-item.selected {
   background: var(--indigo-pale); border-color: var(--indigo-light); color: var(--indigo-light); font-weight: 600;
 }
 .user-modal-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.3px; }
