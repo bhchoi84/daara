@@ -444,7 +444,7 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null) {
 답변은 항상 같은 사용자에 대한 일관된 흐름을 유지해 주세요.`;
   const messages = overrideMsg ? [{ role: 'user', content: overrideMsg }] : [...history];
   try {
-    const data = await callAPI({ model: 'claude-haiku-4-5-20251001', max_tokens: 500, system, messages });
+    const data = await callAPI({ model: 'claude-haiku-4-5-20251001', max_tokens: 1000, system, messages });
     const reply = data?.content?.[0]?.text || '잠깐 다시 시도해 주실 수 있어요? 😊';
     typingEl.classList.remove('typing'); typingEl.innerHTML = formatReply(reply);
     if (!isAuto) { history.push({ role: 'assistant', content: reply }); if (history.length > 12) history = history.slice(-12); }
