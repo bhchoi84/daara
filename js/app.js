@@ -456,7 +456,7 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null) {
     typingEl.innerHTML = '잠깐 연결이 끊겼어요. 조금 있다 다시 시도해 주세요 😊';
   }
   btn.disabled = false; input.disabled = false; input.focus();
-  document.getElementById('messages').scrollTop = 99999;
+  setTimeout(() => typingEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 }
 /* 타로 3카드 해석 — API 1회 호출, 결과를 카드별 3개 메시지로 분리 */
 async function askClaudeTarot3(prompt, cards) {
@@ -467,6 +467,7 @@ async function askClaudeTarot3(prompt, cards) {
   const btn = document.getElementById('send-btn'), input = document.getElementById('chat-input');
   btn.disabled = true; input.disabled = true;
   const typingEl = addMsg('bot', '카드를 해석하고 있어요···'); typingEl.classList.add('typing');
+  let firstCardEl = null;
   const system = `당신은 따뜻하고 섬세한 AI 타로·운세·사주 상담사 '다아라'입니다.${getUserContext()}
 사용자 감정에 먼저 공감해 주세요. 성별·나이에 관계없이 "~님"으로 호칭하며, 정중하고 따뜻한 존댓말을 씁니다. "오빠/언니/누나/형" 같은 호칭은 절대 쓰지 않습니다.
 사용자의 이름, 별자리, 나이, 성별, 직업을 자연스럽게 반영해 개인화된 답변을 해주세요.
@@ -488,10 +489,10 @@ async function askClaudeTarot3(prompt, cards) {
       const trimmed = sec.trim();
       if (!trimmed) continue;
       if (cardIdx < 3 && cardEmojis.some(e => trimmed.startsWith(e))) {
-        addMsg('bot', formatReply(trimmed), 'text', cardIdx);
+        const el = addMsg('bot', formatReply(trimmed), 'text', cardIdx);
+        if (cardIdx === 0) firstCardEl = el;
         cardIdx++;
       } else {
-        // ✨ 다아라의 한마디 등
         addMsg('bot', formatReply(trimmed));
       }
     }
@@ -502,7 +503,7 @@ async function askClaudeTarot3(prompt, cards) {
     typingEl.innerHTML = '잠깐 연결이 끊겼어요. 조금 있다 다시 시도해 주세요 😊';
   }
   btn.disabled = false; input.disabled = false; input.focus();
-  document.getElementById('messages').scrollTop = 99999;
+  if (firstCardEl) setTimeout(() => firstCardEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 }
 async function sendMessage() {
   if (!ensureUserInfo(() => sendMessage())) return;
