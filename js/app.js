@@ -217,7 +217,7 @@ function showUserInfoModal() {
   const u = getUserInfo();
   if (u) {
     document.getElementById('um-name').value = u.name || '';
-    document.getElementById('um-birth').value = u.birthdate || '';
+    setBirthSelects('um-birth-y', 'um-birth-m', 'um-birth-d', u.birthdate);
     document.getElementById('um-siji').value = u.siji || '';
     document.getElementById('um-job').value = u.job || '';
     if (u.gender) { selectedGender = u.gender; document.querySelectorAll('.user-modal-gender .gender-btn:not(.cal-btn)').forEach(b => { if (b.textContent.trim() === u.gender || (u.gender==='선택안함'&&b.textContent.trim()==='선택안함')) b.classList.add('active'); }); }
@@ -252,9 +252,9 @@ function autoFillZodiac(zodiac) {
 }
 function submitUserInfo() {
   const name = document.getElementById('um-name').value.trim();
-  const birth = document.getElementById('um-birth').value;
+  const birth = getBirthFromSelects('um-birth-y', 'um-birth-m', 'um-birth-d');
   if (!name) { document.getElementById('um-name').focus(); return; }
-  if (!birth) { document.getElementById('um-birth').focus(); return; }
+  if (!birth) { document.getElementById('um-birth-y').focus(); return; }
   const gender = selectedGender || '선택안함';
   const siji = document.getElementById('um-siji').value;
   const job = document.getElementById('um-job').value.trim();
@@ -513,8 +513,56 @@ async function sendMessage() {
   await askClaude(null, false, null);
 }
 
+/* ── 생년월일 드롭다운 생성 ── */
+function initBirthSelects(yId, mId, dId, defaultYear) {
+  const yEl = document.getElementById(yId), mEl = document.getElementById(mId), dEl = document.getElementById(dId);
+  if (!yEl || !mEl || !dEl) return;
+  // 년도: 1940~2010 (최신 → 오래된 순이 아닌, 오래된 → 최신)
+  yEl.innerHTML = '<option value="">년</option>';
+  for (let y = 2010; y >= 1940; y--) yEl.innerHTML += `<option value="${y}">${y}년</option>`;
+  if (defaultYear) yEl.value = defaultYear;
+  // 월
+  mEl.innerHTML = '<option value="">월</option>';
+  for (let m = 1; m <= 12; m++) mEl.innerHTML += `<option value="${String(m).padStart(2,'0')}">${m}월</option>`;
+  // 일
+  function updateDays() {
+    const y = parseInt(yEl.value) || 2000, m = parseInt(mEl.value) || 1;
+    const days = new Date(y, m, 0).getDate();
+    const prev = dEl.value;
+    dEl.innerHTML = '<option value="">일</option>';
+    for (let d = 1; d <= days; d++) dEl.innerHTML += `<option value="${String(d).padStart(2,'0')}">${d}일</option>`;
+    if (parseInt(prev) <= days) dEl.value = prev;
+  }
+  yEl.addEventListener('change', updateDays);
+  mEl.addEventListener('change', updateDays);
+  updateDays();
+}
+function getBirthFromSelects(yId, mId, dId) {
+  const y = document.getElementById(yId)?.value;
+  const m = document.getElementById(mId)?.value;
+  const d = document.getElementById(dId)?.value;
+  if (!y || !m || !d) return '';
+  return `${y}-${m}-${d}`;
+}
+function setBirthSelects(yId, mId, dId, dateStr) {
+  if (!dateStr) return;
+  const [y, m, d] = dateStr.split('-');
+  const yEl = document.getElementById(yId), mEl = document.getElementById(mId), dEl = document.getElementById(dId);
+  if (yEl) yEl.value = y;
+  if (mEl) mEl.value = m;
+  // 일 목록 갱신 후 설정
+  const days = new Date(parseInt(y), parseInt(m), 0).getDate();
+  if (dEl) {
+    dEl.innerHTML = '<option value="">일</option>';
+    for (let i = 1; i <= days; i++) dEl.innerHTML += `<option value="${String(i).padStart(2,'0')}">${i}일</option>`;
+    dEl.value = d;
+  }
+}
+
 /* ── 초기화 ── */
 document.addEventListener('DOMContentLoaded', async () => {
+  initBirthSelects('um-birth-y', 'um-birth-m', 'um-birth-d');
+  initBirthSelects('match-p-birth-y', 'match-p-birth-m', 'match-p-birth-d');
   // 토스 결제 리다이렉트 처리
   const params = new URLSearchParams(window.location.search);
   if (params.get('payment') === 'success') {

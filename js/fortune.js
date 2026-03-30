@@ -39,7 +39,7 @@ function updateMatchMyInfo() {
 
 function getPartnerInfo() {
   const name = document.getElementById('match-p-name').value.trim();
-  const birth = document.getElementById('match-p-birth').value;
+  const birth = getBirthFromSelects('match-p-birth-y', 'match-p-birth-m', 'match-p-birth-d');
   if (!name || !birth) return null;
   const gender = matchPartnerGender || '선택안함';
   const siji = document.getElementById('match-p-siji').value;

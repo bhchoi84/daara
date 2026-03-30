@@ -228,7 +228,11 @@
             </div>
             <div class="form-row">
               <div class="form-label">생년월일</div>
-              <input class="form-input" id="match-p-birth" type="date" max="2010-12-31" min="1930-01-01">
+              <div class="birth-select-row">
+                <select class="form-input birth-sel" id="match-p-birth-y"></select>
+                <select class="form-input birth-sel" id="match-p-birth-m"></select>
+                <select class="form-input birth-sel" id="match-p-birth-d"></select>
+              </div>
               <div class="user-modal-gender" style="margin-top:6px">
                 <button class="gender-btn cal-btn match-p-cal active" onclick="selectMatchCalendar('양력',this)">☀️ 양력</button>
                 <button class="gender-btn cal-btn match-p-cal" onclick="selectMatchCalendar('음력',this)">🌙 음력</button>
@@ -358,7 +362,11 @@
       </div>
       <div class="user-modal-field">
         <label class="user-modal-label">생년월일</label>
-        <input class="user-modal-input" id="um-birth" type="date" max="2010-12-31" min="1930-01-01">
+        <div class="birth-select-row">
+          <select class="user-modal-input birth-sel" id="um-birth-y"></select>
+          <select class="user-modal-input birth-sel" id="um-birth-m"></select>
+          <select class="user-modal-input birth-sel" id="um-birth-d"></select>
+        </div>
         <div class="user-modal-gender" style="margin-top:6px">
           <button class="gender-btn cal-btn active" onclick="selectCalendar('양력',this)">☀️ 양력</button>
           <button class="gender-btn cal-btn" onclick="selectCalendar('음력',this)">🌙 음력</button>
