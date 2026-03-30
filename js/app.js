@@ -576,7 +576,8 @@ function showBpYear(yBtn, mBtn, dBtn) {
     items += `<button class="bp-item${sel}" data-val="${y}">${y}년</button>`;
   }
   const pop = bpWrap(
-    `<div class="bp-header"><button class="bp-nav" style="${prevVis}" data-dir="prev">◀</button><span class="bp-title">${start}~${end}</span><button class="bp-nav" style="${nextVis}" data-dir="next">▶</button><button class="bp-close" onclick="closeBp()">&times;</button></div>` +
+    `<button class="bp-close-top" onclick="closeBp()">&times;</button>` +
+    `<div class="bp-header"><button class="bp-nav" style="${prevVis}" data-dir="prev">◀</button><span class="bp-title">${start}~${end}</span><button class="bp-nav" style="${nextVis}" data-dir="next">▶</button></div>` +
     `<div class="bp-grid bp-grid-year">${items}</div>`
   );
   pop.querySelectorAll('.bp-nav').forEach(b => b.onclick = () => {
@@ -600,7 +601,8 @@ function showBpMonth(yBtn, mBtn, dBtn) {
     items += `<button class="bp-item${sel}" data-val="${mv}">${m}월</button>`;
   }
   const pop = bpWrap(
-    `<div class="bp-header"><span class="bp-title">월 선택</span><button class="bp-close" onclick="closeBp()">&times;</button></div>` +
+    `<button class="bp-close-top" onclick="closeBp()">&times;</button>` +
+    `<div class="bp-header"><span class="bp-title">월 선택</span></div>` +
     `<div class="bp-grid bp-grid-month">${items}</div>`
   );
   pop.querySelectorAll('.bp-item').forEach(b => b.onclick = () => {
@@ -632,7 +634,8 @@ function showBpDay(yBtn, mBtn, dBtn) {
   const yLabel = yBtn.dataset.value ? yBtn.dataset.value + '년 ' : '';
   const mLabel = mBtn.dataset.value ? parseInt(mBtn.dataset.value) + '월' : '';
   const pop = bpWrap(
-    `<div class="bp-header"><span class="bp-title">${yLabel}${mLabel}</span><button class="bp-close" onclick="closeBp()">&times;</button></div>` +
+    `<button class="bp-close-top" onclick="closeBp()">&times;</button>` +
+    `<div class="bp-header"><span class="bp-title">${yLabel}${mLabel}</span></div>` +
     `<div class="bp-grid bp-grid-day">${dayHeader}${items}</div>`
   );
   pop.querySelectorAll('.bp-item').forEach(b => b.onclick = () => {

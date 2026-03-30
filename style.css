@@ -1398,6 +1398,7 @@ body {
   padding: 16px;
   width: 100%; max-width: 320px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  position: relative;
 }
 .bp-header {
   display: flex; align-items: center; justify-content: space-between;
@@ -1416,14 +1417,15 @@ body {
   font-size: 15px; font-weight: 600; color: var(--text);
   flex: 1; text-align: center;
 }
-.bp-close {
-  width: 32px; height: 32px; border-radius: 50%;
+.bp-close-top {
+  position: absolute; top: 10px; right: 10px;
+  width: 28px; height: 28px; border-radius: 50%;
   border: none; background: var(--surface2); color: var(--text-muted);
-  font-size: 18px; cursor: pointer; display: flex;
+  font-size: 16px; cursor: pointer; display: flex;
   align-items: center; justify-content: center;
-  transition: all 0.15s; line-height: 1;
+  transition: all 0.15s; line-height: 1; z-index: 1;
 }
-.bp-close:hover { background: var(--surface3); color: var(--text); }
+.bp-close-top:hover { background: var(--surface3); color: var(--text); }
 .bp-grid { display: grid; gap: 6px; }
 .bp-grid-year { grid-template-columns: repeat(2, 1fr); }
 .bp-grid-month { grid-template-columns: repeat(4, 1fr); }
