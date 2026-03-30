@@ -514,31 +514,104 @@ async function sendMessage() {
 }
 
 /* ── 생년월일 드롭다운 생성 ── */
-function initBirthSelects(yId, mId, dId, defaultYear) {
+function initBirthSelects(yId, mId, dId) {
   const yEl = document.getElementById(yId), mEl = document.getElementById(mId), dEl = document.getElementById(dId);
   if (!yEl || !mEl || !dEl) return;
-  // 년도: 1940~2010 (최신 → 오래된 순이 아닌, 오래된 → 최신)
-  yEl.innerHTML = '<option value="">년</option>';
-  for (let y = 2010; y >= 1940; y--) yEl.innerHTML += `<option value="${y}">${y}년</option>`;
-  if (defaultYear) yEl.value = defaultYear;
+  // 년도: select → 커스텀 버튼으로 변환
+  const yBtn = document.createElement('button');
+  yBtn.type = 'button';
+  yBtn.className = 'birth-year-btn ' + yEl.className;
+  yBtn.textContent = '년';
+  yBtn.dataset.value = '';
+  yBtn.dataset.targetId = yId;
+  yEl.parentNode.replaceChild(yBtn, yEl);
+  yBtn.addEventListener('click', () => openYearPicker(yBtn));
   // 월
   mEl.innerHTML = '<option value="">월</option>';
   for (let m = 1; m <= 12; m++) mEl.innerHTML += `<option value="${String(m).padStart(2,'0')}">${m}월</option>`;
   // 일
   function updateDays() {
-    const y = parseInt(yEl.value) || 2000, m = parseInt(mEl.value) || 1;
+    const y = parseInt(yBtn.dataset.value) || 2000, m = parseInt(mEl.value) || 1;
     const days = new Date(y, m, 0).getDate();
     const prev = dEl.value;
     dEl.innerHTML = '<option value="">일</option>';
     for (let d = 1; d <= days; d++) dEl.innerHTML += `<option value="${String(d).padStart(2,'0')}">${d}일</option>`;
     if (parseInt(prev) <= days) dEl.value = prev;
   }
-  yEl.addEventListener('change', updateDays);
+  yBtn._updateDays = updateDays;
   mEl.addEventListener('change', updateDays);
   updateDays();
 }
+
+/* ── 년도 팝업 피커 ── */
+let yearPickerOverlay = null;
+let yearPickerTarget = null;
+let yearPickerDecade = 1970; // 시작 연대
+
+function openYearPicker(btn) {
+  yearPickerTarget = btn;
+  yearPickerDecade = 1970;
+  showYearPickerPopup();
+}
+
+function showYearPickerPopup() {
+  if (yearPickerOverlay) yearPickerOverlay.remove();
+  const ov = document.createElement('div');
+  ov.className = 'year-picker-overlay';
+  const pop = document.createElement('div');
+  pop.className = 'year-picker-popup';
+  // 헤더
+  const header = document.createElement('div');
+  header.className = 'year-picker-header';
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'year-picker-nav';
+  prevBtn.textContent = '◀';
+  prevBtn.onclick = () => { yearPickerDecade -= 10; showYearPickerPopup(); };
+  if (yearPickerDecade <= 1940) prevBtn.style.visibility = 'hidden';
+  const title = document.createElement('span');
+  title.className = 'year-picker-title';
+  title.textContent = `${yearPickerDecade}~${yearPickerDecade + 9}`;
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'year-picker-nav';
+  nextBtn.textContent = '▶';
+  nextBtn.onclick = () => { yearPickerDecade += 10; showYearPickerPopup(); };
+  if (yearPickerDecade + 10 > 2010) nextBtn.style.visibility = 'hidden';
+  header.append(prevBtn, title, nextBtn);
+  pop.appendChild(header);
+  // 년도 그리드
+  const grid = document.createElement('div');
+  grid.className = 'year-picker-grid';
+  const endYear = Math.min(yearPickerDecade + 9, 2010);
+  for (let y = yearPickerDecade; y <= endYear; y++) {
+    const yb = document.createElement('button');
+    yb.className = 'year-picker-item';
+    if (yearPickerTarget && yearPickerTarget.dataset.value === String(y)) yb.classList.add('selected');
+    yb.textContent = y + '년';
+    yb.onclick = () => selectYear(y);
+    grid.appendChild(yb);
+  }
+  pop.appendChild(grid);
+  ov.appendChild(pop);
+  ov.addEventListener('click', e => { if (e.target === ov) closeYearPicker(); });
+  document.body.appendChild(ov);
+  yearPickerOverlay = ov;
+}
+
+function selectYear(y) {
+  if (!yearPickerTarget) return;
+  yearPickerTarget.dataset.value = y;
+  yearPickerTarget.textContent = y + '년';
+  yearPickerTarget.classList.add('has-value');
+  if (yearPickerTarget._updateDays) yearPickerTarget._updateDays();
+  closeYearPicker();
+}
+
+function closeYearPicker() {
+  if (yearPickerOverlay) { yearPickerOverlay.remove(); yearPickerOverlay = null; }
+}
 function getBirthFromSelects(yId, mId, dId) {
-  const y = document.getElementById(yId)?.value;
+  const yBtn = document.querySelector(`.birth-year-btn[data-target-id="${yId}"]`);
+  const y = yBtn ? yBtn.dataset.value : '';
   const m = document.getElementById(mId)?.value;
   const d = document.getElementById(dId)?.value;
   if (!y || !m || !d) return '';
@@ -547,10 +620,11 @@ function getBirthFromSelects(yId, mId, dId) {
 function setBirthSelects(yId, mId, dId, dateStr) {
   if (!dateStr) return;
   const [y, m, d] = dateStr.split('-');
-  const yEl = document.getElementById(yId), mEl = document.getElementById(mId), dEl = document.getElementById(dId);
-  if (yEl) yEl.value = y;
+  const yBtn = document.querySelector(`.birth-year-btn[data-target-id="${yId}"]`);
+  if (yBtn) { yBtn.dataset.value = y; yBtn.textContent = y + '년'; yBtn.classList.add('has-value'); }
+  const mEl = document.getElementById(mId);
   if (mEl) mEl.value = m;
-  // 일 목록 갱신 후 설정
+  const dEl = document.getElementById(dId);
   const days = new Date(parseInt(y), parseInt(m), 0).getDate();
   if (dEl) {
     dEl.innerHTML = '<option value="">일</option>';
