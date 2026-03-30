@@ -690,32 +690,4 @@ document.addEventListener('DOMContentLoaded', async () => {
   const limitSub = document.getElementById('limit-modal-sub');
   if (limitSub) limitSub.innerHTML = `오늘의 무료 상담 3회를 모두 사용했어요.<br><b>지금 ${getSocialCount('premium')}명이 프리미엄으로 상담 중이에요.</b>`;
 
-  // 저작권 표시: 스크롤 하단 도달 시만 표시, input 포커스 중이면 항상 숨김
-  let inputFocused = false;
-  const copyrightEls = { tarot: document.getElementById('tarot-copyright'), palm: document.getElementById('palm-copyright') };
-  const scrollEls = { tarot: document.getElementById('messages'), palm: document.getElementById('palm-panel') };
-
-  function hideAllCopyright() {
-    Object.values(copyrightEls).forEach(el => { if (el) el.style.display = 'none'; });
-  }
-  function checkCopyright(key) {
-    const cr = copyrightEls[key], sc = scrollEls[key];
-    if (!cr || !sc || inputFocused) { if (cr) cr.style.display = 'none'; return; }
-    const atBottom = sc.scrollHeight - sc.scrollTop - sc.clientHeight < 30;
-    cr.style.display = atBottom ? '' : 'none';
-  }
-
-  Object.entries(scrollEls).forEach(([key, el]) => {
-    if (el) el.addEventListener('scroll', () => checkCopyright(key));
-  });
-
-  document.addEventListener('focusin', e => {
-    if (e.target.matches('input, select, textarea')) { inputFocused = true; hideAllCopyright(); }
-  });
-  document.addEventListener('focusout', e => {
-    if (e.target.matches('input, select, textarea')) {
-      inputFocused = false;
-      setTimeout(() => { if (!inputFocused) { checkCopyright('tarot'); checkCopyright('palm'); } }, 400);
-    }
-  });
 });
