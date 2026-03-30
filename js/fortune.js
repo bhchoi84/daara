@@ -3,9 +3,10 @@
 async function runStar() {
   if (!ensureUserInfo(() => runStar())) return;
   if (!sel.a) { alert('별자리를 선택해 주세요!'); return; }
+  const concern = document.getElementById('star-concern')?.value || '';
   showChatPanel('star');
-  const cacheKey = `star_${sel.a}`;
-  await askClaude(`나는 ${sel.a}이에요. 오늘(${new Date().toLocaleDateString('ko-KR')}) 나의 별자리 운세를 애정운, 금전운, 건강운으로 나눠서 따뜻하고 구체적으로 알려주세요. 마지막에 오늘의 한마디로 마무리해 주세요.`, true, '⭐ 별자리 운세 요청', cacheKey);
+  const cacheKey = `star_${sel.a}${concern ? '_c' : ''}`;
+  await askClaude(`나는 ${sel.a}이에요. 오늘(${new Date().toLocaleDateString('ko-KR')}) 나의 별자리 운세를 애정운, 금전운, 건강운으로 나눠서 따뜻하고 구체적으로 알려주세요.${concern ? ` 특히 "${concern}"에 대해 자세히 알려주세요.` : ''} 마지막에 오늘의 한마디로 마무리해 주세요.`, true, '⭐ 별자리 운세 요청', cacheKey);
 }
 
 let matchPartnerGender = '';
