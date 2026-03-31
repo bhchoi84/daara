@@ -1,3 +1,28 @@
+/* ── 온보딩 스플래시 ── */
+let obSlideIdx = 0;
+function nextOnboardingSlide() {
+  const slides = document.querySelectorAll('.onboarding-slide');
+  const dots = document.querySelectorAll('.ob-dot');
+  const btn = document.getElementById('onboarding-btn');
+  obSlideIdx++;
+  if (obSlideIdx >= slides.length) { closeOnboarding(); return; }
+  slides.forEach((s, i) => s.classList.toggle('active', i === obSlideIdx));
+  dots.forEach((d, i) => d.classList.toggle('active', i === obSlideIdx));
+  if (obSlideIdx === slides.length - 1) btn.textContent = '시작하기';
+}
+function closeOnboarding() {
+  const overlay = document.getElementById('onboarding-overlay');
+  overlay.style.opacity = '0';
+  setTimeout(() => overlay.remove(), 400);
+  localStorage.setItem('daara_onboarded', '1');
+}
+function showOnboarding() {
+  if (localStorage.getItem('daara_onboarded')) {
+    document.getElementById('onboarding-overlay')?.remove();
+    return;
+  }
+}
+
 /* ── 답변 스타일링 ── */
 function formatReply(text) {
   // 마크다운 헤딩 제거 (## / ### / #)
@@ -454,13 +479,52 @@ function showZodiacMismatchModal(savedZodiac, selectedZodiac, onContinue) {
   });
 }
 
+/* ── 후속 상담 유도 ── */
+function getFollowUpMessage() {
+  const u = getUserInfo();
+  const name = u ? u.name : '고객';
+  const msgs = [
+    `위 내용은 ${name}님의 전체적인 흐름을 살펴본 거예요.\n하지만 하루하루의 운세는 지금 처한 상황에 따라 조금씩 달라지기도 한답니다.\n혹시 요즘 마음에 걸리는 일이 있으시다면, 편하게 말씀해 주세요.\n진심을 다해 살펴봐 드릴게요 🙏`,
+    `지금까지 본 건 큰 흐름이에요.\n${name}님의 오늘은 또 다른 이야기를 품고 있을 수 있답니다.\n더 깊이 알고 싶은 부분이 있으시면 알려주세요.\n정성껏 봐드리겠습니다 ✨`,
+    `운세는 날마다 조금씩 달라져요.\n오늘 ${name}님에게 특별히 와닿는 부분이 있거나 궁금한 점이 있으시다면 편하게 여쭤보세요.\n다아라가 곁에서 함께 살펴봐 드릴게요 🌙`,
+    `${name}님만의 이야기는 여기서 끝이 아니에요.\n요즘 고민되는 일이나 앞으로 궁금한 점이 있다면 말씀해 주세요.\n별과 카드가 전하는 메시지를 더 세심하게 풀어드릴게요 💫`,
+    `전체 흐름은 이렇지만, 지금 이 순간 ${name}님의 마음이 향하는 곳에 따라 운세의 결도 달라진답니다.\n더 알고 싶은 부분이 있으시면 부담 없이 물어봐 주세요 🍀`,
+    `${name}님, 오늘의 기운은 어제와는 또 다르답니다.\n지금 가장 신경 쓰이는 일이 있으시면 말씀해 주세요.\n그 마음에 맞춰 더 자세히 풀어드릴게요 🌸`,
+  ];
+  return msgs[Math.floor(Math.random() * msgs.length)];
+}
+
+function addFollowUp() {
+  const msg = getFollowUpMessage();
+  const html = `<div class="followup-prompt">
+    <div class="followup-text">${msg.replace(/\n/g, '<br>')}</div>
+    <div class="followup-input-wrap">
+      <input type="text" class="followup-input" placeholder="궁금한 점을 편하게 말씀해 주세요..." onkeydown="if(event.key==='Enter')sendFollowUp(this)">
+      <button class="followup-send" onclick="sendFollowUp(this.previousElementSibling)">보내기</button>
+    </div>
+  </div>`;
+  addMsg('bot', html);
+}
+
+function sendFollowUp(inputEl) {
+  const text = inputEl.value.trim();
+  if (!text) return;
+  inputEl.value = '';
+  // 입력창 비활성화 (중복 전송 방지)
+  inputEl.disabled = true;
+  inputEl.nextElementSibling.disabled = true;
+  const u = getUserInfo();
+  const ctx = u ? `${u.name}님(${u.zodiac}, ${u.age}세 ${u.gender})이 ` : '';
+  askClaude(`${ctx}방금 운세 결과를 보고 추가로 궁금한 점이 있어요: "${text}"\n\n이전 운세 흐름을 이어서, 지금 상황에 맞게 따뜻하고 구체적으로 3~4문장으로 답해 주세요. 마지막에 다아라의 따뜻한 한마디를 덧붙여 주세요.`, true, text);
+}
+
 /* ── API ── */
 async function callAPI(body) {
   const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   if (!res.ok) { const e = await res.json(); throw new Error(e?.error?.message || 'API Error: ' + res.status); }
   return res.json();
 }
-async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null) {
+async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null, showFollowUp = false) {
   if (!canUseAPI()) {
     document.getElementById('limit-modal-overlay').style.display = 'flex';
     return;
@@ -471,6 +535,7 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null) {
     if (cached) {
       if (userLabel) addMsg('user', userLabel);
       const cachedEl = addMsg('bot', cached);
+      if (showFollowUp) addFollowUp();
       setTimeout(() => cachedEl.closest('.msg').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
       return;
     }
@@ -497,6 +562,7 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null) {
     incrementUsage();
     if (cacheKey) setCached(cacheKey, formatReply(reply));
     updateUserBadge();
+    if (showFollowUp) addFollowUp();
   } catch (e) {
     typingEl.classList.remove('typing');
     typingEl.innerHTML = '잠깐 연결이 끊겼어요. 조금 있다 다시 시도해 주세요 😊';
@@ -544,6 +610,7 @@ async function askClaudeTarot3(prompt, cards) {
     }
     incrementUsage();
     updateUserBadge();
+    addFollowUp();
   } catch (e) {
     typingEl.classList.remove('typing');
     typingEl.innerHTML = '잠깐 연결이 끊겼어요. 조금 있다 다시 시도해 주세요 😊';
@@ -720,6 +787,7 @@ function setBirthSelects(yId, mId, dId, dateStr) {
 
 /* ── 초기화 ── */
 document.addEventListener('DOMContentLoaded', async () => {
+  showOnboarding();
   initBirthSelects('um-birth-y', 'um-birth-m', 'um-birth-d');
   initBirthSelects('match-p-birth-y', 'match-p-birth-m', 'match-p-birth-d');
   // 토스 결제 리다이렉트 처리

@@ -6,7 +6,7 @@ async function runStar() {
   const concern = document.getElementById('star-concern')?.value || '';
   showChatPanel('star');
   const cacheKey = `star_${sel.a}${concern ? '_c' : ''}`;
-  await askClaude(`나는 ${sel.a}이에요. 오늘(${new Date().toLocaleDateString('ko-KR')}) 나의 별자리 운세를 애정운, 금전운, 건강운으로 나눠서 따뜻하고 구체적으로 알려주세요.${concern ? ` 특히 "${concern}"에 대해 자세히 알려주세요.` : ''} 마지막에 오늘의 한마디로 마무리해 주세요.`, true, '⭐ 별자리 운세 요청', cacheKey);
+  await askClaude(`나는 ${sel.a}이에요. 오늘(${new Date().toLocaleDateString('ko-KR')}) 나의 별자리 운세를 애정운, 금전운, 건강운으로 나눠서 따뜻하고 구체적으로 알려주세요.${concern ? ` 특히 "${concern}"에 대해 자세히 알려주세요.` : ''} 마지막에 오늘의 한마디로 마무리해 주세요.`, true, '⭐ 별자리 운세 요청', cacheKey, true);
 }
 
 let matchPartnerGender = '';
@@ -106,7 +106,7 @@ async function runMatch() {
     `⚡ 조심할 점\n(충·극이 있는 부분 2~3가지)\n\n` +
     `💌 관계를 더 좋게 만드는 조언\n(오행 보완법, 구체적 행동 2~3가지)\n\n` +
     `✨ 다아라의 한마디\n(따뜻한 마무리)`,
-    true, `♡ 궁합 분석 (${u.name} ↔ ${partner.name})`, cacheKey
+    true, `♡ 궁합 분석 (${u.name} ↔ ${partner.name})`, cacheKey, true
   );
 }
 
@@ -171,7 +171,7 @@ async function runMoney() {
     `⚠️ 재물 주의사항\n(충·극이 있는 부분, 피해야 할 것 2~3문장)\n\n` +
     `🔮 이번 주 재물 전망\n(단기적 흐름 1~2문장)\n\n` +
     `✨ 다아라의 한마디\n(따뜻한 마무리)`,
-    true, `◈ 사주 재물운 (${ddi})`, cacheKey
+    true, `◈ 사주 재물운 (${ddi})`, cacheKey, true
   );
 }
 
@@ -183,7 +183,7 @@ async function runToday() {
   const cacheKey = `today_${sel.today}${concern ? '_c' : ''}`;
   await askClaude(
     `나는 ${sel.today}이에요. 오늘(${new Date().toLocaleDateString('ko-KR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })})의 전체 운세를 봐주세요.${concern ? ` 특히 "${concern}"에 대해 신경이 쓰여요.` : ''} 오늘의 총운, 애정운, 금전운, 건강운, 오늘의 행운 색깔/숫자를 포함해서 따뜻하고 구체적으로 알려주세요. 마지막에 오늘 하루를 위한 다아라의 한마디로 마무리해 주세요 🌅`,
-    true, `🌅 오늘의 운세 (${sel.today})`, cacheKey
+    true, `🌅 오늘의 운세 (${sel.today})`, cacheKey, true
   );
 }
 
@@ -323,6 +323,7 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
     typingEl.classList.remove('typing'); typingEl.className = 'palm-result-msg';
     typingEl.innerHTML = `<div class="palm-result-header"><img src="${palmPreviewSrc}" class="palm-result-thumb" alt="${modeLabel}"><div><div class="palm-result-title">${resultTitle}</div><div class="palm-result-sub">${resultSub}</div></div></div><div class="palm-result-text">${formatReply(reply)}</div>`;
     incrementUsage(); updateUserBadge();
+    addFollowUp();
   } catch (err) {
     console.error('Palm analysis error:', err);
     typingEl.classList.remove('typing'); typingEl.innerHTML = '분석 중 오류가 생겼어요. 잠깐 후 다시 시도해 주세요 😊<br><small style="opacity:0.5">' + (err.message || '') + '</small>';
