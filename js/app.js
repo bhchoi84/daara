@@ -339,8 +339,23 @@ document.addEventListener('DOMContentLoaded', function() {
   const msgs = document.getElementById('messages');
   if (msgs) msgs.addEventListener('scroll', function() { toggleSidebar(true); });
 });
+function togglePanelMessages(btn) {
+  const box = btn.parentElement;
+  const isCollapsed = box.classList.toggle('collapsed');
+  btn.querySelector('.pm-toggle-arrow').textContent = isCollapsed ? '▼' : '▲';
+  btn.querySelector('.pm-toggle-label').textContent = isCollapsed ? '결과 보기' : '결과 접기';
+}
 function addMsg(role, content, type = 'text', cardIndex = null) {
   const box = document.getElementById(currentMsgBoxId);
+  // panel-messages에 토글 헤더 자동 생성
+  if (box.classList.contains('panel-messages') && !box.querySelector('.pm-toggle-btn')) {
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'pm-toggle-btn';
+    toggleBtn.innerHTML = '<span class="pm-toggle-arrow">▲</span> <span class="pm-toggle-label">결과 접기</span>';
+    toggleBtn.onclick = function() { togglePanelMessages(this); };
+    box.insertBefore(toggleBtn, box.firstChild);
+    box.classList.remove('collapsed');
+  }
   const wrap = document.createElement('div'); wrap.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
   if (cardIndex !== null) wrap.setAttribute('data-card-index', cardIndex);
   const av = document.createElement('div'); av.className = 'msg-avatar ' + (role === 'user' ? 'user' : 'bot'); av.textContent = role === 'user' ? '나' : '✦';
