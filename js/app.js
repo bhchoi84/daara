@@ -109,8 +109,8 @@ let userLocation = null;
 })();
 
 /* ── 사용량 제한 & 캐싱 ── */
-const FREE_LIMIT = 20;
-const PREMIUM_LIMIT = 20;
+const FREE_LIMIT = 5;
+const PREMIUM_LIMIT = 50;
 
 function getToday() { return new Date().toISOString().slice(0,10); }
 
@@ -524,6 +524,11 @@ async function callAPI(body) {
   if (!res.ok) { const e = await res.json(); throw new Error(e?.error?.message || 'API Error: ' + res.status); }
   return res.json();
 }
+async function callGeminiAPI(body) {
+  const res = await fetch('/api/gemini', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  if (!res.ok) { const e = await res.json(); throw new Error(e?.error?.message || 'Gemini API Error: ' + res.status); }
+  return res.json();
+}
 async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null, showFollowUp = false) {
   if (!canUseAPI()) {
     document.getElementById('limit-modal-overlay').style.display = 'flex';
@@ -555,7 +560,7 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null, showFo
 답변은 항상 같은 사용자에 대한 일관된 흐름을 유지해 주세요.`;
   const messages = overrideMsg ? [{ role: 'user', content: overrideMsg }] : [...history];
   try {
-    const data = await callAPI({ model: 'claude-haiku-4-5-20251001', max_tokens: 4000, system, messages });
+    const data = await callGeminiAPI({ max_tokens: 4000, system, messages });
     const reply = data?.content?.[0]?.text || '잠깐 다시 시도해 주실 수 있어요? 😊';
     typingEl.classList.remove('typing'); typingEl.innerHTML = formatReply(reply);
     if (!isAuto) { history.push({ role: 'assistant', content: reply }); if (history.length > 12) history = history.slice(-12); }
@@ -564,8 +569,20 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null, showFo
     updateUserBadge();
     if (showFollowUp) addFollowUp();
   } catch (e) {
-    typingEl.classList.remove('typing');
-    typingEl.innerHTML = '잠깐 연결이 끊겼어요. 조금 있다 다시 시도해 주세요 😊';
+    // Gemini 실패 시 Claude Haiku로 폴백
+    try {
+      const data = await callAPI({ model: 'claude-haiku-4-5-20251001', max_tokens: 4000, system, messages });
+      const reply = data?.content?.[0]?.text || '';
+      typingEl.classList.remove('typing'); typingEl.innerHTML = formatReply(reply);
+      if (!isAuto) { history.push({ role: 'assistant', content: reply }); if (history.length > 12) history = history.slice(-12); }
+      incrementUsage();
+      if (cacheKey) setCached(cacheKey, formatReply(reply));
+      updateUserBadge();
+      if (showFollowUp) addFollowUp();
+    } catch {
+      typingEl.classList.remove('typing');
+      typingEl.innerHTML = '잠깐 연결이 끊겼어요. 조금 있다 다시 시도해 주세요 😊';
+    }
   }
   btn.disabled = false; input.disabled = false; input.focus();
   setTimeout(() => typingEl.closest('.msg').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
@@ -590,7 +607,7 @@ async function askClaudeTarot3(prompt, cards) {
 이모지를 1~2개 자연스럽게 씁니다.
 답변은 항상 같은 사용자에 대한 일관된 흐름을 유지해 주세요.`;
   try {
-    const data = await callAPI({ model: 'claude-haiku-4-5-20251001', max_tokens: 3000, system, messages: [{ role: 'user', content: prompt }] });
+    const data = await callGeminiAPI({ max_tokens: 3000, system, messages: [{ role: 'user', content: prompt }] });
     const reply = data?.content?.[0]?.text || '';
     typingEl.remove(); // typing 메시지 제거
     // 카드별로 분리: 🔮, 🌙, ⚠️, ✨ 기준

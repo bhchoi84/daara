@@ -19,7 +19,8 @@ vercel --prod   # 프로덕션 배포
 
 | 변수명 | 설명 |
 |--------|------|
-| `ANTHROPIC_API_KEY` | Anthropic API 키 |
+| `ANTHROPIC_API_KEY` | Anthropic API 키 (손금/관상 + 폴백) |
+| `GEMINI_API_KEY` | Google Gemini API 키 (텍스트 운세 메인) |
 | `TOSS_SECRET_KEY` | 토스페이먼츠 시크릿 키 (테스트: `test_sk_...` / 운영: `live_sk_...`) |
 
 프론트엔드의 `TOSS_CLIENT_KEY` 상수는 `js/payment.js`에 있음 (테스트: `test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq`).
@@ -54,11 +55,13 @@ vercel.json       — /api/* 요청을 서버리스 함수로 라우팅
 
 ### API 호출 흐름
 
-브라우저 → `/api/chat` (키 없음) → Anthropic API (서버에서 키 주입). 프론트엔드에 API 키가 노출되지 않는다.
+- 텍스트 운세: 브라우저 → `/api/gemini` (키 없음) → Gemini API (서버에서 키 주입). Gemini 실패 시 `/api/chat` → Anthropic API로 폴백.
+- 손금/관상: 브라우저 → `/api/chat` (키 없음) → Anthropic API (서버에서 키 주입).
+- 프론트엔드에 API 키가 노출되지 않는다.
 
 ### 모델 사용
 
-- **`claude-haiku-4-5-20251001`** — 텍스트 기반 운세 상담 (`askClaude` in `js/app.js`)
+- **`gemini-2.0-flash`** — 텍스트 기반 운세 상담 (`askClaude`, `askClaudeTarot3` in `js/app.js`). 폴백: `claude-haiku-4-5-20251001`
 - **`claude-sonnet-4-6`** — 손금/관상 분석 (Vision, `analyzePalm` in `js/fortune.js`)
 
 ### 메뉴/패널 구조
