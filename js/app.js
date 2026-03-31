@@ -329,8 +329,8 @@ document.addEventListener('click', function(e) {
   if (window.innerWidth > 768) return;
   const sb = document.querySelector('.sidebar');
   if (!sb) return;
-  // 접힌 상태에서 메뉴 영역 클릭 → 펼치기
-  if (sb.classList.contains('collapsed') && e.target.closest('.sidebar')) {
+  // 접힌 상태에서 메뉴 영역 클릭 → 펼치기 (카드 클릭은 제외)
+  if (sb.classList.contains('collapsed') && e.target.closest('.sidebar') && !e.target.closest('.mini-card')) {
     e.preventDefault();
     e.stopPropagation();
     toggleSidebar(false);
