@@ -305,6 +305,7 @@ function goMenu(menu, el) {
   currentMsgBoxId = menu === 'tarot' ? 'messages' : 'messages-' + menu;
   if (menu === 'match' && typeof updateMatchMyInfo === 'function') updateMatchMyInfo();
   if (menu === 'money' && typeof updateMoneyMyInfo === 'function') updateMoneyMyInfo();
+  menuJustSwitched = true;
   toggleSidebar(true);
   // 이전 스크롤 위치 복원
   if (panelScrollPos[panel.id] !== undefined) {
@@ -325,6 +326,7 @@ function toggleSidebar(collapse) {
   if (collapse === undefined) collapse = !sb.classList.contains('collapsed');
   sb.classList.toggle('collapsed', collapse);
 }
+let menuJustSwitched = false;
 document.addEventListener('click', function(e) {
   if (window.innerWidth > 768) return;
   const sb = document.querySelector('.sidebar');
@@ -332,6 +334,8 @@ document.addEventListener('click', function(e) {
   if (e.target.closest('.main')) {
     if (!sb.classList.contains('collapsed')) toggleSidebar(true);
   }
+  // 메뉴 전환 직후에는 다시 펼치지 않음
+  if (menuJustSwitched) { menuJustSwitched = false; return; }
   if (e.target.closest('.sidebar.collapsed .nav-item')) {
     toggleSidebar(false);
   }
