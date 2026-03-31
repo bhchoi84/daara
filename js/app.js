@@ -305,7 +305,7 @@ function goMenu(menu, el) {
   currentMsgBoxId = menu === 'tarot' ? 'messages' : 'messages-' + menu;
   if (menu === 'match' && typeof updateMatchMyInfo === 'function') updateMatchMyInfo();
   if (menu === 'money' && typeof updateMoneyMyInfo === 'function') updateMoneyMyInfo();
-  toggleSidebar(false); // 메뉴 전환 시 펼친 상태로
+  toggleSidebar(true); // 메뉴 전환 후 접힌 상태 (선택한 메뉴 하이라이트 유지)
   // 이전 스크롤 위치 복원
   if (panelScrollPos[panel.id] !== undefined) {
     setTimeout(() => panel.scrollTop = panelScrollPos[panel.id], 0);
@@ -329,39 +329,31 @@ document.addEventListener('click', function(e) {
   if (window.innerWidth > 768) return;
   const sb = document.querySelector('.sidebar');
   if (!sb) return;
-  if (e.target.closest('.sidebar.collapsed .nav-item')) {
-    toggleSidebar(false);
-  }
-});
-document.addEventListener('DOMContentLoaded', function() {
-  function onPanelScroll(el) {
-    if (el.scrollTop > 30) {
-      toggleSidebar(true);
-    } else {
+  // 접힌 상태에서 메뉴 영역 클릭 → 펼치기 (메뉴 전환 아닌 경우)
+  if (sb.classList.contains('collapsed') && e.target.closest('.sidebar.collapsed')) {
+    // nav-item 클릭이면 메뉴 전환 후 다시 접힘 (goMenu에서 처리)
+    if (!e.target.closest('.nav-item')) {
       toggleSidebar(false);
     }
   }
+});
+document.addEventListener('DOMContentLoaded', function() {
+  // 스크롤 내리면 접기 (올려도 자동 펼침 없음 — 메뉴 클릭으로만 펼침)
+  function onScrollDown() { toggleSidebar(true); }
   const msgs = document.getElementById('messages');
-  if (msgs) msgs.addEventListener('scroll', function() { onPanelScroll(this); });
+  if (msgs) msgs.addEventListener('scroll', function() { if (this.scrollTop > 30) onScrollDown(); });
   document.querySelectorAll('.panel').forEach(p => {
-    p.addEventListener('scroll', function() { onPanelScroll(this); });
+    p.addEventListener('scroll', function() { if (this.scrollTop > 30) onScrollDown(); });
   });
-  // 모바일 터치 스크롤 감지 (패널 스크롤 이벤트가 안 잡힐 경우 보완)
+  // 모바일 터치 스크롤 감지
   let touchStartY = 0;
   document.addEventListener('touchstart', function(e) {
     touchStartY = e.touches[0].clientY;
   }, { passive: true });
   document.addEventListener('touchmove', function(e) {
     if (window.innerWidth > 768) return;
-    const panel = document.querySelector('.panel.active');
-    if (!panel) return;
     const deltaY = touchStartY - e.touches[0].clientY;
-    // 위로 스와이프(스크롤 내림) → 접기, 아래로 스와이프(스크롤 올림) → panel.scrollTop 체크
-    if (deltaY > 15) {
-      toggleSidebar(true);
-    } else if (deltaY < -15 && panel.scrollTop <= 30) {
-      toggleSidebar(false);
-    }
+    if (deltaY > 15) toggleSidebar(true); // 스크롤 내림 → 접기만
   }, { passive: true });
 });
 function togglePanelMessages(btn) {
