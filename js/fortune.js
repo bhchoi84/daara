@@ -307,7 +307,7 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
     resultSub = '이마 · 눈썹 · 눈 · 코 · 입';
   }
   try {
-    const res = await callAPI({ model: 'claude-sonnet-4-6', max_tokens: 700, system, messages: [{ role: 'user', content: [{ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: palmImageData } }, { type: 'text', text: userText }] }] });
+    const res = await callAPI({ model: 'claude-sonnet-4-6', max_tokens: 3000, system, messages: [{ role: 'user', content: [{ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: palmImageData } }, { type: 'text', text: userText }] }] });
     const reply = res?.content?.[0]?.text || '사진이 잘 보이지 않아요. 더 밝은 곳에서 다시 찍어 올려주시겠어요? 😊';
     typingEl.classList.remove('typing'); typingEl.className = 'palm-result-msg';
     typingEl.innerHTML = `<div class="palm-result-header"><img src="${palmPreviewSrc}" class="palm-result-thumb" alt="${modeLabel}"><div><div class="palm-result-title">${resultTitle}</div><div class="palm-result-sub">${resultSub}</div></div></div><div class="palm-result-text">${formatReply(reply)}</div>`;

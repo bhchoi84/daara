@@ -2,6 +2,8 @@
 function formatReply(text) {
   // 마크다운 헤딩 제거 (## / ### / #)
   text = text.replace(/^#{1,3}\s*/gm, '');
+  // 구분선(---) 제거
+  text = text.replace(/^-{2,}\s*$/gm, '');
   // 이모지 헤딩 패턴
   const headingRe = /^(🔮|🌙|⚠️|✨|⭐|💰|♡|◈|🌅|💕|🏠|💼|🩺|🍀|🔢|🎨|💵|💲|🫰|🤑|💸|🧡|❤️|💛|💚|💙|💜|🩷|🔥|📊|🏥|🧘|♈|♉|♊|♋|♌|♍|♎|♏|♐|♑|♒|♓)(.+)/;
   const lines = text.split('\n');
@@ -425,7 +427,8 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null) {
     const cached = getCached(cacheKey);
     if (cached) {
       if (userLabel) addMsg('user', userLabel);
-      addMsg('bot', cached);
+      const cachedEl = addMsg('bot', cached);
+      setTimeout(() => cachedEl.closest('.msg').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
       return;
     }
   }
@@ -444,7 +447,7 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null) {
 답변은 항상 같은 사용자에 대한 일관된 흐름을 유지해 주세요.`;
   const messages = overrideMsg ? [{ role: 'user', content: overrideMsg }] : [...history];
   try {
-    const data = await callAPI({ model: 'claude-haiku-4-5-20251001', max_tokens: 1000, system, messages });
+    const data = await callAPI({ model: 'claude-haiku-4-5-20251001', max_tokens: 4000, system, messages });
     const reply = data?.content?.[0]?.text || '잠깐 다시 시도해 주실 수 있어요? 😊';
     typingEl.classList.remove('typing'); typingEl.innerHTML = formatReply(reply);
     if (!isAuto) { history.push({ role: 'assistant', content: reply }); if (history.length > 12) history = history.slice(-12); }
@@ -456,7 +459,7 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null) {
     typingEl.innerHTML = '잠깐 연결이 끊겼어요. 조금 있다 다시 시도해 주세요 😊';
   }
   btn.disabled = false; input.disabled = false; input.focus();
-  setTimeout(() => typingEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  setTimeout(() => typingEl.closest('.msg').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 }
 /* 타로 3카드 해석 — API 1회 호출, 결과를 카드별 3개 메시지로 분리 */
 async function askClaudeTarot3(prompt, cards) {
@@ -478,7 +481,7 @@ async function askClaudeTarot3(prompt, cards) {
 이모지를 1~2개 자연스럽게 씁니다.
 답변은 항상 같은 사용자에 대한 일관된 흐름을 유지해 주세요.`;
   try {
-    const data = await callAPI({ model: 'claude-haiku-4-5-20251001', max_tokens: 700, system, messages: [{ role: 'user', content: prompt }] });
+    const data = await callAPI({ model: 'claude-haiku-4-5-20251001', max_tokens: 3000, system, messages: [{ role: 'user', content: prompt }] });
     const reply = data?.content?.[0]?.text || '';
     typingEl.remove(); // typing 메시지 제거
     // 카드별로 분리: 🔮, 🌙, ⚠️, ✨ 기준
@@ -577,9 +580,9 @@ function showBpYear(yBtn, mBtn, dBtn) {
     items += `<button class="bp-item${sel}" data-val="${y}">${y}년</button>`;
   }
   const pop = bpWrap(
-    `<button class="bp-close-top" onclick="closeBp()">&times;</button>` +
     `<div class="bp-header"><button class="bp-nav" style="${prevVis}" data-dir="prev">◀</button><span class="bp-title">${start}~${end}</span><button class="bp-nav" style="${nextVis}" data-dir="next">▶</button></div>` +
-    `<div class="bp-grid bp-grid-year">${items}</div>`
+    `<div class="bp-grid bp-grid-year">${items}</div>` +
+    `<button class="bp-close-bottom" onclick="closeBp()">닫기</button>`
   );
   pop.querySelectorAll('.bp-nav').forEach(b => b.onclick = () => {
     bpDecade += b.dataset.dir === 'prev' ? -10 : 10;
@@ -602,7 +605,7 @@ function showBpMonth(yBtn, mBtn, dBtn) {
     items += `<button class="bp-item${sel}" data-val="${mv}">${m}월</button>`;
   }
   const pop = bpWrap(
-    `<button class="bp-close-top" onclick="closeBp()">&times;</button>` +
+    `<button class="bp-close-top bp-close-month" onclick="closeBp()">&times;</button>` +
     `<div class="bp-header"><span class="bp-title">월 선택</span></div>` +
     `<div class="bp-grid bp-grid-month">${items}</div>`
   );
@@ -616,8 +619,9 @@ function showBpMonth(yBtn, mBtn, dBtn) {
 
 // 일 피커
 function showBpDay(yBtn, mBtn, dBtn) {
-  const y = parseInt(yBtn.dataset.value) || 2000;
-  const m = parseInt(mBtn.dataset.value) || 1;
+  const now = new Date();
+  const y = parseInt(yBtn.dataset.value) || now.getFullYear();
+  const m = parseInt(mBtn.dataset.value) || (now.getMonth() + 1);
   const days = new Date(y, m, 0).getDate();
   const firstDay = new Date(y, m - 1, 1).getDay(); // 0=일, 1=월...
   const dayNames = ['일','월','화','수','목','금','토'];
@@ -632,13 +636,13 @@ function showBpDay(yBtn, mBtn, dBtn) {
     const dayClass = dow === 0 ? ' sun' : dow === 6 ? ' sat' : '';
     items += `<button class="bp-item${sel}${dayClass}" data-val="${dv}">${d}</button>`;
   }
-  const yLabel = yBtn.dataset.value ? yBtn.dataset.value + '년 ' : '';
-  const mLabel = mBtn.dataset.value ? parseInt(mBtn.dataset.value) + '월' : '';
+  const yLabel = y + '년 ';
+  const mLabel = m + '월';
   const isPartner = yBtn.dataset.group && yBtn.dataset.group.includes('match');
   const calLabel = isPartner ? (matchPartnerCalendar || '양력') : (selectedCalendar || '양력');
   const pop = bpWrap(
-    `<button class="bp-close-top" onclick="closeBp()">&times;</button>` +
-    `<div class="bp-header"><span class="bp-title">${yLabel}${mLabel} <span class="bp-cal-tag">${calLabel}</span></span></div>` +
+    `<button class="bp-close-top bp-close-day" onclick="closeBp()">&times;</button>` +
+    `<div class="bp-header"><span class="bp-title">${y}년 ${m}월 <span class="bp-cal-tag">${calLabel}</span></span></div>` +
     `<div class="bp-grid bp-grid-day">${dayHeader}${items}</div>`
   );
   pop.querySelectorAll('.bp-item').forEach(b => b.onclick = () => {

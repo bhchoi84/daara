@@ -35,7 +35,8 @@ function flipOne(i) {
   } else {
     const remaining = 3 - flippedCards.filter(f => f).length;
     hintEl.textContent = `${remaining}장 남았어요`;
-    addMsg('bot', `<div class="card-reading-block"><div class="crb-pos">${CARD_POS[i]}</div><div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name}</div><div class="crb-en">${c.en}</div></div></div><span class="crb-keywords">${c.keywords}</span></div>`, 'card-reveal', i);
+    const cardEl = addMsg('bot', `<div class="card-reading-block"><div class="crb-pos">${CARD_POS[i]}</div><div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name}</div><div class="crb-en">${c.en}</div></div></div><span class="crb-keywords">${c.keywords}</span></div>`, 'card-reveal', i);
+    setTimeout(() => cardEl.closest('.msg').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     const u = getUserInfo();
     const ctx = u ? `${u.name}님(${u.zodiac}, ${u.age}세 ${u.gender})에게 ` : '';
     askClaude(`${ctx}"${c.name}" 카드(${c.en}, 키워드: ${c.keywords})가 "${CARD_POS[i]}" 자리에 나왔어요. 이 카드가 지금 이 자리에서 전하는 메시지를 별자리 특성과 연결해 따뜻하고 공감 어린 말투로 2~3문장으로 이야기해 주세요.`, true, null);
