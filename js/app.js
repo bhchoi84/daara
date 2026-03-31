@@ -605,9 +605,9 @@ function showBpMonth(yBtn, mBtn, dBtn) {
     items += `<button class="bp-item${sel}" data-val="${mv}">${m}월</button>`;
   }
   const pop = bpWrap(
-    `<button class="bp-close-top bp-close-month" onclick="closeBp()">&times;</button>` +
     `<div class="bp-header"><span class="bp-title">월 선택</span></div>` +
-    `<div class="bp-grid bp-grid-month">${items}</div>`
+    `<div class="bp-grid bp-grid-month">${items}</div>` +
+    `<button class="bp-close-bottom" onclick="closeBp()">닫기</button>`
   );
   pop.querySelectorAll('.bp-item').forEach(b => b.onclick = () => {
     mBtn.dataset.value = b.dataset.val;
@@ -641,9 +641,9 @@ function showBpDay(yBtn, mBtn, dBtn) {
   const isPartner = yBtn.dataset.group && yBtn.dataset.group.includes('match');
   const calLabel = isPartner ? (matchPartnerCalendar || '양력') : (selectedCalendar || '양력');
   const pop = bpWrap(
-    `<button class="bp-close-top bp-close-day" onclick="closeBp()">&times;</button>` +
     `<div class="bp-header"><span class="bp-title">${y}년 ${m}월 <span class="bp-cal-tag">${calLabel}</span></span></div>` +
-    `<div class="bp-grid bp-grid-day">${dayHeader}${items}</div>`
+    `<div class="bp-grid bp-grid-day">${dayHeader}${items}</div>` +
+    `<button class="bp-close-bottom" onclick="closeBp()">닫기</button>`
   );
   pop.querySelectorAll('.bp-item').forEach(b => b.onclick = () => {
     dBtn.dataset.value = b.dataset.val;
