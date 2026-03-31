@@ -3,6 +3,7 @@
 /* 카드 한 장씩 뒤집기 */
 function flipOne(i) {
   if (!ensureUserInfo(() => flipOne(i))) return;
+  currentMsgBoxId = 'messages';
   // 아직 전체 뽑기 안 한 경우 → 그 자리 카드만 랜덤 배정
   if (!drawnCards) {
     const pool = [...CARDS].sort(() => Math.random() - 0.5);
@@ -52,6 +53,7 @@ function drawMoneyCard() {
 
 function drawCards() {
   if (!ensureUserInfo(() => drawCards())) return;
+  currentMsgBoxId = 'messages';
   const btn = document.getElementById('draw-btn');
   btn.disabled = true; btn.textContent = '뽑는 중...';
   // 상태 초기화

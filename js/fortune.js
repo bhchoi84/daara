@@ -26,7 +26,7 @@ function updateMatchMyInfo() {
   const el = document.getElementById('match-my-info');
   if (!el) return;
   const u = getUserInfo();
-  if (!u) { el.innerHTML = '<span class="match-info-placeholder">먼저 내 정보를 입력해 주세요 →</span>'; return; }
+  if (!u) { el.innerHTML = '<span class="match-info-placeholder">나의 정보</span>'; return; }
   const ddi = getDdi(parseInt(u.birthdate.slice(0,4)));
   const emoji = DDI_EMOJI[ddi] || '';
   const cal = u.calendar || '양력';
@@ -36,6 +36,13 @@ function updateMatchMyInfo() {
   if (u.job) html += ` · ${u.job}`;
   html += `</span> <span style="font-size:11px;color:var(--text-muted)">수정 →</span>`;
   el.innerHTML = html;
+}
+
+function toggleMatchRelCustom() {
+  const sel = document.getElementById('match-rel');
+  const custom = document.getElementById('match-rel-custom');
+  custom.style.display = sel.value === '직접입력' ? 'block' : 'none';
+  if (sel.value === '직접입력') custom.focus();
 }
 
 function getPartnerInfo() {
@@ -57,7 +64,11 @@ async function runMatch() {
   if (!ensureUserInfo(() => runMatch())) return;
   const partner = getPartnerInfo();
   if (!partner) { alert('상대방의 이름과 생년월일을 입력해 주세요!'); return; }
-  const rel = document.getElementById('match-rel').value;
+  let rel = document.getElementById('match-rel').value;
+  if (rel === '직접입력') {
+    rel = document.getElementById('match-rel-custom').value.trim();
+    if (!rel) { alert('관계를 입력해 주세요!'); return; }
+  }
   const u = getUserInfo();
   showChatPanel('match');
 
@@ -317,7 +328,7 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
     typingEl.classList.remove('typing'); typingEl.innerHTML = '분석 중 오류가 생겼어요. 잠깐 후 다시 시도해 주세요 😊<br><small style="opacity:0.5">' + (err.message || '') + '</small>';
   }
   btn.disabled = false; input.disabled = false; input.focus();
-  document.getElementById('messages').scrollTop = 99999;
+  document.getElementById(currentMsgBoxId).scrollTop = 99999;
   palmImageData = null; palmPreviewSrc = null;
   resetPalmPanel();
 }

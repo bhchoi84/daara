@@ -526,7 +526,8 @@ body {
   display: none;
   flex: 1;
   flex-direction: column;
-  min-height: 0
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .panel.active {
@@ -541,6 +542,11 @@ body {
   flex-direction: column;
   gap: 13px;
   scroll-behavior: smooth
+}
+.panel-messages {
+  flex: none;
+  overflow-y: visible;
+  padding: 16px 12px;
 }
 
 .messages::-webkit-scrollbar {

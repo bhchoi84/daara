@@ -2,8 +2,8 @@
 function formatReply(text) {
   // 마크다운 헤딩 제거 (## / ### / #)
   text = text.replace(/^#{1,3}\s*/gm, '');
-  // 구분선(---) 제거
-  text = text.replace(/^-{2,}\s*$/gm, '');
+  // 구분선(---, ***, ___, ──, ——) 제거
+  text = text.replace(/^[-*_─—]{2,}\s*$/gm, '');
   // 이모지 헤딩 패턴
   const headingRe = /^(🔮|🌙|⚠️|✨|⭐|💰|♡|◈|🌅|💕|🏠|💼|🩺|🍀|🔢|🎨|💵|💲|🫰|🤑|💸|🧡|❤️|💛|💚|💙|💜|🩷|🔥|📊|🏥|🧘|♈|♉|♊|♋|♌|♍|♎|♏|♐|♑|♒|♓)(.+)/;
   const lines = text.split('\n');
@@ -288,24 +288,33 @@ function updateUserBadge() {
 let drawnCards = null, history = [], moneyCard = null, palmImageData = null, palmPreviewSrc = null;
 let flippedCards = [false, false, false];
 const sel = { a: null, m1: null, m2: null, mo: null, today: null };
+let currentMsgBoxId = 'messages'; // 현재 활성 메시지 영역
 
 /* ── UI 공통 ── */
+const panelScrollPos = {};
 function goMenu(menu, el) {
+  // 현재 패널 스크롤 위치 저장
+  const activePanel = document.querySelector('.panel.active');
+  if (activePanel) panelScrollPos[activePanel.id] = activePanel.scrollTop;
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   el.classList.add('active');
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + menu).classList.add('active');
+  const panel = document.getElementById('panel-' + menu);
+  panel.classList.add('active');
   document.querySelectorAll('.main-title-text').forEach(t => t.textContent = TITLES[menu]);
+  currentMsgBoxId = menu === 'tarot' ? 'messages' : 'messages-' + menu;
   if (menu === 'match' && typeof updateMatchMyInfo === 'function') updateMatchMyInfo();
   if (menu === 'money' && typeof updateMoneyMyInfo === 'function') updateMoneyMyInfo();
   toggleSidebar(true);
+  // 이전 스크롤 위치 복원
+  if (panelScrollPos[panel.id] !== undefined) {
+    setTimeout(() => panel.scrollTop = panelScrollPos[panel.id], 0);
+  }
 }
-// 패널만 전환 (메뉴 하이라이트는 원래 메뉴 유지)
+// 메시지 출력 대상을 해당 패널의 messages 영역으로 설정
 function showChatPanel(sourceMenu) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-tarot').classList.add('active');
-  document.querySelectorAll('.main-title-text').forEach(t => t.textContent = TITLES[sourceMenu] || TITLES.tarot);
-  toggleSidebar(true);
+  const targetId = sourceMenu === 'tarot' ? 'messages' : 'messages-' + sourceMenu;
+  currentMsgBoxId = targetId;
 }
 
 /* ── 사이드바 접기/펼치기 (모바일) ── */
@@ -331,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (msgs) msgs.addEventListener('scroll', function() { toggleSidebar(true); });
 });
 function addMsg(role, content, type = 'text', cardIndex = null) {
-  const box = document.getElementById('messages');
+  const box = document.getElementById(currentMsgBoxId);
   const wrap = document.createElement('div'); wrap.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
   if (cardIndex !== null) wrap.setAttribute('data-card-index', cardIndex);
   const av = document.createElement('div'); av.className = 'msg-avatar ' + (role === 'user' ? 'user' : 'bot'); av.textContent = role === 'user' ? '나' : '✦';
@@ -510,6 +519,7 @@ async function askClaudeTarot3(prompt, cards) {
 }
 async function sendMessage() {
   if (!ensureUserInfo(() => sendMessage())) return;
+  currentMsgBoxId = 'messages'; // 자유 채팅은 항상 타로 패널
   const input = document.getElementById('chat-input');
   const text = input.value.trim(); if (!text) return;
   addMsg('user', text); input.value = '';

@@ -145,6 +145,7 @@
             </div>
           </div>
         </div>
+        <div class="messages panel-messages" id="messages-palm"></div>
       </div>
 
       <div class="panel" id="panel-today">
@@ -178,6 +179,7 @@
             <div class="panel-copyright">&copy; 2025 BSJS. All rights reserved. | 사업자등록번호: 672-05-02394</div>
           </div>
         </div>
+        <div class="messages panel-messages" id="messages-today"></div>
       </div>
 
       <div class="panel" id="panel-star">
@@ -210,6 +212,7 @@
             <div class="panel-copyright">&copy; 2025 BSJS. All rights reserved. | 사업자등록번호: 672-05-02394</div>
           </div>
         </div>
+        <div class="messages panel-messages" id="messages-star"></div>
       </div>
 
       <div class="panel" id="panel-match">
@@ -220,7 +223,7 @@
 
             <div class="match-section-label">💜 나의 정보</div>
             <div class="match-info-summary" id="match-my-info" onclick="showUserInfoModal()">
-              <span class="match-info-placeholder">먼저 내 정보를 입력해 주세요 →</span>
+              <span class="match-info-placeholder">나의 정보</span>
             </div>
 
             <div class="match-section-label" style="color:var(--rose)">💗 상대방 정보</div>
@@ -273,17 +276,21 @@
 
             <div class="form-row">
               <div class="form-label">관계</div>
-              <select class="form-input" id="match-rel">
+              <select class="form-input" id="match-rel" onchange="toggleMatchRelCustom()">
                 <option value="연인">💕 연인 / 썸</option>
+                <option value="부부">💍 부부</option>
                 <option value="친구">👫 친구</option>
                 <option value="직장동료">💼 직장동료</option>
                 <option value="가족">🏠 가족</option>
+                <option value="직접입력">✏️ 직접 입력</option>
               </select>
+              <input type="text" class="form-input" id="match-rel-custom" placeholder="관계를 입력해 주세요" style="display:none; margin-top:6px">
             </div>
             <button class="submit-btn rose-btn" onclick="runMatch()">AI 궁합 분석 💕</button>
             <div class="panel-copyright">&copy; 2025 BSJS. All rights reserved. | 사업자등록번호: 672-05-02394</div>
           </div>
         </div>
+        <div class="messages panel-messages" id="messages-match"></div>
       </div>
 
       <div class="panel" id="panel-money">
@@ -319,6 +326,7 @@
             <div class="panel-copyright">&copy; 2025 BSJS. All rights reserved. | 사업자등록번호: 672-05-02394</div>
           </div>
         </div>
+        <div class="messages panel-messages" id="messages-money"></div>
       </div>
     </main>
   </div>
