@@ -329,12 +329,11 @@ document.addEventListener('click', function(e) {
   if (window.innerWidth > 768) return;
   const sb = document.querySelector('.sidebar');
   if (!sb) return;
-  // 접힌 상태에서 메뉴 영역 클릭 → 펼치기 (메뉴 전환 아닌 경우)
-  if (sb.classList.contains('collapsed') && e.target.closest('.sidebar.collapsed')) {
-    // nav-item 클릭이면 메뉴 전환 후 다시 접힘 (goMenu에서 처리)
-    if (!e.target.closest('.nav-item')) {
-      toggleSidebar(false);
-    }
+  // 접힌 상태에서 메뉴 영역 클릭 → 펼치기
+  if (sb.classList.contains('collapsed') && e.target.closest('.sidebar')) {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleSidebar(false);
   }
 });
 document.addEventListener('DOMContentLoaded', function() {
