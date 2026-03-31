@@ -339,6 +339,10 @@ document.addEventListener('click', function(e) {
 document.addEventListener('DOMContentLoaded', function() {
   const msgs = document.getElementById('messages');
   if (msgs) msgs.addEventListener('scroll', function() { toggleSidebar(true); });
+  // 모든 패널 스크롤 시 사이드바 접기
+  document.querySelectorAll('.panel').forEach(p => {
+    p.addEventListener('scroll', function() { toggleSidebar(true); });
+  });
 });
 function togglePanelMessages(btn) {
   const box = btn.parentElement;
