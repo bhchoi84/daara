@@ -305,8 +305,7 @@ function goMenu(menu, el) {
   currentMsgBoxId = menu === 'tarot' ? 'messages' : 'messages-' + menu;
   if (menu === 'match' && typeof updateMatchMyInfo === 'function') updateMatchMyInfo();
   if (menu === 'money' && typeof updateMoneyMyInfo === 'function') updateMoneyMyInfo();
-  menuJustSwitched = true;
-  toggleSidebar(true);
+  toggleSidebar(false); // 메뉴 전환 시 펼친 상태로
   // 이전 스크롤 위치 복원
   if (panelScrollPos[panel.id] !== undefined) {
     setTimeout(() => panel.scrollTop = panelScrollPos[panel.id], 0);
@@ -326,26 +325,27 @@ function toggleSidebar(collapse) {
   if (collapse === undefined) collapse = !sb.classList.contains('collapsed');
   sb.classList.toggle('collapsed', collapse);
 }
-let menuJustSwitched = false;
 document.addEventListener('click', function(e) {
   if (window.innerWidth > 768) return;
   const sb = document.querySelector('.sidebar');
   if (!sb) return;
-  if (e.target.closest('.main')) {
-    if (!sb.classList.contains('collapsed')) toggleSidebar(true);
-  }
-  // 메뉴 전환 직후에는 다시 펼치지 않음
-  if (menuJustSwitched) { menuJustSwitched = false; return; }
   if (e.target.closest('.sidebar.collapsed .nav-item')) {
     toggleSidebar(false);
   }
 });
 document.addEventListener('DOMContentLoaded', function() {
+  // 패널/메시지 스크롤에 따라 사이드바 접기/펼치기
+  function onPanelScroll(el) {
+    if (el.scrollTop > 30) {
+      toggleSidebar(true);
+    } else {
+      toggleSidebar(false);
+    }
+  }
   const msgs = document.getElementById('messages');
-  if (msgs) msgs.addEventListener('scroll', function() { toggleSidebar(true); });
-  // 모든 패널 스크롤 시 사이드바 접기
+  if (msgs) msgs.addEventListener('scroll', function() { onPanelScroll(this); });
   document.querySelectorAll('.panel').forEach(p => {
-    p.addEventListener('scroll', function() { toggleSidebar(true); });
+    p.addEventListener('scroll', function() { onPanelScroll(this); });
   });
 });
 function togglePanelMessages(btn) {
