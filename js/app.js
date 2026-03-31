@@ -67,7 +67,10 @@ let userLocation = null;
         if (res.ok) {
           const d = await res.json();
           const a = d.address || {};
-          userLocation = { city: a.city || a.town || a.village || a.county || '', region: a.state || a.province || '', country: a.country || '' };
+          const dong = a.quarter || a.neighbourhood || a.suburb || '';
+          const gu = a.city_district || a.borough || a.county || '';
+          const city = a.city || a.town || a.village || '';
+          userLocation = { city: dong ? `${gu} ${dong}` : (gu || city), region: a.state || a.province || '', country: a.country || '' };
         }
       } catch { fallbackIP(); }
     }, () => fallbackIP(), { timeout: 5000 });
