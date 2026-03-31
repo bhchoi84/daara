@@ -1983,17 +1983,41 @@ input[type=file] {
     overflow: hidden;
   }
   .sidebar .logo,
-  .sidebar .cards-section,
   .sidebar .ad-slot {
     max-height: 200px; opacity: 1;
     transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, margin 0.35s ease, padding 0.35s ease;
     overflow: hidden;
   }
   .sidebar.collapsed .logo,
-  .sidebar.collapsed .cards-section,
   .sidebar.collapsed .ad-slot {
     max-height: 0; opacity: 0; margin: 0; padding: 0;
     pointer-events: none;
+  }
+  .sidebar .cards-section {
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+  .sidebar.collapsed .cards-section {
+    padding: 6px 10px;
+  }
+  .sidebar.collapsed .cards-section .section-hd,
+  .sidebar.collapsed .cards-section .card-hint,
+  .sidebar.collapsed .cards-section .draw-btn {
+    display: none;
+  }
+  .sidebar.collapsed .cards-section .card-row {
+    gap: 6px; margin-bottom: 0;
+  }
+  .sidebar.collapsed .cards-section .mini-card {
+    height: 32px; border-radius: 16px;
+    padding: 4px 10px; font-size: 11px;
+    flex-direction: row; gap: 4px;
+    flex: 1; width: auto;
+  }
+  .sidebar.collapsed .cards-section .mini-card .card-sym { font-size: 14px; }
+  .sidebar.collapsed .cards-section .mini-card .card-pos { font-size: 10px; }
+  .sidebar.collapsed .cards-section .mini-card:nth-child(2) {
+    height: 32px; margin-top: 0; border-width: 1px;
   }
   .sidebar .nav-section {
     transition: padding 0.35s cubic-bezier(0.4, 0, 0.2, 1), gap 0.35s ease;
