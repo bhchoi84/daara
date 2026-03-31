@@ -315,6 +315,7 @@ function goMenu(menu, el) {
 function showChatPanel(sourceMenu) {
   const targetId = sourceMenu === 'tarot' ? 'messages' : 'messages-' + sourceMenu;
   currentMsgBoxId = targetId;
+  document.querySelectorAll('.main-title-text').forEach(t => t.textContent = TITLES[sourceMenu] || TITLES.tarot);
 }
 
 /* ── 사이드바 접기/펼치기 (모바일) ── */
