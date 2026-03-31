@@ -334,7 +334,6 @@ document.addEventListener('click', function(e) {
   }
 });
 document.addEventListener('DOMContentLoaded', function() {
-  // 패널/메시지 스크롤에 따라 사이드바 접기/펼치기
   function onPanelScroll(el) {
     if (el.scrollTop > 30) {
       toggleSidebar(true);
@@ -347,6 +346,23 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.panel').forEach(p => {
     p.addEventListener('scroll', function() { onPanelScroll(this); });
   });
+  // 모바일 터치 스크롤 감지 (패널 스크롤 이벤트가 안 잡힐 경우 보완)
+  let touchStartY = 0;
+  document.addEventListener('touchstart', function(e) {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchmove', function(e) {
+    if (window.innerWidth > 768) return;
+    const panel = document.querySelector('.panel.active');
+    if (!panel) return;
+    const deltaY = touchStartY - e.touches[0].clientY;
+    // 위로 스와이프(스크롤 내림) → 접기, 아래로 스와이프(스크롤 올림) → panel.scrollTop 체크
+    if (deltaY > 15) {
+      toggleSidebar(true);
+    } else if (deltaY < -15 && panel.scrollTop <= 30) {
+      toggleSidebar(false);
+    }
+  }, { passive: true });
 });
 function togglePanelMessages(btn) {
   const box = btn.parentElement;
