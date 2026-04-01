@@ -496,14 +496,22 @@ function getFollowUpMessage() {
 
 function addFollowUp() {
   const msg = getFollowUpMessage();
-  const html = `<div class="followup-prompt">
+  const followupHtml = `<div class="followup-prompt">
     <div class="followup-text">${msg.replace(/\n/g, '<br>')}</div>
     <div class="followup-input-wrap">
       <input type="text" class="followup-input" placeholder="궁금한 점을 편하게 말씀해 주세요..." onkeydown="if(event.key==='Enter')sendFollowUp(this)">
       <button class="followup-send" onclick="sendFollowUp(this.previousElementSibling)">보내기</button>
     </div>
   </div>`;
-  addMsg('bot', html);
+  // 마지막 봇 메시지의 버블에 이어붙이기
+  const box = document.getElementById(currentMsgBoxId);
+  const lastBot = box?.querySelector('.msg.bot:last-child');
+  const bubble = lastBot?.querySelector('.msg-bubble') || lastBot?.querySelector('.palm-result-msg') || lastBot?.querySelector('.card-reveal-msg');
+  if (bubble) {
+    bubble.insertAdjacentHTML('beforeend', followupHtml);
+  } else {
+    addMsg('bot', followupHtml);
+  }
 }
 
 function sendFollowUp(inputEl) {

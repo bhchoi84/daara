@@ -2078,11 +2078,9 @@ input[type=file] {
 
 /* ── 후속 상담 유도 ── */
 .followup-prompt {
-  background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(212,175,55,0.08));
-  border: 1px solid rgba(212,175,55,0.2);
-  border-radius: 14px;
-  padding: 16px 18px;
-  margin-top: 4px;
+  border-top: 1px solid rgba(212,175,55,0.15);
+  padding-top: 14px;
+  margin-top: 14px;
 }
 .followup-text {
   font-size: 13.5px;
