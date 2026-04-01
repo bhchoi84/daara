@@ -19,8 +19,9 @@ vercel --prod   # 프로덕션 배포
 
 | 변수명 | 설명 |
 |--------|------|
-| `ANTHROPIC_API_KEY` | Anthropic API 키 (손금/관상 + 폴백) |
-| `GEMINI_API_KEY` | Google Gemini API 키 (텍스트 운세 메인) |
+| `ANTHROPIC_API_KEY` | Anthropic API 키 (폴백용) |
+| `GEMINI_API_KEY` | Google Gemini API 키 (전체 상담 메인) |
+| `KAKAO_REST_API_KEY` | 카카오 REST API 키 (위치 → 주소 변환) |
 | `TOSS_SECRET_KEY` | 토스페이먼츠 시크릿 키 (테스트: `test_sk_...` / 운영: `live_sk_...`) |
 
 프론트엔드의 `TOSS_CLIENT_KEY` 상수는 `js/payment.js`에 있음 (테스트: `test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq`).

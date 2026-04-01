@@ -8,6 +8,9 @@
     },
     "api/gemini.js": {
       "maxDuration": 30
+    },
+    "api/location.js": {
+      "maxDuration": 10
     }
   }
 }

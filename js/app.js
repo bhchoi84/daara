@@ -81,22 +81,20 @@ function getPopularMenu() {
   return '오늘의 운세';
 }
 
-/* ── 위치 정보 (GPS 기반, IP 폴백) ── */
+/* ── 위치 정보 (카카오 로컬 API, IP 폴백) ── */
 let userLocation = null;
 (function fetchLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(async pos => {
       try {
         const { latitude: lat, longitude: lon } = pos.coords;
-        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=ko`);
+        const res = await fetch(`/api/location?lat=${lat}&lon=${lon}`);
         if (res.ok) {
           const d = await res.json();
-          const a = d.address || {};
-          const dong = a.quarter || a.neighbourhood || a.suburb || '';
-          const gu = a.city_district || a.borough || a.county || '';
-          const city = a.city || a.town || a.village || '';
-          userLocation = { city: dong ? `${gu} ${dong}` : (gu || city), region: a.state || a.province || '', country: a.country || '' };
-        }
+          if (d.city) {
+            userLocation = { city: d.city, region: d.region, country: d.country };
+          } else { fallbackIP(); }
+        } else { fallbackIP(); }
       } catch { fallbackIP(); }
     }, () => fallbackIP(), { timeout: 5000 });
   } else { fallbackIP(); }
