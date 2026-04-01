@@ -61,8 +61,7 @@ vercel.json       — /api/* 요청을 서버리스 함수로 라우팅
 
 ### 모델 사용
 
-- **`gemini-2.0-flash`** — 텍스트 기반 운세 상담 (`askClaude`, `askClaudeTarot3` in `js/app.js`). 폴백: `claude-haiku-4-5-20251001`
-- **`claude-sonnet-4-6`** — 손금/관상 분석 (Vision, `analyzePalm` in `js/fortune.js`)
+- **`gemini-2.0-flash`** — 텍스트 운세 + 손금/관상 Vision 전체 (`askClaude`, `askClaudeTarot3`, `analyzePalm`). 폴백: `claude-haiku-4-5-20251001`
 
 ### 메뉴/패널 구조
 

@@ -26,11 +26,22 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid request body' });
   }
 
-  /* Anthropic 형식 → Gemini 형식 변환 */
-  const geminiContents = messages.map(m => ({
-    role: m.role === 'assistant' ? 'model' : 'user',
-    parts: [{ text: typeof m.content === 'string' ? m.content : m.content.map(c => c.text || '').join('\n') }]
-  }));
+  /* Anthropic 형식 → Gemini 형식 변환 (텍스트 + 이미지 지원) */
+  const geminiContents = messages.map(m => {
+    const parts = [];
+    if (typeof m.content === 'string') {
+      parts.push({ text: m.content });
+    } else if (Array.isArray(m.content)) {
+      for (const c of m.content) {
+        if (c.type === 'text') {
+          parts.push({ text: c.text });
+        } else if (c.type === 'image' && c.source?.type === 'base64') {
+          parts.push({ inlineData: { mimeType: c.source.media_type, data: c.source.data } });
+        }
+      }
+    }
+    return { role: m.role === 'assistant' ? 'model' : 'user', parts };
+  });
 
   const geminiBody = {
     contents: geminiContents,
