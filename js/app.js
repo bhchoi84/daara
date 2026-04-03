@@ -422,6 +422,14 @@ function addMsg(role, content, type = 'text', cardIndex = null) {
   else if (type === 'palm-result') { bubble.className = 'palm-result-msg'; bubble.innerHTML = content; }
   else { bubble.className = 'msg-bubble'; bubble.innerHTML = content; }
   msgContent.appendChild(label); msgContent.appendChild(bubble);
+  // 봇 메시지에 공유 버튼 추가 (typing, followup 제외)
+  if (role === 'bot' && content !== '생각하고 있어요···' && content !== '카드를 해석하고 있어요···' && content !== '사진을 찬찬히 살펴보고 있어요···') {
+    const shareBtn = document.createElement('button');
+    shareBtn.className = 'msg-share-btn';
+    shareBtn.innerHTML = '공유';
+    shareBtn.onclick = function() { shareResult(bubble); };
+    msgContent.appendChild(shareBtn);
+  }
   role === 'user' ? (wrap.appendChild(msgContent), wrap.appendChild(av)) : (wrap.appendChild(av), wrap.appendChild(msgContent));
   box.appendChild(wrap); box.scrollTop = box.scrollHeight;
   return bubble;
@@ -487,6 +495,40 @@ function showZodiacMismatchModal(savedZodiac, selectedZodiac, onContinue) {
   overlay.addEventListener('click', function(e) {
     if (e.target === overlay) overlay.remove();
   });
+}
+
+/* ── 결과 공유 ── */
+function shareResult(bubble) {
+  // 텍스트 추출 (follow-up 입력창 제외)
+  const clone = bubble.cloneNode(true);
+  clone.querySelectorAll('.followup-prompt, .msg-share-btn').forEach(el => el.remove());
+  const text = clone.innerText.trim();
+  const shareText = `${text}\n\n✨ 다아라 — AI 타로·운세·손금\n${location.origin}`;
+
+  // 모바일: 네이티브 공유 (카톡, 인스타 등)
+  if (navigator.share) {
+    navigator.share({ title: '다아라 운세 결과', text: shareText }).catch(() => {});
+  } else {
+    // PC: 클립보드 복사
+    navigator.clipboard.writeText(shareText).then(() => {
+      showShareToast('결과가 복사됐어요! 붙여넣기로 공유하세요');
+    }).catch(() => {
+      showShareToast('복사에 실패했어요');
+    });
+  }
+}
+
+function showShareToast(msg) {
+  let toast = document.getElementById('share-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'share-toast';
+    toast.className = 'share-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
 /* ── 후속 상담 유도 ── */
