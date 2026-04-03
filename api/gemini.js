@@ -1,5 +1,5 @@
 /**
- * 운다아라 Gemini API 서버리스 함수
+ * 운 다아라 Gemini API 서버리스 함수
  *
  * [API 키 관리 방식]
  * - API 키는 Vercel 환경변수(GEMINI_API_KEY)에만 저장

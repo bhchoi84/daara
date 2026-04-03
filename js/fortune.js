@@ -105,7 +105,7 @@ async function runMatch() {
     `🔥 잘 맞는 점\n(사주 오행·천간지지 기반 2~3가지)\n\n` +
     `⚡ 조심할 점\n(충·극이 있는 부분 2~3가지)\n\n` +
     `💌 관계를 더 좋게 만드는 조언\n(오행 보완법, 구체적 행동 2~3가지)\n\n` +
-    `✨ 운다아라의 한마디\n(따뜻한 마무리)`,
+    `✨ 운 다아라의 한마디\n(따뜻한 마무리)`,
     true, `♡ 궁합 분석 (${u.name} ↔ ${partner.name})`, cacheKey, true
   );
 }
@@ -168,7 +168,7 @@ async function runMoney() {
     `💰 돈이 들어오는 흐름\n(재물이 유리한 시간대·방향·행동 2~3문장)\n\n` +
     `⚠️ 재물 주의사항\n(충·극이 있는 부분, 피해야 할 것 2~3문장)\n\n` +
     `🔮 이번 주 재물 전망\n(단기적 흐름 1~2문장)\n\n` +
-    `✨ 운다아라의 한마디\n(따뜻한 마무리)`,
+    `✨ 운 다아라의 한마디\n(따뜻한 마무리)`,
     true, `◈ 사주 재물운 (${ddi})`, cacheKey, true
   );
 }
@@ -180,7 +180,7 @@ async function runToday() {
   showChatPanel('today');
   const cacheKey = `today_${sel.today}${concern ? '_c' : ''}`;
   await askClaude(
-    `나는 ${sel.today}이에요. 오늘(${new Date().toLocaleDateString('ko-KR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })})의 전체 운세를 봐주세요.${concern ? ` 특히 "${concern}"에 대해 신경이 쓰여요.` : ''} 오늘의 총운, 애정운, 금전운, 건강운, 오늘의 행운 색깔/숫자를 포함해서 따뜻하고 구체적으로 알려주세요. 마지막에 오늘 하루를 위한 운다아라의 한마디로 마무리해 주세요 🌅`,
+    `나는 ${sel.today}이에요. 오늘(${new Date().toLocaleDateString('ko-KR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })})의 전체 운세를 봐주세요.${concern ? ` 특히 "${concern}"에 대해 신경이 쓰여요.` : ''} 오늘의 총운, 애정운, 금전운, 건강운, 오늘의 행운 색깔/숫자를 포함해서 따뜻하고 구체적으로 알려주세요. 마지막에 오늘 하루를 위한 운 다아라의 한마디로 마무리해 주세요 🌅`,
     true, `🌅 오늘의 운세 (${sel.today})`, cacheKey, true
   );
 }
@@ -290,13 +290,13 @@ async function analyzePalm() {
   const btn = document.getElementById('send-btn'), input = document.getElementById('chat-input');
   btn.disabled = true; input.disabled = true;
   const modeLabel = palmMode === 'right' ? '오른손 손금' : palmMode === 'left' ? '왼손 손금' : '관상';
-  addMsg('user', `<div class="user-palm-preview"><img src="${palmPreviewSrc}" alt="${modeLabel}"><span>운다아라, ${modeLabel} 분석 부탁해요!</span></div>`);
+  addMsg('user', `<div class="user-palm-preview"><img src="${palmPreviewSrc}" alt="${modeLabel}"><span>운 다아라, ${modeLabel} 분석 부탁해요!</span></div>`);
   const typingEl = addMsg('bot', '사진을 찬찬히 살펴보고 있어요···'); typingEl.classList.add('typing');
   let system, userText, resultTitle, resultSub;
   const ctx = getUserContext();
   if (palmMode === 'right' || palmMode === 'left') {
     const hand = palmMode === 'right' ? '오른손' : '왼손';
-    system = `당신은 따뜻하고 섬세한 AI 손금 상담사 '운다아라'입니다.${ctx}
+    system = `당신은 따뜻하고 섬세한 AI 행운 안내자 '운 다아라'입니다. 사용자에게 좋은 기운과 희망을 전하는 것이 당신의 사명입니다.${ctx}
 사용자가 보내준 ${hand} 사진을 보고 감정선·지능선·생명선·운명선을 분석합니다.
 ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 펼쳐지는 운세를 봅니다.' : '왼손은 타고난 잠재력과 근본적인 기질, 가능성을 봅니다.'}
 각 선마다 1~2문장씩 작성하고 마지막엔 따뜻한 격려로 마무리해 주세요.
@@ -306,7 +306,7 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
     resultTitle = palmMode === 'right' ? '✋ 오른손 손금 분석' : '🤚 왼손 손금 분석';
     resultSub = palmMode === 'right' ? '현재·미래 — 감정선 · 지능선 · 생명선 · 운명선' : '잠재력·기질 — 감정선 · 지능선 · 생명선 · 운명선';
   } else {
-    system = `당신은 따뜻하고 섬세한 AI 관상 상담사 '운다아라'입니다.${ctx}
+    system = `당신은 따뜻하고 섬세한 AI 행운 안내자 '운 다아라'입니다. 사용자에게 좋은 기운과 희망을 전하는 것이 당신의 사명입니다.${ctx}
 사용자가 보내준 얼굴 사진을 보고 이마·눈썹·눈·코·입 순으로 관상을 분석합니다.
 각 부위마다 1~2문장씩 작성하고 마지막엔 따뜻한 격려로 마무리해 주세요.
 오늘 날짜와 사용자의 현재 위치 기운을 자연스럽게 반영해 주세요.
