@@ -400,12 +400,13 @@
       <div class="user-modal-logo">✨</div>
       <div class="user-modal-title serif">10초면 끝! 나만의 맞춤 운세 시작</div>
       <div class="user-modal-sub">기본 정보만으로도 OK! 사주 시간·직업을 추가하면 더 정확해요</div>
+      <div class="um-error" id="um-error" style="display:none"></div>
       <div class="user-modal-field">
-        <label class="user-modal-label">이름 (닉네임도 좋아요)</label>
+        <label class="user-modal-label">이름 (닉네임도 좋아요) <span class="um-required">*</span></label>
         <input class="user-modal-input" id="um-name" type="text" placeholder="예: 지은이, 별이, 민준" maxlength="10">
       </div>
       <div class="user-modal-field">
-        <label class="user-modal-label">생년월일</label>
+        <label class="user-modal-label">생년월일 <span class="um-required">*</span></label>
         <div class="birth-select-row">
           <select class="user-modal-input birth-sel" id="um-birth-y"></select>
           <select class="user-modal-input birth-sel" id="um-birth-m"></select>

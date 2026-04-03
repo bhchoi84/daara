@@ -278,11 +278,23 @@ function autoFillZodiac(zodiac) {
     });
   }
 }
+function showUmError(msg) {
+  const el = document.getElementById('um-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 3000);
+}
 function submitUserInfo() {
   const name = document.getElementById('um-name').value.trim();
   const birth = getBirthFromSelects('um-birth-y', 'um-birth-m', 'um-birth-d');
-  if (!name) { document.getElementById('um-name').focus(); return; }
-  if (!birth) { document.getElementById('um-birth-y').focus(); return; }
+  if (!name) { showUmError('이름을 입력해 주세요'); document.getElementById('um-name').focus(); return; }
+  const yBtn = document.querySelector('.birth-pick-btn[data-group="um-birth-y"][data-role="y"]');
+  const mBtn = document.querySelector('.birth-pick-btn[data-group="um-birth-y"][data-role="m"]');
+  const dBtn = document.querySelector('.birth-pick-btn[data-group="um-birth-y"][data-role="d"]');
+  if (!yBtn?.dataset.value) { showUmError('태어난 년도를 선택해 주세요'); return; }
+  if (!mBtn?.dataset.value) { showUmError('태어난 월을 선택해 주세요'); return; }
+  if (!dBtn?.dataset.value) { showUmError('태어난 일을 선택해 주세요'); return; }
+  if (!birth) { showUmError('생년월일을 모두 선택해 주세요'); return; }
   const gender = selectedGender || '선택안함';
   const siji = document.getElementById('um-siji').value;
   const job = document.getElementById('um-job').value.trim();
