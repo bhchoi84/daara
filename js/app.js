@@ -578,7 +578,7 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null, showFo
 답변은 항상 같은 사용자에 대한 일관된 흐름을 유지해 주세요.`;
   const messages = overrideMsg ? [{ role: 'user', content: overrideMsg }] : [...history];
   try {
-    const data = await callGeminiAPI({ max_tokens: 4000, system, messages });
+    const data = await callGeminiAPI({ max_tokens: 3000, system, messages });
     const reply = data?.content?.[0]?.text || '잠깐 다시 시도해 주실 수 있어요? 😊';
     typingEl.classList.remove('typing'); typingEl.innerHTML = formatReply(reply);
     if (!isAuto) { history.push({ role: 'assistant', content: reply }); if (history.length > 12) history = history.slice(-12); }
@@ -589,7 +589,7 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null, showFo
   } catch (e) {
     // Gemini 실패 시 Claude Haiku로 폴백
     try {
-      const data = await callAPI({ model: 'claude-haiku-4-5-20251001', max_tokens: 4000, system, messages });
+      const data = await callAPI({ model: 'claude-haiku-4-5-20251001', max_tokens: 3000, system, messages });
       const reply = data?.content?.[0]?.text || '';
       typingEl.classList.remove('typing'); typingEl.innerHTML = formatReply(reply);
       if (!isAuto) { history.push({ role: 'assistant', content: reply }); if (history.length > 12) history = history.slice(-12); }
@@ -628,9 +628,9 @@ async function askClaudeTarot3(prompt, cards) {
     const data = await callGeminiAPI({ max_tokens: 3000, system, messages: [{ role: 'user', content: prompt }] });
     const reply = data?.content?.[0]?.text || '';
     typingEl.remove(); // typing 메시지 제거
-    // 카드별로 분리: 🔮, 🌙, ⚠️, ✨ 기준
-    const sections = reply.split(/(?=🔮|🌙|⚠️|✨)/);
-    const cardEmojis = ['🔮', '🌙', '⚠️'];
+    // 카드별로 분리: 🔮, 🌙, ⚠️/⚠, ✨ 기준
+    const sections = reply.split(/(?=🔮|🌙|⚠️?|✨)/);
+    const cardEmojis = ['🔮', '🌙', '⚠'];
     let cardIdx = 0;
     for (const sec of sections) {
       const trimmed = sec.trim();
