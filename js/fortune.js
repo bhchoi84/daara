@@ -135,14 +135,12 @@ function updateMoneyMyInfo() {
   if (u.job) html += ` · ${u.job}`;
   html += `</span> <span style="font-size:11px;color:var(--text-muted)">수정 →</span>`;
   el.innerHTML = html;
-  // 띠 자동 선택
-  if (!sel.mo) {
-    sel.mo = ddi;
-    document.querySelectorAll('#zg-mo .zodiac-btn').forEach(b => {
-      b.classList.remove('sel-mo');
-      if (b.textContent.includes(ddi.replace('띠',''))) b.classList.add('sel-mo');
-    });
-  }
+  // 띠 자동 선택 (생년월일 기준)
+  sel.mo = ddi;
+  document.querySelectorAll('#zg-mo .zodiac-btn').forEach(b => {
+    b.classList.remove('sel-mo');
+    if (b.textContent.includes(ddi.replace('띠',''))) b.classList.add('sel-mo');
+  });
 }
 
 async function runMoney() {
