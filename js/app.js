@@ -415,7 +415,7 @@ function addMsg(role, content, type = 'text', cardIndex = null) {
   const av = document.createElement('div'); av.className = 'msg-avatar ' + (role === 'user' ? 'user' : 'bot'); av.textContent = role === 'user' ? '나' : '✦';
   const msgContent = document.createElement('div'); msgContent.className = 'msg-content';
   const label = document.createElement('span'); label.className = 'msg-label';
-  label.textContent = role === 'user' ? '나의 질문' : '다아라';
+  label.textContent = role === 'user' ? '나의 질문' : '운다아라';
   const bubble = document.createElement('div');
   if (type === 'card-reveal') { bubble.className = 'card-reveal-msg'; bubble.innerHTML = content; }
   else if (type === 'ad') { bubble.className = 'ad-interstitial'; bubble.innerHTML = content; }
@@ -503,11 +503,11 @@ function shareResult(bubble) {
   const clone = bubble.cloneNode(true);
   clone.querySelectorAll('.followup-prompt, .msg-share-btn').forEach(el => el.remove());
   const text = clone.innerText.trim();
-  const shareText = `${text}\n\n✨ 다아라 — AI 타로·운세·손금\n${location.origin}`;
+  const shareText = `${text}\n\n✨ 운다아라 — AI 타로·운세·손금\n${location.origin}`;
 
   // 모바일: 네이티브 공유 (카톡, 인스타 등)
   if (navigator.share) {
-    navigator.share({ title: '다아라 운세 결과', text: shareText }).catch(() => {});
+    navigator.share({ title: '운다아라 운세 결과', text: shareText }).catch(() => {});
   } else {
     // PC: 클립보드 복사
     navigator.clipboard.writeText(shareText).then(() => {
@@ -538,7 +538,7 @@ function getFollowUpMessage() {
   const msgs = [
     `위 내용은 ${name}님의 전체적인 흐름을 살펴본 거예요.\n하지만 하루하루의 운세는 지금 처한 상황에 따라 조금씩 달라지기도 한답니다.\n혹시 요즘 마음에 걸리는 일이 있으시다면, 편하게 말씀해 주세요.\n진심을 다해 살펴봐 드릴게요 🙏`,
     `지금까지 본 건 큰 흐름이에요.\n${name}님의 오늘은 또 다른 이야기를 품고 있을 수 있답니다.\n더 깊이 알고 싶은 부분이 있으시면 알려주세요.\n정성껏 봐드리겠습니다 ✨`,
-    `운세는 날마다 조금씩 달라져요.\n오늘 ${name}님에게 특별히 와닿는 부분이 있거나 궁금한 점이 있으시다면 편하게 여쭤보세요.\n다아라가 곁에서 함께 살펴봐 드릴게요 🌙`,
+    `운세는 날마다 조금씩 달라져요.\n오늘 ${name}님에게 특별히 와닿는 부분이 있거나 궁금한 점이 있으시다면 편하게 여쭤보세요.\n운다아라가 곁에서 함께 살펴봐 드릴게요 🌙`,
     `${name}님만의 이야기는 여기서 끝이 아니에요.\n요즘 고민되는 일이나 앞으로 궁금한 점이 있다면 말씀해 주세요.\n별과 카드가 전하는 메시지를 더 세심하게 풀어드릴게요 💫`,
     `전체 흐름은 이렇지만, 지금 이 순간 ${name}님의 마음이 향하는 곳에 따라 운세의 결도 달라진답니다.\n더 알고 싶은 부분이 있으시면 부담 없이 물어봐 주세요 🍀`,
     `${name}님, 오늘의 기운은 어제와는 또 다르답니다.\n지금 가장 신경 쓰이는 일이 있으시면 말씀해 주세요.\n그 마음에 맞춰 더 자세히 풀어드릴게요 🌸`,
@@ -575,7 +575,7 @@ function sendFollowUp(inputEl) {
   inputEl.nextElementSibling.disabled = true;
   const u = getUserInfo();
   const ctx = u ? `${u.name}님(${u.zodiac}, ${u.age}세 ${u.gender})이 ` : '';
-  askClaude(`${ctx}방금 운세 결과를 보고 추가로 궁금한 점이 있어요: "${text}"\n\n이전 운세 흐름을 이어서, 지금 상황에 맞게 따뜻하고 구체적으로 3~4문장으로 답해 주세요. 마지막에 다아라의 따뜻한 한마디를 덧붙여 주세요.`, true, text);
+  askClaude(`${ctx}방금 운세 결과를 보고 추가로 궁금한 점이 있어요: "${text}"\n\n이전 운세 흐름을 이어서, 지금 상황에 맞게 따뜻하고 구체적으로 3~4문장으로 답해 주세요. 마지막에 운다아라의 따뜻한 한마디를 덧붙여 주세요.`, true, text);
 }
 
 /* ── API ── */
@@ -609,7 +609,7 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null, showFo
   btn.disabled = true; input.disabled = true;
   if (userLabel) addMsg('user', userLabel);
   const typingEl = addMsg('bot', '생각하고 있어요···'); typingEl.classList.add('typing');
-  const system = `당신은 따뜻하고 섬세한 AI 타로·운세·사주 상담사 '다아라'입니다.${getUserContext()}
+  const system = `당신은 따뜻하고 섬세한 AI 타로·운세·사주 상담사 '운다아라'입니다.${getUserContext()}
 사용자 감정에 먼저 공감해 주세요. 성별·나이에 관계없이 "~님"으로 호칭하며, 정중하고 따뜻한 존댓말을 씁니다. "오빠/언니/누나/형" 같은 호칭은 절대 쓰지 않습니다.
 사용자의 이름, 별자리, 나이, 성별, 직업을 자연스럽게 반영해 개인화된 답변을 해주세요.
 사주 정보(연주, 일주, 태어난 시)가 있으면 천간지지·오행의 기운을 해석에 녹여주세요.
@@ -657,7 +657,7 @@ async function askClaudeTarot3(prompt, cards) {
   btn.disabled = true; input.disabled = true;
   const typingEl = addMsg('bot', '카드를 해석하고 있어요···'); typingEl.classList.add('typing');
   let firstCardEl = null;
-  const system = `당신은 따뜻하고 섬세한 AI 타로·운세·사주 상담사 '다아라'입니다.${getUserContext()}
+  const system = `당신은 따뜻하고 섬세한 AI 타로·운세·사주 상담사 '운다아라'입니다.${getUserContext()}
 사용자 감정에 먼저 공감해 주세요. 성별·나이에 관계없이 "~님"으로 호칭하며, 정중하고 따뜻한 존댓말을 씁니다. "오빠/언니/누나/형" 같은 호칭은 절대 쓰지 않습니다.
 사용자의 이름, 별자리, 나이, 성별, 직업을 자연스럽게 반영해 개인화된 답변을 해주세요.
 사주 정보(연주, 일주, 태어난 시)가 있으면 천간지지·오행의 기운을 해석에 녹여주세요.
@@ -889,7 +889,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     autoFillZodiac(u.zodiac);
     addMsg('bot', `<b>${u.name}</b>님, 오늘의 운세가 준비됐어요 😊<br>어제와는 다른 흐름이 보여요. 카드를 뽑아 확인해 보세요 ✨<br><span style="font-size:11px;color:var(--text-muted)">지금 가장 많이 받는 상담: ${getPopularMenu()} 🔥</span>`);
   } else {
-    addMsg('bot', `오늘 하루가 궁금하지 않으세요? 😊<br><b>다아라</b>가 AI로 당신만의 운세를 바로 봐드려요.<br><br>카드를 뽑거나 메뉴를 선택하면 <b class="hl-gold">무료로 바로 시작</b>할 수 있어요 ✨<br><span style="font-size:11px;color:var(--text-muted)">지금 가장 많이 받는 상담: ${getPopularMenu()} 🔥</span>`);
+    addMsg('bot', `오늘 하루가 궁금하지 않으세요? 😊<br><b>운다아라</b>가 AI로 당신만의 운세를 바로 봐드려요.<br><br>카드를 뽑거나 메뉴를 선택하면 <b class="hl-gold">무료로 바로 시작</b>할 수 있어요 ✨<br><span style="font-size:11px;color:var(--text-muted)">지금 가장 많이 받는 상담: ${getPopularMenu()} 🔥</span>`);
   }
 
   // 소셜 프루프 동적 업데이트

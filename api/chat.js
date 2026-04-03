@@ -1,5 +1,5 @@
 /**
- * 다아라 API 서버리스 함수
+ * 운다아라 API 서버리스 함수
  *
  * [API 키 관리 방식]
  * - API 키는 Vercel 환경변수(ANTHROPIC_API_KEY)에만 저장
